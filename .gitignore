@@ -1,0 +1,13 @@
+
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+core/tmp/batch-cache/*.txt
+data/*
+doc/qc-script.html
+media/*.mp4
+media/*.png
+
+!*.empty
+

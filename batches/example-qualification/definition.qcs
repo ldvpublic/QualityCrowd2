@@ -1,0 +1,4 @@
+set title "Qualification test"
+page "Lorem ipsum"
+page "Lorem ipsum 2"
+return

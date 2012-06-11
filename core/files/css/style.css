@@ -1,0 +1,122 @@
+html, body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size:13px;
+}
+
+html {
+	margin:0;
+	background-color:#ccc;
+}
+
+body {
+	margin: 20px auto;
+	width:800px;
+	padding:0px 15px;
+	background-color:white;
+}
+
+button {
+	font-size:14px;
+	padding:7px 20px;
+}
+
+code {
+	display:block;
+	margin:10px 0;
+}
+
+ul.errormessage {
+	background-color:#ff7777;
+	padding:10px;
+	padding-left:30px;
+}
+
+div.stepprogress {
+	background-color:#eee;
+	border-bottom: 2px solid #bbb;
+	margin:0px -15px 15px -15px;
+	padding:7px 15px;
+}
+
+div.stepbuttons {
+	background-color:#eee;
+	border-top: 2px solid #bbb;
+	margin:20px -15px 0px -15px;
+	padding:7px 15px;
+}
+
+
+/* ========================================= PLAYER */
+
+div.video-box {
+	margin-top:10px;
+	margin-bottom:10px;
+	display:inline-block;
+}
+
+div.video-box * {
+	outline:0;
+}
+
+div.videotitle {
+	margin-top:0px;
+	margin-bottom:5px;
+	font-size:16px;
+	font-weight:bold;
+}
+
+div.flash-fallback {
+	display:none; 
+	padding:10px; 
+	border: 1px solid red;
+}
+
+
+video {
+	background-color:#ccc;
+}
+
+div.button {
+	width:24px;
+	height:24px;
+	background-image:url('../img/playerbuttons.png');
+	float:left;
+}
+
+div.playbutton {
+	background-position:24px;
+}
+
+div.pausebutton {
+	background-position:0px;
+}
+
+div.progressbox {
+	margin-top:4px;
+	margin-left:10px;
+	float:right; 
+	height:15px;
+	border:1px solid #444;
+	position:relative;
+}
+
+div.progress {
+	width:0px; height:100%; 
+	background:#888;
+	z-index:10;
+	position:absolute;
+}
+
+div.buffered {
+	width:0px; height:100%; 
+	background:#bbb;
+	position:absolute;
+	z-index:5;
+}
+
+div.buftext {
+	font-size:10px;
+	padding-left:4px;
+	position:absolute;
+	z-index:20;
+}

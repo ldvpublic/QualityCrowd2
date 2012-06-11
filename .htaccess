@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /qualitycrowd2/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ core/index.php?path=$1 [L,QSA]
