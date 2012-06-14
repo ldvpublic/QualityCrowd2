@@ -5,7 +5,6 @@
 
 core/tmp/batch-cache/*.txt
 data/*
-doc/qc-script.html
 media/*.mp4
 media/*.png
 

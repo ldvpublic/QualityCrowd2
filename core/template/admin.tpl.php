@@ -17,10 +17,7 @@
 			<h1>QualityCrowd</h1>
 		</div>
 
-		<h2>Batches</h2>
-		<div class="batchlist">
-		<?= $batchList ?>
-		</div>
+		<?= $content ?>
 
 		<div class="footer">
 			User: <?= $username ?>

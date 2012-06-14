@@ -13,9 +13,8 @@ class Request extends Base
 		$path = explode('/', $path);
 		$path = array_filter($path); // remove empty elements
 
-		if (count($path) < 1) 
-		{
-			header('Location: ' . BASE_URL . 'admin');
+		if (count($path) < 1) {
+			header('Location: ' . BASE_URL . 'admin/batches');
 			exit;
 		}
 
@@ -23,7 +22,12 @@ class Request extends Base
 		{
 			$username = $this->login();
 
-			$admin = new Admin($username);
+			if (count($path) < 2) {
+				header('Location: ' . BASE_URL . 'admin/batches');
+				exit;
+			}
+
+			$admin = new Admin($username, $path[1]);
 			echo $admin->render();
 			return;
 		} else

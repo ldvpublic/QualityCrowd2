@@ -1,3 +1,9 @@
+pre {
+	background-color:#ddd;
+	padding:4px;
+}
+
+/* ==================================== Batch List */
 .batchlist {
 	border:1px solid #aaa;
 }
