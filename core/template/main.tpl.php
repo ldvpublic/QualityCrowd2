@@ -12,7 +12,7 @@
 		<script type="text/javascript" src="<?= BASE_URL ?>core/files/js/jquery.js"></script>
 	</head>
 	<body>
-		<div class="stepprogress">
+		<div class="header">
 			Step <?= ($stepId+1) ?> of <?= $stepCount ?>
 			<a href="<?= BASE_URL ?><?= $batchId ?>/<?= $workerId ?>?restart=">Restart</a>
 		</div>
@@ -33,14 +33,24 @@
 			<?= $content ?>
 		</form>
 
-		<?php if ($stepId + 1 <> $stepCount): ?>
-		<div class="stepbuttons">
+		<div class="footer">
+			<?php if ($stepId + 1 <> $stepCount): ?>
 			<button id="button_next">Next</button>
+			<?php endif; ?>
+			<?php if ($stepId == -1): ?>
+			<button id="button_restart">Restart</button>
+			<?php endif; ?>
 		</div>
-		<?php endif; ?>
 
 		<script type="text/javascript">
+			<?php if ($stepId + 1 <> $stepCount): ?>
 			$('#button_next').click(function() {$('#stepform').trigger('submit');});
+			<?php endif; ?>
+			<?php if ($stepId == -1): ?>
+			$('#button_restart').click(function() {
+				window.location.href = window.location.href + '?restart='; 
+			});
+			<?php endif; ?>
 		</script>
 	</body>
 </html>

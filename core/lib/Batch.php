@@ -32,11 +32,6 @@ class Batch extends Base
 		$this->collectMetaData();
 	}
 
-	public function countSteps()
-	{
-		return count($this->steps);
-	}
-
 	public function validateAndSave($stepId, $data)
 	{
 		// validate data
@@ -64,6 +59,31 @@ class Batch extends Base
 
 		$stepObject = $this->getStepObject($stepId);
 		return $stepObject->render();
+	}
+
+	public function countSteps()
+	{
+		return count($this->steps);
+	}
+
+	public function getProperty($key)
+	{
+		return $this->global[$key];
+	}
+
+	public function getWorkers()
+	{
+		$workers = array();
+		$path = DATA_PATH . $this->batchId . '/';
+		$files = glob($path . '*', GLOB_MARK);
+	    foreach ($files as $file) 
+	    {
+	    	$file = preg_replace('#^' . $path . '#', '', $file);
+	    	$file = preg_replace('#/$#', '', $file);
+	    	$workers[$file] = $file;
+	    }
+
+	    return $workers;
 	}
 
 	private function getStepObject($stepId)
@@ -95,7 +115,7 @@ class Batch extends Base
 
 	private function generateToken() 
 	{
-		$token = TOKEN_SALT . '-'; 
+		$token = $this->getConfig('securitySalt') . '-'; 
 		$token .= $this->registry->get('batchId') . '-';
 		$token .= $this->registry->get('workerId') . '-';
 		$token .= md5($_SERVER['HTTP_USER_AGENT']) . '-';

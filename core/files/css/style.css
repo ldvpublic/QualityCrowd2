@@ -31,14 +31,14 @@ ul.errormessage {
 	padding-left:30px;
 }
 
-div.stepprogress {
+div.header {
 	background-color:#eee;
 	border-bottom: 2px solid #bbb;
 	margin:0px -15px 15px -15px;
 	padding:7px 15px;
 }
 
-div.stepbuttons {
+div.footer {
 	background-color:#eee;
 	border-top: 2px solid #bbb;
 	margin:20px -15px 0px -15px;

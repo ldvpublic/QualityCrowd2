@@ -1,0 +1,45 @@
+.batchlist {
+	border:1px solid #aaa;
+}
+
+.batchrow{
+	padding:12px;
+}
+
+.batchrow:nth-child(2n+1) {
+	background-color:#bbb;
+}
+
+.batchrow .id {
+	font-size:18px;
+}
+
+.batchrow .title {
+	font-size:12px;
+	margin-top:4px;
+}
+
+.batchrow .infofloat {
+	float:right;
+	font-size:25px;
+	text-align:center;
+	margin-left:15px;
+}
+
+.batchrow .infofloat:after {
+	display:block;
+	font-size:9px;
+	text-transform:uppercase;
+}
+
+.batchrow .steps:after {
+	content: "Steps";
+}
+
+.batchrow .workers:after {
+	content: "Workers";
+}
+
+.batchrow .finished:after {
+	content: "Finished";
+}

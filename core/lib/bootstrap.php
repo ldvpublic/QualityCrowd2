@@ -2,6 +2,9 @@
 
 $rootPath = preg_replace('#core/lib/bootstrap.php$#', '', __FILE__);
 
+// read config file
+$cf = require($rootPath . 'core/config.php');
+
 define('ROOT_PATH', $rootPath);
 define('BATCH_PATH', $rootPath . 'batches/');
 define('DATA_PATH', $rootPath . 'data/');
@@ -15,8 +18,6 @@ $baseURL .= preg_replace('#core/index.php$#', '', $_SERVER['PHP_SELF']);
 
 define('BASE_URL', $baseURL);
 define('MEDIA_URL', $baseURL . 'media/');
-
-define('TOKEN_SALT', 'QualityCrowd2-7078e430');
 
 spl_autoload_register(function ($class) 
 {
