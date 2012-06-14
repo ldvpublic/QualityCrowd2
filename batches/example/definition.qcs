@@ -1,9 +1,11 @@
 #
-# An example for a QC-Script
+# An example QC-Script
 #
 
-global title "QualityCrowd Example Batch"
-set fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent"
+meta title "QualityCrowd Example Batch"
+meta comment "This Batch demonstrates all implemented features."
+
+var fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent"
 
 #
 # The Steps

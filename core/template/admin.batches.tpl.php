@@ -1,4 +1,4 @@
 <h2>Batches</h2>
-<div class="batchlist">
+<ul class="batchlist">
 <?= $batchlist ?>
-</div>
+</ul>

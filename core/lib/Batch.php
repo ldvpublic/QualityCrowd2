@@ -4,21 +4,21 @@ class Batch extends Base
 {
 	private $batchId;
 	private $steps;
-	private $global;
+	private $meta;
 
-	public function __construct($batchId, $global, $steps) 
+	public function __construct($batchId, $meta, $steps) 
 	{
 		parent::__construct();
 
 		$this->batchId = $batchId;
-		$this->global = $global;
+		$this->meta = $meta;
 		$this->steps = $steps;
 	}
 
 	public function __sleep() 
 	{
 		parent::__sleep();
-		return array('batchId', 'steps', 'global');
+		return array('batchId', 'steps', 'meta');
 	}
 
 	public function __wakeup() 
@@ -66,12 +66,23 @@ class Batch extends Base
 		return count($this->steps);
 	}
 
-	public function getProperty($key)
+	public function meta($key = null)
 	{
-		return $this->global[$key];
+		if ($key == null)
+		{
+			return $this->meta;
+		} else
+		{
+			return $this->meta[$key];
+		}
 	}
 
-	public function getWorkers()
+	public function steps()
+	{
+		return $this->steps;
+	}
+
+	public function workers()
 	{
 		$workers = array();
 		$path = DATA_PATH . $this->batchId . '/';

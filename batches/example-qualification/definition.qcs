@@ -1,4 +1,4 @@
-global title "QualityCrowd Example Qualification Batch"
+meta title "QualityCrowd Example Qualification Batch"
 
 set title "Qualification test"
 page "Lorem ipsum"

@@ -10,15 +10,16 @@ class AdminBatches extends AdminPage
 	private function renderBatchList()
 	{
 		$batches = $this->getBatches();
+		ksort($batches);
 		$o = '';
 
 		foreach($batches as $batchId => $batch)
 		{
 			$rowTpl = new Template('admin.batchrow');
-			$workers = $batch->getWorkers();
+			$workers = $batch->workers();
 
 			$rowTpl->set('id', $batchId);
-			$rowTpl->set('title', $batch->getProperty('title'));
+			$rowTpl->set('title', $batch->meta('title'));
 			$rowTpl->set('steps', $batch->countSteps());
 			$rowTpl->set('workers', count($workers));
 			//$rowTpl->set('finished', $batch->countSteps());

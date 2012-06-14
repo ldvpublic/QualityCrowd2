@@ -23,8 +23,8 @@ Lines starting with a number sign (#) are comments and removed before parsing.
 
 ### Special Commands
 
-#### global
-	global <key> [<value>]
+#### meta
+	meta <key> [<value>]
 
 #### set
 	set <key> [<value>]
@@ -33,6 +33,12 @@ The `set` command sets a property defined by the `<key>`-argument to the value s
 #### unset
 	unset <key>
 Unsets the property with the passed `<key>`. If `all` is passed all properties will be unset.
+
+#### var
+	var <key> <value>
+Sets an internal variable to `<value>`. To use this variable for example in a `set` command, use the following syntax:
+
+	set title $titlevar
 
 ### Step Commands
 
@@ -79,6 +85,9 @@ Used properties: `answermode`, `question`, `skipvalidation`, `title`
 ### answermode
 	set answermode <continous|discrete|...>
 
+### answers
+	set answers "1: first answer; 2: second answer [;...]"
+
 ### question
 	set question <text>
 Defines a question text that is displayed in all steps containing a question (`image`, `video`, ...) right above the answer form.
@@ -96,3 +105,6 @@ Sets the title of a step page to `<text>`; will be displayed as page heading on 
 ### include()
 	<command> include(<file>)
 Can be used instead of a commmand argument to pass the contents of `<file>` as the argument value.
+
+### variables
+	<command> $<var>

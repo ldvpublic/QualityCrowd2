@@ -3,21 +3,20 @@
 class Admin extends AdminPage
 {
 	private $username;
-	private $page;
 
-	public function __construct($username, $page = 'batches')
+	public function __construct($username, $path = null)
 	{
-		parent::__construct();
+		parent::__construct(null);
+		$this->path = $path;
 
 		$this->username = $username;
-		$this->tpl->set('username', $username);
-		$this->page = $page;
+		$this->tpl->set('username', $username);	
 	}
 
 	public function prepareRender()
 	{
-		$class = 'Admin' . ucfirst($this->page);
-		$pageObject = new $class($this->page);
+		$class = 'Admin' . ucfirst($this->path[0]);
+		$pageObject = new $class($this->path);
 
 		$this->tpl->set('content', $pageObject->render());
 

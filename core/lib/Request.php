@@ -27,8 +27,10 @@ class Request extends Base
 				exit;
 			}
 
-			$admin = new Admin($username, $path[1]);
+			array_shift(&$path);
+			$admin = new Admin($username, $path);
 			echo $admin->render();
+
 			return;
 		} else
 		{

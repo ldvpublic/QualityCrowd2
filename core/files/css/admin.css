@@ -3,17 +3,122 @@ pre {
 	padding:4px;
 }
 
-/* ==================================== Batch List */
-.batchlist {
+pre.codeblock {
+	padding:5px 10px;
 	border:1px solid #aaa;
 }
 
-.batchrow{
+/* ==================================== Menu */
+
+ul.menu {
+	margin:0;
+	margin-bottom:-7px;
+	padding:0;
+	list-style-type:none;
+}
+
+ul.menu li {
+	display:inline-block;
+	padding: 6px 15px;
+	background-color:#555;
+	margin-right:7px;
+}
+
+ul.menu li a {
+	text-decoration: none;
+	font-size:15px;
+	font-weight:bold;
+	color:#eee;
+}
+
+/* ==================================== Step Meta List */
+
+table.meta {
+	border-collapse:collapse;
+	border:1px solid #aaa;
+}
+
+table.meta tr:nth-child(2n) {
+	background-color:#ccc;
+}
+
+table.meta th {
+	padding:4px 15px;
+	text-align:left;
+}
+
+table.meta td {
+	padding:4px 15px;
+}
+
+/* ==================================== Step List */
+
+table.steps {
+	border-collapse:collapse;
+	border:1px solid #aaa;
+}
+
+table.steps tr.step {
+	background-color:#ccc;
+	border-top:1px solid #888;
+}
+
+table.steps tr.step td {
+	padding:7px 15px;
+}
+
+table.steps td.number {
+	font-size:35px;
+	vertical-align: top;
+}
+
+table.steps td.command {
+	font-size:17px;
+	font-weight:bold;
+}
+
+table.steps td.argument {
+	font-size:17px;
+}
+
+table.steps tr.property td {
+	padding:4px 15px;
+}
+
+/* ==================================== Batch List */
+.batchlist {
+	border:1px solid #aaa;
+	list-style-type: none;
+	padding:0;
+}
+
+.batchrow {
 	padding:12px;
 }
 
-.batchrow:nth-child(2n+1) {
-	background-color:#bbb;
+.batchrow:hover {
+	background-color:#333;
+}
+
+.batchrow:nth-child(2n) {
+	background-color:#ccc;
+}
+
+.batchrow:nth-child(2n):hover {
+	background-color:#333;
+}
+
+.batchrow a {
+	color:black;
+	text-decoration:none;
+}
+
+.batchrow:hover {
+	color:#eee;
+}
+
+.batchrow:hover a {
+	color:#eee;
 }
 
 .batchrow .id {
@@ -26,10 +131,10 @@ pre {
 }
 
 .batchrow .infofloat {
-	float:right;
 	font-size:25px;
 	text-align:center;
 	margin-left:15px;
+	float:right;
 }
 
 .batchrow .infofloat:after {

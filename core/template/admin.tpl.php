@@ -15,6 +15,10 @@
 	<body>
 		<div class="header">
 			<h1>QualityCrowd</h1>
+			<ul class="menu">
+				<li><a href="<?= BASE_URL ?>admin/batches">Batches</a></li>
+				<li><a href="<?= BASE_URL ?>admin/doc">Documentation</a></li>
+			</ul>
 		</div>
 
 		<?= $content ?>

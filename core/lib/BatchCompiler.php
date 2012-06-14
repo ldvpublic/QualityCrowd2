@@ -10,8 +10,9 @@ class BatchCompiler
 		$this->batchId = $batchId;
 
 		$this->commands = array(
-			'global'        => array('minArguments' => 1, 'maxArguments' => 2),
+			'meta'        => array('minArguments' => 1, 'maxArguments' => 2),
 			'set'           => array('minArguments' => 1, 'maxArguments' => 2),
+			'var'           => array('minArguments' => 2, 'maxArguments' => 2),
 			'unset'         => array('minArguments' => 1, 'maxArguments' => 1),
 			'page'          => array('minArguments' => 1, 'maxArguments' => 1),
 			'video'         => array('minArguments' => 1, 'maxArguments' => 2),
@@ -21,6 +22,16 @@ class BatchCompiler
 			'qualification' => array('minArguments' => 1, 'maxArguments' => 1),
 			'return'        => array('minArguments' => 0, 'maxArguments' => 0),
 			);
+	}
+
+	public function getSource() 
+	{
+		static $source = '';
+		// load source file
+		if ($source == '')
+			$source = file_get_contents($this->getSourceFileName());
+
+		return $source;
 	}
 
 	public function getBatch()
@@ -52,22 +63,28 @@ class BatchCompiler
 		$batchSteps = array();
 		$sourceData = $this->parse();
 
-		$globalProperties = array();
+		$meta = array();
 		$stepProperties = array();
+		$variables = array();
 
 		foreach($sourceData as $sourceStep) 
 		{
 			$batchStep = array();
 			switch($sourceStep['command']) 
 			{
-				case 'global':
-				$globalProperties[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1], $stepProperties);
+				case 'meta':
+				$meta[$sourceStep['arguments'][0]] = 
+					$this->parseValue($sourceStep['arguments'][1], $variables);
 				break;
 
 				case 'set':
 				$stepProperties[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1], $stepProperties);
+					$this->parseValue($sourceStep['arguments'][1], $variables);
+				break;
+
+				case 'var':
+				$variables[$sourceStep['arguments'][0]] = 
+					$this->parseValue($sourceStep['arguments'][1], $variables);
 				break;
 
 				case 'unset':
@@ -83,15 +100,16 @@ class BatchCompiler
 				default:
 				$batchStep['command'] = $sourceStep['command'];
 				$batchStep['properties'] = $stepProperties;
+				$batchStep['arguments'] = array();
 				foreach($sourceStep['arguments'] as $arg)
 				{
-					$batchStep['arguments'][] = $this->parseValue($arg, $stepProperties, $stepProperties);
+					$batchStep['arguments'][] = $this->parseValue($arg, $variables);
 				}
 				$batchSteps[] = $batchStep;
 			}
 		}
 
-		$myBatch = new Batch($this->batchId, $globalProperties, $batchSteps);
+		$myBatch = new Batch($this->batchId, $meta, $batchSteps);
 		$myBatch->renderStep(0);
 
 		return $myBatch;
@@ -100,7 +118,8 @@ class BatchCompiler
 	private function parse() 
 	{
 		$data = array();
-		$source = $this->readSource();
+		$source = $this->getSource();
+		$source = $this->normalize($source);
 
 		// parse source file
 		$lines = explode("\n", $source);
@@ -136,14 +155,6 @@ class BatchCompiler
 		}
 
 		return $data;
-	}
-
-	private function readSource() 
-	{
-		// load source file
-		$source = file_get_contents($this->getSourceFileName());
-		$source = $this->normalize($source);
-		return $source;
 	}
 
 	private function normalize($source)
