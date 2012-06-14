@@ -11,7 +11,7 @@ class Request extends Base
 	{
 		$path = $_GET['path'];
 		$path = explode('/', $path);
-		$path = array_filter($path); // remove empty elements
+		if ($path[count($path) - 1] == '') array_pop($path);
 
 		if (count($path) < 1) {
 			header('Location: ' . BASE_URL . 'admin/batches');

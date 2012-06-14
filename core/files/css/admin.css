@@ -8,6 +8,12 @@ pre.codeblock {
 	border:1px solid #aaa;
 }
 
+div.steppreview {
+	padding:10px;
+	background-color:#FFFCE8;
+	border: 1px solid #9E8B00;
+}
+
 /* ==================================== Menu */
 
 ul.menu {

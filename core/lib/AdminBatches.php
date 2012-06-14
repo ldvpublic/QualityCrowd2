@@ -15,7 +15,7 @@ class AdminBatches extends AdminPage
 
 		foreach($batches as $batchId => $batch)
 		{
-			$rowTpl = new Template('admin.batchrow');
+			$rowTpl = new Template('admin.batches.row');
 			$workers = $batch->workers();
 
 			$rowTpl->set('id', $batchId);

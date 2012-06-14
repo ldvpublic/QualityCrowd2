@@ -10,9 +10,20 @@ class AdminBatch extends AdminPage
 		$myBatchCompiler = new BatchCompiler($batchId);
 		$batch = $myBatchCompiler->getBatch();
 
-		$this->tpl->set('properties', $batch->meta());
-		$this->tpl->set('steps', $batch->steps());
+		if (isset($this->path[2])) 
+		{
+			$myTpl = new Template('admin.batch.preview');
+			$stepId = $this->path[2];
+			$myTpl->set('stepid', $stepId);
+			$myTpl->set('preview', $batch->renderStep($stepId));
+		} else
+		{
+			$myTpl = new Template('admin.batch.details');
 
-		$this->tpl->set('qcs', $myBatchCompiler->getSource());		
+			$myTpl->set('properties', $batch->meta());
+			$myTpl->set('steps', $batch->steps());
+			$myTpl->set('qcs', $myBatchCompiler->getSource());
+		}
+		$this->tpl->set('content', $myTpl->render());	
 	}
 }
