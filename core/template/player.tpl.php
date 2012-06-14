@@ -4,15 +4,9 @@ $uid = uniqid();
 $swf = BASE_URL . 'core/files/flash/qcplayer.swf';
 $buttons = BASE_URL . 'core/files/img/playerbuttons.png';
 
-if (preg_match('/\.mp4$/i', $file)) {
-	$html5 = true;
-} else {
-	$html5 = false;
-}
+$html5 = preg_match('/\.mp4$/i', $file) && preg_match('/Chrome/', $_SERVER['HTTP_USER_AGENT']);
 
 ?>
-
-<input type="hidden" name="watched" value="0">
 
 <div class="video-box" style="width:<?= $width ?>px; min-height:<?= ($height + 28) ?>px;">
 	<div id="flash-fallback-<?= $uid ?>" class="flash-fallback">
@@ -24,7 +18,7 @@ if (preg_match('/\.mp4$/i', $file)) {
 		</a></p>
 	</div>
 	<?php if($html5): ?>
-	<video id="myplayer-<?= $uid ?>" width="<?= $width ?>" height="<?= $height ?>" style="display:none">
+	<video id="player-<?= $uid ?>" width="<?= $width ?>" height="<?= $height ?>" style="display:none" preload="auto">
 		<source id="mysource-<?= $uid ?>" src="" type='video/mp4; codecs="avc1.64001E"' />
 	</video>
 
@@ -42,76 +36,66 @@ if (preg_match('/\.mp4$/i', $file)) {
 
 <script type="text/javascript">
 	<?php if($html5): ?>
-	if (typeof(myPlayers) == 'undefined') {
-		myPlayers = new Object;
-	}
 	
-	myPlayers['<?= $uid ?>'] = document.getElementById('myplayer-<?= $uid ?>');
+	player<?= $uid ?> = document.getElementById('player-<?= $uid ?>');
 	
 	var t;
-	var allowPlaying = false;
 	var isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 
-	if(!supportsH264() || !isChrome) {
+	if(!supportsVideo || !supportsH264() || !isChrome) {
 		if (DetectFlashVer(10,0,0)) {
-			embedFlashPlayer();
+			embedFlashPlayer<?= $uid ?>();
 		} else {
 			$('#flash-fallback-<?= $uid ?>').show();
 		}
 	} else {
 		$('#playbutton-<?= $uid ?>').click(playPause);
-		$('#myplayer-<?= $uid ?>').click(playPause);
+		$('#player-<?= $uid ?>').click(playPause);
 
-		$('#myplayer-<?= $uid ?>').show();
+		$('#player-<?= $uid ?>').show();
 		$('#mycontrols-<?= $uid ?>').show();
 
-		$('#playbutton-<?= $uid ?>').hide();
+		$('#playbutton-<?= $uid ?>').show();
 
 		$('#mysource-<?= $uid ?>').attr('src', '<?= $file; ?>');
 		startCount();
 		$('#buftext-<?= $uid ?>').html('loading...');
-		myPlayers['<?= $uid ?>'].load();
+		player<?= $uid ?>.load();
 	}
 
 	function playPause() {
 		if ($('#playbutton-<?= $uid ?>').hasClass('playbutton')) {
-			if (allowPlaying) {
-				$('#playbutton-<?= $uid ?>').removeClass('playbutton');
-				$('#playbutton-<?= $uid ?>').addClass('pausebutton');
-				myPlayers['<?= $uid ?>'].play();
-			}
+			$('#playbutton-<?= $uid ?>').removeClass('playbutton');
+			$('#playbutton-<?= $uid ?>').addClass('pausebutton');
+			player<?= $uid ?>.play();
+			
 		} else {
 			$('#playbutton-<?= $uid ?>').removeClass('pausebutton');
 			$('#playbutton-<?= $uid ?>').addClass('playbutton');
-			myPlayers['<?= $uid ?>'].pause();
+			player<?= $uid ?>.pause();
 		}
 	}
 
 	function startCount() {
 		t = window.setInterval(function() {
 
-			if (myPlayers['<?= $uid ?>'].duration) {
-				$('#progress-<?= $uid ?>').width(myPlayers['<?= $uid ?>'].currentTime / myPlayers['<?= $uid ?>'].duration * <?= ($width - 52) ?>);
-				$('#buffered-<?= $uid ?>').width(myPlayers['<?= $uid ?>'].buffered.end(0) / myPlayers['<?= $uid ?>'].duration * <?= ($width - 52) ?>);
+			if (player<?= $uid ?>.duration) {
+				$('#progress-<?= $uid ?>').width(player<?= $uid ?>.currentTime / player<?= $uid ?>.duration * <?= ($width - 52) ?>);
+				$('#buffered-<?= $uid ?>').width(player<?= $uid ?>.buffered.end(0) / player<?= $uid ?>.duration * <?= ($width - 52) ?>);
 			
-
-				if (myPlayers['<?= $uid ?>'].buffered.end(0) > myPlayers['<?= $uid ?>'].duration * 0.9) {
-					$('#playbutton-<?= $uid ?>').show();
-					allowPlaying = true;
-				}
-				if (myPlayers['<?= $uid ?>'].buffered.end(0) >= myPlayers['<?= $uid ?>'].duration * 0.99) {
+				if (player<?= $uid ?>.buffered.end(0) >= player<?= $uid ?>.duration * 0.99) {
 					$('#buftext-<?= $uid ?>').html('');
 				} else {
-					$('#buftext-<?= $uid ?>').html('&nbsp;loading... ' + Math.round(myPlayers['<?= $uid ?>'].buffered.end(0) / myPlayers['<?= $uid ?>'].duration * 100) + '%');
+					$('#buftext-<?= $uid ?>').html(Math.round(player<?= $uid ?>.buffered.end(0) / player<?= $uid ?>.duration * 100) + '%');
 				}
 			}
 
-			if (myPlayers['<?= $uid ?>'].ended) {
+			if (player<?= $uid ?>.ended) {
 				$('#playbutton-<?= $uid ?>').removeClass('pausebutton');
 				$('#playbutton-<?= $uid ?>').addClass('playbutton');
 
 				if (typeof(onVideoComplete) == 'function') {
-					onVideoComplete('<?= $id ?>');
+					onVideoComplete('<?= $filename ?>');
 				}
 			}
 		}, 100);
@@ -122,30 +106,23 @@ if (preg_match('/\.mp4$/i', $file)) {
 	}
 
 	function supportsH264() {
-		if (!supportsVideo()) {
-			return false;
-		}
 		var v = document.createElement("video");
 		return v.canPlayType('video/mp4; codecs="avc1.64001E"');
 	}
 	<?php endif; ?>
 
-	function embedFlashPlayer() {
+	function embedFlashPlayer<?= $uid ?>() {
 		var flashvars = {};
-			flashvars.videoid = "<?= $id; ?>";
-			flashvars.video = "<?= $file; ?>";
-			flashvars.width = <?= $width ?>;
-			flashvars.height = <?= $height ?>;
-			var params = {wmode:"transparent", scale: "noscale", align:"t", salign:"tl"};
-			var attributes = {};
-			swfobject.embedSWF("<?= $swf; ?>", "flash-fallback-<?= $uid ?>", "<?= $width ?>", "<?= ($height + 28 )?>;", "10.0.0", false, flashvars, params, attributes);
-	}
-
-	function onVideoComplete(videoid) {
-		$('input[name=watched]').val(1);
+		flashvars.videoid = "<?= $filename; ?>";
+		flashvars.video = "<?= $file; ?>";
+		flashvars.width = <?= $width ?>;
+		flashvars.height = <?= $height ?>;
+		var params = {wmode:"transparent", scale: "noscale", align:"t", salign:"tl"};
+		var attributes = {};
+		swfobject.embedSWF("<?= $swf; ?>", "flash-fallback-<?= $uid ?>", "<?= $width ?>", "<?= ($height + 28 )?>;", "10.0.0", false, flashvars, params, attributes);
 	}
 	
 	<?php if(!$html5): ?>
-	embedFlashPlayer();
+	embedFlashPlayer<?= $uid ?>();
 	<?php endif; ?>
 </script>

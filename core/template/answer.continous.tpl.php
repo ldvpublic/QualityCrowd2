@@ -5,14 +5,6 @@
 
 <?php
 
-$answers = array(
-	array('value' => 5, 'text' => 'Excellent'),
-	array('value' => 4, 'text' => 'Good'),
-	array('value' => 3, 'text' => 'Fair'),
-	array('value' => 2, 'text' => 'Poor'),
-	array('value' => 1, 'text' => 'Bad'),
-);
-
 $maxVal = 0;
 $fullHeight = 180;
 

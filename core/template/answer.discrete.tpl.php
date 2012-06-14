@@ -2,14 +2,6 @@
 
 <?php
 
-$answers = array(
-	array('value' => 5, 'text' => 'Excellent'),
-	array('value' => 4, 'text' => 'Good'),
-	array('value' => 3, 'text' => 'Fair'),
-	array('value' => 2, 'text' => 'Poor'),
-	array('value' => 1, 'text' => 'Bad'),
-);
-
 foreach($answers as $row): ?>
 	<input type="radio" name="value" id="value-<?= $row['value'] ?>" value="<?= $row['value'] ?>">
 	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>"><?= $row['text'] ?></label>

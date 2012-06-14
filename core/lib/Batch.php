@@ -95,8 +95,19 @@ class Batch extends Base
 			throw new Exception('internal error');
 		}
 
-		$class = 'Step' . ucfirst($step['command']);
-		$stepObject = new $class($step);
+		switch($step['command'])
+		{
+			case 'video':
+			case 'image':
+			case 'question':
+			$stepObject = new StepQuestion($step);
+			break;
+
+			default:
+			$class = 'Step' . ucfirst($step['command']);
+			$stepObject = new $class($step);			
+		}
+
 		return $stepObject;
 	}
 

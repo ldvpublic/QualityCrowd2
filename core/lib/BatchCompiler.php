@@ -16,7 +16,7 @@ class BatchCompiler
 			'page'          => array('minArguments' => 1, 'maxArguments' => 1),
 			'video'         => array('minArguments' => 1, 'maxArguments' => 2),
 			'image'         => array('minArguments' => 1, 'maxArguments' => 1),
-			'question'      => array('minArguments' => 1, 'maxArguments' => 1),
+			'question'      => array('minArguments' => 0, 'maxArguments' => 0),
 			'showtoken'     => array('minArguments' => 0, 'maxArguments' => 0),
 			'qualification' => array('minArguments' => 1, 'maxArguments' => 1),
 			'return'        => array('minArguments' => 0, 'maxArguments' => 0),
@@ -62,12 +62,12 @@ class BatchCompiler
 			{
 				case 'global':
 				$globalProperties[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1]);
+					$this->parseValue($sourceStep['arguments'][1], $stepProperties);
 				break;
 
 				case 'set':
 				$stepProperties[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1]);
+					$this->parseValue($sourceStep['arguments'][1], $stepProperties);
 				break;
 
 				case 'unset':
@@ -85,7 +85,7 @@ class BatchCompiler
 				$batchStep['properties'] = $stepProperties;
 				foreach($sourceStep['arguments'] as $arg)
 				{
-					$batchStep['arguments'][] = $this->parseValue($arg);
+					$batchStep['arguments'][] = $this->parseValue($arg, $stepProperties, $stepProperties);
 				}
 				$batchSteps[] = $batchStep;
 			}
@@ -155,6 +155,7 @@ class BatchCompiler
 		$source = str_replace("\r\n", "\n", $source);
 		$source = preg_replace("/\n{2,}/", "\n", $source);
 		$source = preg_replace("/\n$/", '', $source);
+		$source = preg_replace("/^\n/", '', $source);
 
 		// replace tabs with spaces
 		$source = str_replace("\t", ' ', $source);
@@ -165,8 +166,14 @@ class BatchCompiler
 		return $source;
 	}
 
-	private function parseValue($value)
+	private function parseValue($value, $variables)
 	{
+		// resolve variables
+		foreach($variables as $k => $v)
+		{
+			$value = str_replace('$' . $k, $v, $value);
+		}
+
 		// find and resolve includes
 		if (preg_match('/^include\(\s*(.+)\s*\)$/', $value, $matches))
 		{

@@ -2,6 +2,7 @@
 
 abstract class Step extends Base
 {
+	protected $command;
 	protected $properties;
 	protected $arguments;
 	protected $tpl;
@@ -18,6 +19,7 @@ abstract class Step extends Base
 
 		$this->arguments = $stepArray['arguments'];
 		$this->properties = $stepArray['properties'];
+		$this->command = $stepArray['command'];
 		
 		if ($this->autoRender)
 		{

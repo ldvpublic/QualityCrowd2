@@ -1,8 +1,13 @@
-global title "QualityCrowd Example Batch"
-
 #
 # An example for a QC-Script
 #
+
+global title "QualityCrowd Example Batch"
+set fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent"
+
+#
+# The Steps
+# 
 
 set title "Welcome"
 page include(page.welcome.html)
@@ -12,20 +17,29 @@ qualification example-qualification
 #set skipvalidation
 
 set answermode discrete
+set answers $fivepoints
 set question "Please rate the ""visual"" image quality"
 set title "Image quality"
 image lena.png
+
 image lena-bad.png
 
+set answermode discrete
+set answers "1: A woman; 2: A man; 3: Two women; 4: An elephant"
+set question "What did you see in the last image?"
+question
+
 set answermode continous
+set answers $fivepoints
 set question "Please rate the visual video quality"
 set title "Video quality"
-video foreman.mp4
+#video foreman.mp4
+
 video foreman_plr5.mp4 foreman.mp4
 
 set question "Please rate the acoustic quality"
 video foreman_plr10.mp4
-#video foreman_plr0.4.mp4
+video foreman_plr0.4.mp4
 
 set title "Done"
 showtoken

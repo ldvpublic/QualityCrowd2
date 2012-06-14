@@ -2,8 +2,6 @@
 
 class StepQualification extends Step
 {
-	//protected $autoRender = false;
-
 	protected function init() 
 	{
 		$qualiBatch = $this->arguments[0];
