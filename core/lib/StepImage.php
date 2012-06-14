@@ -39,7 +39,7 @@ class StepImage extends Step
 		}
 
 		// prerender answer-form
-		$tpl = new Template('answer-' . $answermode);
+		$tpl = new Template('answer.' . $answermode);
 		$answerform = $tpl->render();
 		$this->tpl->set('answerform', $answerform);
 

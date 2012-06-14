@@ -49,7 +49,7 @@ class StepVideo extends Step
 
 		// set answer template
 		$answermode = $this->properties['answermode'];
-		if (!Template::exists('answer-' . $answermode)) {
+		if (!Template::exists('answer.' . $answermode)) {
 			$answermode = 'continous';
 		}
 
