@@ -14,7 +14,9 @@ var fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent; 6: Wow!"
 set title "Welcome"
 page include(page.welcome.html)
 
+set text "You have passed the qualification test! Now you can start working on the real task."
 qualification example-qualification
+unset text
 
 #set skipvalidation
 
@@ -44,4 +46,5 @@ video foreman_plr10.mp4
 video foreman_plr0.4.mp4
 
 set title "Done"
+set text "You have finished the task!"
 showtoken

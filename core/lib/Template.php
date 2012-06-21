@@ -46,7 +46,8 @@ class Template
 			$$key = $value;
 		}
 		
-		ob_start();			
+		ob_start();
+		require_once('templateHelpers.php');
 		require(TEMPLATE_PATH . $this->name . '.tpl.php');
 		$o = ob_get_contents();
 		ob_end_clean();

@@ -14,7 +14,7 @@
 	<tr class="step">
 		<td class="number" rowspan="<?= (count($v['properties']) + 1) ?>"><?= ($k + 1) ?></td>
 		<td class="command"><?= $v['command'] ?></td>
-		<td class="argument"><?= strip_tags(implode(' &nbsp; &nbsp; ', $v['arguments'])) ?></td>
+		<td class="argument"><?= trimText(implode(' &nbsp; &nbsp; ', $v['arguments']), 70) ?></td>
 		<td class="argument"><a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/<?= $k ?>">Preview</a></td>
 	</tr>
 	<?php 
@@ -22,7 +22,7 @@
 	foreach($v['properties'] as $pk => $pv): ?>
 	<tr class="property">
 		<td class="property-key"><?= $pk ?></td>
-		<td class="property-value" colspan="2"><?= strip_tags($pv) ?></td>
+		<td class="property-value" colspan="2"><?= trimText($pv, 90) ?></td>
 	</tr>
 	<?php endforeach; ?>
 <?php endforeach; ?>

@@ -99,6 +99,9 @@ Defines a question text that is displayed in all steps containing a question (`i
 	set skipvalidation
 Disables the validation of the answer values. The main purpose of this flag is to allow quick testing of the script during development.
 
+### text
+	set text <text>
+
 ### title
 	set title <text>
 Sets the title of a step page to `<text>`; will be displayed as page heading on all pages.

@@ -11,7 +11,7 @@ class StepQuestion extends Step
 	{
 		$msg = array();
 
-		if (!$this->properties['skipvalidation']) {
+		if (!isset($this->properties['skipvalidation'])) {
 			if ($this->command == 'video' && 
 				(!isset($data['watched']) || $data['watched'] <> true))
 			{

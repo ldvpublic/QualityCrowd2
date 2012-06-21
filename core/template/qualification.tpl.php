@@ -1,1 +1,1 @@
-<p>You have passed the qualification test! Now you can start working on the real task.</p>
+<p><?= $text ?></p>

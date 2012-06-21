@@ -1,3 +1,5 @@
+<p><?= $text ?></p>
+
 <?php foreach($videos as $k => $v): ?>
 	<?= $v ?>
 <?php endforeach; ?>

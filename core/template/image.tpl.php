@@ -1,3 +1,5 @@
+<p><?= $text ?></p>
+
 <p>
 <img src="<?= $image ?>" alt="">
 </p>

@@ -6,7 +6,8 @@
 <script>
 	var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
 		lineNumbers: true,
-		theme: 'ambiance'
+		theme: 'ambiance',
+		lineWrapping: true
 	});
 
 	$('#button_save').click(function() {$('#qcsform').trigger('submit');});

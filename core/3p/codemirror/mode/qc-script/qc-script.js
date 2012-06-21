@@ -1,7 +1,7 @@
 CodeMirror.defineMode("qc-script", function() {
 	var regexBuiltin = /^(meta|set|unset|var)$/m;
 	var regexKeyword = /^(page|video|image|question|showtoken|qualification|return)$/m;
-    var regexAttribute = /^(title|description|comment|answermode|answers|question|title)$/m;
+    var regexAttribute = /^(title|description|comment|answermode|answers|question|title|text|mediaurl)$/m;
     var regexSpecial = /^(include)$/m;
 
 	return {
