@@ -4,9 +4,8 @@
 *.sublime-workspace
 
 core/tmp/batch-cache/*.txt
-data/*
-media/*.mp4
-media/*.png
+data
+media
+media
 
-!*.empty
-
+.htaccess

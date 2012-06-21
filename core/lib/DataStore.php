@@ -1,18 +1,13 @@
 <?php
 
-class DataStore
+class DataStore extends Base
 {
-	private $registry;
-
-	public function __construct() {
-		$this->registry = Registry::getInstance();
-	}
-
 	public function write($filename, $data)
 	{
 		$file = $this->getDataPath() . $filename . '.txt';
 		$data = serialize($data);
 		file_put_contents($file, $data);
+		chmod($file, $this->getConfig('filePermissions'));
 	}
 
 	public function read($filename, $default = null, $batchId = '')
@@ -38,6 +33,7 @@ class DataStore
 			fputcsv($fh, $row);
 		}
 		fclose($fh);
+		chmod($file, $this->getConfig('filePermissions'));
 	}
 
 	public function delete($file = '')
@@ -74,13 +70,15 @@ class DataStore
 		$path = DATA_PATH . $batchId;
 		if (!file_exists($path))
 		{
-			mkdir($path, 0700);
+			mkdir($path, $this->getConfig('dirPermissions'));
+			chmod($path, $this->getConfig('dirPermissions'));
 		}
 
 		$path .= '/' . $workerId;
 		if (!file_exists($path))
 		{
-			mkdir($path, 0700);
+			mkdir($path, $this->getConfig('dirPermissions'));
+			chmod($path, $this->getConfig('dirPermissions'));
 		}
 
 		$path .= '/';

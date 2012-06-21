@@ -10,4 +10,7 @@ return array(
 	'admin' => sha1('admin' . $securitySalt)
 ),
 
+'filePermissions' => 0666,
+'dirPermissions' => 0777,
+
 );

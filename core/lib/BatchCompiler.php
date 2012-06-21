@@ -1,6 +1,6 @@
 <?php
 
-class BatchCompiler
+class BatchCompiler extends Base
 {
 	private $batchId;
 	private $commands;
@@ -39,7 +39,9 @@ class BatchCompiler
 		if ($source <> '')
 		{
 			$this->source = $source;
-			file_put_contents($this->getSourceFileName(), $source);
+			$file = $this->getSourceFileName();
+			file_put_contents($file, $source);
+			chmod($file, $this->getConfig('filePermissions'));
 		}
 	}
 
@@ -59,8 +61,13 @@ page "Hello World"
 
 EOT;
 		$path = BATCH_PATH . $this->batchId;
+		$file = $path . '/definition.qcs';
+
 		mkdir($path);
-		file_put_contents($path . '/definition.qcs', $defaultQCS); 
+		chmod($path, $this->getConfig('dirPermissions'));
+
+		file_put_contents($file, $defaultQCS); 
+		chmod($file, $this->getConfig('filePermissions'));
 	}
 
 	public function getBatch()
@@ -77,7 +84,9 @@ EOT;
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
-			file_put_contents($this->getCacheFileName(), serialize($myBatch2));
+			$file = $this->getCacheFileName();
+			file_put_contents($file, serialize($myBatch2));
+			chmod($file, $this->getConfig('filePermissions'));
 		} else
 		{
 			$myBatch = file_get_contents($this->getCacheFileName());

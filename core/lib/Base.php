@@ -9,7 +9,9 @@ abstract class Base
 	public function __construct()
 	{
 		$this->registry = Registry::getInstance();
-		$this->store = new DataStore();
+
+		if (get_class($this) <> 'DataStore')
+			$this->store = new DataStore();
 
 		if (!is_array(self::$config))
 		{
@@ -20,13 +22,17 @@ abstract class Base
 	public function __sleep() 
 	{
 		$this->registry = null;
-		$this->store = null;
+
+		if (get_class($this) <> 'DataStore')
+			$this->store = null;
 	}
 	
 	public function __wakeup() 
 	{
 		$this->registry = Registry::getInstance();
-		$this->store = new DataStore();
+
+		if (get_class($this) <> 'DataStore')
+			$this->store = new DataStore();
 	}
 
 	protected function getConfig($key)
