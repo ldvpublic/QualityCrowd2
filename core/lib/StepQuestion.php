@@ -49,7 +49,7 @@ class StepQuestion extends Step
 	private function prepareImage()
 	{
 		$img = $this->arguments[0];
-		$this->tpl->set('image', MEDIA_URL . $img);
+		$this->tpl->set('image', $this->getMediaUrl() . $img);
 	}
 
 	private function prepareVideo()
@@ -60,7 +60,7 @@ class StepQuestion extends Step
 		foreach ($this->arguments as $video)
 		{
 			$tpl = new Template('player');
-			$tpl->set('file', MEDIA_URL . $video);
+			$tpl->set('file', $this->getMediaUrl() . $video);
 			$tpl->set('filename', $video);
 			$tpl->set('width', 352);
 			$tpl->set('height', 288);
@@ -97,5 +97,16 @@ class StepQuestion extends Step
 		$tpl->set('answers', $answers);
 		$answerform = $tpl->render();
 		$this->tpl->set('answerform', $answerform);
+	}
+
+	private function getMediaUrl()
+	{
+		$mediaUrl = MEDIA_URL;
+		if (isset($this->properties['mediaurl']) && $this->properties['mediaurl'] <> '')
+		{
+			$mediaUrl = $this->properties['mediaurl'];
+		}
+
+		return $mediaUrl;
 	}
 }

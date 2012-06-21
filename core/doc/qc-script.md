@@ -88,6 +88,9 @@ Used properties: `answermode`, `question`, `skipvalidation`, `title`
 ### answers
 	set answers "1: first answer; 2: second answer [;...]"
 
+### mediaurl
+	set mediaurl "http://example.com/path/"
+
 ### question
 	set question <text>
 Defines a question text that is displayed in all steps containing a question (`image`, `video`, ...) right above the answer form.
