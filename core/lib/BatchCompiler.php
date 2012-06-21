@@ -4,13 +4,14 @@ class BatchCompiler
 {
 	private $batchId;
 	private $commands;
+	private $source;
 
 	public function __construct($batchId) 
 	{
 		$this->batchId = $batchId;
 
 		$this->commands = array(
-			'meta'        => array('minArguments' => 1, 'maxArguments' => 2),
+			'meta'          => array('minArguments' => 1, 'maxArguments' => 2),
 			'set'           => array('minArguments' => 1, 'maxArguments' => 2),
 			'var'           => array('minArguments' => 2, 'maxArguments' => 2),
 			'unset'         => array('minArguments' => 1, 'maxArguments' => 1),
@@ -26,17 +27,45 @@ class BatchCompiler
 
 	public function getSource() 
 	{
-		static $source = '';
 		// load source file
-		if ($source == '')
-			$source = file_get_contents($this->getSourceFileName());
+		if ($this->source == '')
+			$this->source = file_get_contents($this->getSourceFileName());
 
-		return $source;
+		return $this->source;
+	}
+
+	public function setSource($source)
+	{
+		if ($source <> '')
+		{
+			$this->source = $source;
+			file_put_contents($this->getSourceFileName(), $source);
+		}
+	}
+
+	public function exists()
+	{
+		return file_exists($this->getSourceFileName());
+	}
+
+	public function create()
+	{
+		$defaultQCS = <<<'EOT'
+meta title "New Batch"
+meta description "New batch description"
+
+set title "New Batch"
+page "Hello World"
+
+EOT;
+		$path = BATCH_PATH . $this->batchId;
+		mkdir($path);
+		file_put_contents($path . '/definition.qcs', $defaultQCS); 
 	}
 
 	public function getBatch()
 	{
-		if (!file_exists($this->getSourceFileName()))
+		if (!$this->exists())
 		{
 			throw new Exception('Batch with id "' . $this->batchId . '" not found');
 		}

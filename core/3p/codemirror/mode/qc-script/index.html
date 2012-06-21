@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CodeMirror: QC-Script mode</title>
+    <link rel="stylesheet" href="../../lib/codemirror.css">
+    <script src="../../lib/codemirror.js"></script>
+    <script src="qc-script.js"></script>
+    <link rel="stylesheet" href="../../doc/docs.css">
+    <style type="text/css">.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
+  </head>
+  <body>
+    <h1>CodeMirror: QC-Script mode</h1>
+
+<div><textarea id="code" name="code">
+meta title "New Batch"
+meta description "New batch description"
+
+set title "New Batch"
+page "Hello World"
+
+</textarea></div>
+
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        matchBrackets: true
+      });
+    </script>
+
+    <p><strong>MIME types defined:</strong> <code>text/x-qc-script</code>.</p>
+  </body>
+</html>
+

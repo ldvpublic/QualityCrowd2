@@ -28,5 +28,3 @@
 <?php endforeach; ?>
 </table>
 
-<h3>QC-Script</h3>
-<pre class="codeblock"><?= $qcs ?></pre>

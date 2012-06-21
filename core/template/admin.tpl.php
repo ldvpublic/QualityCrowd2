@@ -5,13 +5,18 @@
 
 		<title>QualityCrowd 2</title>
 
-		<link rel="stylesheet" href="<?= BASE_URL ?>core/files/css/style.css" />
-		<link rel="stylesheet" href="<?= BASE_URL ?>core/files/css/admin.css" />
-
 		<script type="text/javascript" src="<?= BASE_URL ?>core/files/js/swfobject.js"></script>
 		<script type="text/javascript" src="<?= BASE_URL ?>core/files/js/flashver.js"></script>
 		<script type="text/javascript" src="<?= BASE_URL ?>core/files/js/jquery.js"></script>
-	</head>
+
+		<link rel="stylesheet" href="<?= BASE_URL ?>core/3p/codemirror/lib/codemirror.css">
+		<link rel="stylesheet" href="<?= BASE_URL ?>core/3p/codemirror/theme/ambiance.css">
+    	<script src="<?= BASE_URL ?>core/3p/codemirror/lib/codemirror.js"></script>
+    	<script src="<?= BASE_URL ?>core/3p/codemirror/mode/qc-script/qc-script.js"></script>
+
+    	<link rel="stylesheet" href="<?= BASE_URL ?>core/files/css/style.css" />
+		<link rel="stylesheet" href="<?= BASE_URL ?>core/files/css/admin.css" />
+    </head>
 	<body>
 		<div class="header">
 			<h1>QualityCrowd</h1>

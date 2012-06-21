@@ -44,10 +44,10 @@ class Request extends Base
 		if (count($path) < 2) die('invalid URL');
 
 		// extract batch id
-		$batchId = preg_replace("/[^a-zA-Z0-9\s-]/", "", $path[0]);
+		$batchId = preg_replace("/[^a-zA-Z0-9-]/", "", $path[0]);
 
 		// extract worker id
-		$workerId = preg_replace("/[^a-zA-Z0-9\s-]/", "", $path[1]);
+		$workerId = preg_replace("/[^a-zA-Z0-9-]/", "", $path[1]);
 
 		$returnBatch = null;
 		if (isset($_GET['return']))

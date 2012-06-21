@@ -3,16 +3,25 @@ pre {
 	padding:4px;
 }
 
-pre.codeblock {
-	padding:5px 10px;
-	border:1px solid #aaa;
-}
-
 div.steppreview {
 	padding:10px;
 	background-color:#FFFCE8;
 	border: 1px solid #9E8B00;
 }
+
+/* ==================================== Editor */
+
+.CodeMirror {
+	border: 1px solid #ccc;
+}
+
+.CodeMirror-scroll {
+	height: auto;
+	overflow-y: hidden;
+	overflow-x: auto;
+	width: 100%;
+}
+
 
 /* ==================================== Menu */
 
@@ -35,6 +44,29 @@ ul.menu li a {
 	font-size:15px;
 	font-weight:bold;
 	color:#eee;
+}
+
+ul.submenu {
+	margin:-7px -15px;
+	padding:0;
+	padding-left:15px;
+	list-style-type:none;
+	border-bottom:1px solid #888;
+}
+
+ul.submenu li {
+	display:inline-block;
+	padding: 3px 7px;
+	margin-right:7px;
+	border:1px solid #888;
+	border-bottom:none;
+	background-color:#eee;
+}
+
+ul.submenu li a {
+	text-decoration: none;
+	font-size:13px;
+	color:#333;
 }
 
 /* ==================================== Step Meta List */
@@ -100,6 +132,7 @@ table.steps tr.property td {
 
 .batchrow {
 	padding:12px;
+	min-height:39px;
 }
 
 .batchrow:hover {
