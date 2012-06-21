@@ -14,13 +14,13 @@ class Request extends Base
 		if ($path[count($path) - 1] == '') array_pop($path);
 
 		if (count($path) < 1) {
-			header('Location: ' . BASE_URL . 'admin/batches');
+			header('Location: ' . BASE_URL . 'admin');
 			exit;
 		}
 
 		if ($path[0] == 'setup')
 		{
-			header('Location: ' . BASE_URL . 'admin/');
+			header('Location: ' . BASE_URL . 'admin');
 			exit;
 		}
 
@@ -28,12 +28,8 @@ class Request extends Base
 		{
 			$username = $this->login();
 
-			if (count($path) < 2) {
-				header('Location: ' . BASE_URL . 'admin/batches');
-				exit;
-			}
-
 			array_shift(&$path);
+			if (count($path) == 0) $path[] = 'batches';
 			$admin = new Admin($username, $path);
 			echo $admin->render();
 

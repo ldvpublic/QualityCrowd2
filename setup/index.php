@@ -13,12 +13,30 @@ $msg = array();
 $rootPath = preg_replace('#setup/index.php$#', '', __FILE__);
 $baseURL = preg_replace('#setup/index.php$#', '', $_SERVER['PHP_SELF']);
 
+/*
+ * check support for mod_rewrite
+ */
+
+if (function_exists('apache_get_modules')) {
+	$modules = apache_get_modules();
+	$mod_rewrite = in_array('mod_rewrite', $modules);
+} else {
+	$mod_rewrite =  getenv('HTTP_MOD_REWRITE') == 'On' ? true : false ;
+}
+
+if (!$mod_rewrite)
+{
+	$err = "mod_rewrite not available";
+	goto webpage;
+}
+$msg[] = "checked mod_rewrite support";
+
+
 /* 
  * create directories
  */
 
 $dirs = array(
-	$rootPath . 'batches',
 	$rootPath . 'data',
 	$rootPath . 'media',
 	$rootPath . 'core/tmp',
@@ -32,21 +50,22 @@ foreach($dirs as $dir)
 		$parent = dirname($dir);
 		if (!is_writable($parent))
 		{
-			$err = "'$parent' is not writable, run <code>chmod o+w $parent</code>";
+			$err = "'$parent' is not writable";
 			goto webpage;
 		}
 
-		mkdir($dir, 0777);
-		@chmod($dir, 0777);
-		$msg = array("created $dir");
+		mkdir($dir, 0755);
+		@chmod($dir, 0755);
+		$msg[] = "created $dir";
 	}
 
 	if (!is_writable($dir))
 	{
-		$err = "'$dir' is not writable, run <code>chmod o+w $dir</code>";
+		$err = "'$dir' is not writable";
 		goto webpage;
 	}
 }
+
 
 /*
  * setup other .htaccess files
@@ -54,30 +73,24 @@ foreach($dirs as $dir)
 if (!file_exists($rootPath . 'data/.htaccess'))
 {
 	file_put_contents($rootPath . 'data/.htaccess', "Deny from all\n");
-	$msg = array("written {$rootPath}data/.htaccess");
+	$msg[] = "written {$rootPath}data/.htaccess";
 }
 
 if (!file_exists($rootPath . 'batches/.htaccess'))
 {
 	file_put_contents($rootPath . 'batches/.htaccess', "Deny from all\n");
-	$msg = array("written {$rootPath}batches/.htaccess");
+	$msg[] = "written {$rootPath}batches/.htaccess";
 }
+
 
 /*
  * install example scripts
  */
-copy_r($rootPath . 'setup/example-batches', $rootPath . 'batches/');
-$msg = array("installed example batches");
-
-/*
- * check permissions for core
- */
-if (is_writable($rootPath . 'core'))
+if (!file_exists($rootPath . 'batches'))
 {
-	$err = "'{$rootPath}core' is writable";
-	goto webpage;
+	rcopy($rootPath . 'setup/example-batches', $rootPath . 'batches');
+	$msg[] = "installed example batches";
 }
-
 
 /*
  * setup main .htaccess file
@@ -86,7 +99,8 @@ if (is_writable($rootPath . 'core'))
 $htaccess = file_get_contents($rootPath . 'setup/main.htaccess');
 $htaccess = str_replace('##BASEURL##', $baseURL, $htaccess);
 file_put_contents($rootPath . '.htaccess', $htaccess);
-$msg = array("written $rootPath.htaccess");
+$msg[] = "written $rootPath.htaccess";
+
 
 /*
  * display webpage
