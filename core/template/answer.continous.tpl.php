@@ -138,7 +138,6 @@ div.slider-scale-end {
 			// nothing
 		} 
 		<?php 
-		$answers = array_reverse($answers);
 		foreach($answers as $row):
 			$val = round($row['value'] / $maxVal * 1000);
 		?>

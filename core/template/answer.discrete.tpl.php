@@ -1,7 +1,7 @@
 <input type="hidden" name="answered" value="0">
 
 <?php
-
+$answers = array_reverse($answers);
 foreach($answers as $row): ?>
 	<input type="radio" name="value" id="value-<?= $row['value'] ?>" value="<?= $row['value'] ?>">
 	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>"><?= $row['text'] ?></label>
