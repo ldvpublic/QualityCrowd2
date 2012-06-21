@@ -18,6 +18,12 @@ class Request extends Base
 			exit;
 		}
 
+		if ($path[0] == 'setup')
+		{
+			header('Location: ' . BASE_URL . 'admin/');
+			exit;
+		}
+
 		if ($path[0] == 'admin')
 		{
 			$username = $this->login();

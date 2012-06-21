@@ -1,11 +1,10 @@
-
 .DS_Store
 *.sublime-project
 *.sublime-workspace
 
-core/tmp/batch-cache/*.txt
+core/tmp
 data
 media
-media
+batches
 
 .htaccess
