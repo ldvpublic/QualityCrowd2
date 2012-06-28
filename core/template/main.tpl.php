@@ -14,7 +14,7 @@
 	<body>
 		<div class="header">
 			Step <?= ($stepId+1) ?> of <?= $stepCount ?>
-			<a href="<?= BASE_URL ?><?= $batchId ?>/<?= $workerId ?>?restart=">Restart</a>
+			<?php /*<a href="<?= BASE_URL ?><?= $batchId ?>/<?= $workerId ?>?restart=">Restart</a> */ ?>
 		</div>
 
 		<h1><?= $title ?></h1>

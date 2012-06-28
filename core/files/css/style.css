@@ -20,6 +20,16 @@ button {
 	padding:7px 20px;
 }
 
+input.token {
+	padding:10px;
+	font-size:16px;
+	font-family:monospace;
+	text-align:center;
+	background-color:#ccffcc;
+	width:200px;
+	border:2px solid;
+}
+
 ul.errormessage {
 	background-color:#ff7777;
 	padding:10px;

@@ -1,3 +1,3 @@
 <p><?= $text ?></p>
 
-<p>Your token is <?= $token ?></p>
+<input readonly="readonly" class="token" value="xy<?= $token ?>yx" />
