@@ -7,7 +7,7 @@ return array(
 'securitySalt' => $securitySalt,
 
 'adminUsers' => array(
-	'admin' => sha1('admin' . $securitySalt)
+	'admin' => sha1('password' . $securitySalt)
 ),
 
 'filePermissions' => 0666,
