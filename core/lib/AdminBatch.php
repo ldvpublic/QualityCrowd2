@@ -34,6 +34,12 @@ class AdminBatch extends AdminPage
 				$myTpl->set('qcs', $myBatchCompiler->getSource());
 				break;
 
+			case 'results':
+				$myTpl = new Template('admin.batch.results');
+				$myTpl->set('steps', $batch->steps());
+				$myTpl->set('workers', $batch->workers(true));
+				break;
+
 			default:
 				if (is_numeric($this->path[2]))
 				{

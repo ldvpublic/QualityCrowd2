@@ -10,9 +10,21 @@ class DataStore extends Base
 		chmod($file, $this->getConfig('filePermissions'));
 	}
 
-	public function read($filename, $default = null, $batchId = '')
+	public function writeCSV($filename, $data)
 	{
-		$file = $this->getDataPath($batchId) . $filename . '.txt';
+		$file = $this->getDataPath() . $filename . '.csv';
+		$fh = fopen($file, 'a');
+		foreach($data as $row)
+		{
+			fputcsv($fh, $row);
+		}
+		fclose($fh);
+		chmod($file, $this->getConfig('filePermissions'));
+	}
+
+	public function read($filename, $default = null, $batchId = '', $workerId = '')
+	{
+		$file = $this->getDataPath($batchId, $workerId) . $filename . '.txt';
 		if (file_exists($file))
 		{
 			$data = file_get_contents($file);
@@ -24,16 +36,20 @@ class DataStore extends Base
 		}
 	}
 
-	public function writeCSV($filename, $data)
+	public function readCSV($filename, $batchId = '', $workerId = '')
 	{
-		$file = $this->getDataPath() . $filename . '.csv';
-		$fh = fopen($file, 'a');
-		foreach($data as $row)
+		$file = $this->getDataPath($batchId, $workerId) . $filename . '.csv';
+		if (!file_exists($file)) return null;
+
+		$rows = array();
+		$fh = fopen($file, 'r');
+		while($row = fgetcsv($fh))
 		{
-			fputcsv($fh, $row);
+			$rows[] = $row;
 		}
 		fclose($fh);
-		chmod($file, $this->getConfig('filePermissions'));
+
+		return $rows;
 	}
 
 	public function delete($file = '')
@@ -58,14 +74,17 @@ class DataStore extends Base
 		}
 	}
 
-	private function getDataPath($batchId = '') 
+	private function getDataPath($batchId = '', $workerId = '') 
 	{
 		if ($batchId == '')
 		{
 			$batchId = $this->registry->get('batchId');
 		}
 
-		$workerId = $this->registry->get('workerId');
+		if ($workerId == '')
+		{
+			$workerId = $this->registry->get('workerId');
+		}
 
 		$path = DATA_PATH . $batchId;
 		if (!file_exists($path))

@@ -82,16 +82,24 @@ class Batch extends Base
 		return $this->steps;
 	}
 
-	public function workers()
+	public function workers($includeResults = false)
 	{
+		$store = new DataStore();
 		$workers = array();
 		$path = DATA_PATH . $this->batchId . '/';
 		$files = glob($path . '*', GLOB_MARK);
 	    foreach ($files as $file) 
 	    {
 	    	$file = preg_replace('#^' . $path . '#', '', $file);
-	    	$file = preg_replace('#/$#', '', $file);
-	    	$workers[$file] = $file;
+	    	$wid = preg_replace('#/$#', '', $file);
+
+	    	$meta = $store->read('meta', null, $this->batchId, $wid);
+	    	$workers[$wid] = $meta;
+
+	    	if ($includeResults)
+	    	{
+	    		$workers[$wid]['results'] = $store->readCSV('results', $this->batchId, $wid);
+	    	}
 	    }
 
 	    return $workers;
@@ -122,19 +130,6 @@ class Batch extends Base
 		return $stepObject;
 	}
 
-	private function collectMetaData()
-	{
-		$meta = array(
-			array('workerId', $this->registry->get('workerId')),
-			array('token', $this->registry->get('token')),
-			array('timestamp', time()),
-			array('remoteaddr', md5($_SERVER['REMOTE_ADDR'])),
-			array('useragent', $_SERVER['HTTP_USER_AGENT']),
-		);
-
-		$this->store->writeCSV('meta', $meta);
-	}
-
 	private function generateToken() 
 	{
 		$token = $this->getConfig('securitySalt') . '-'; 
@@ -148,6 +143,18 @@ class Batch extends Base
 		$token = substr($token, 20);
 
 		$this->registry->set('token', $token);
-		$this->store->write('token', $token);
+	}
+
+	private function collectMetaData()
+	{
+		$meta = array(
+			'workerId' 		=> $this->registry->get('workerId'),
+			'token' 		=> $this->registry->get('token'),
+			'timestamp' 	=> time(),
+			'remoteaddr' 	=> md5($_SERVER['REMOTE_ADDR']),
+			'useragent' 	=> $_SERVER['HTTP_USER_AGENT'],
+		);
+
+		$this->store->write('meta', $meta);
 	}
 }

@@ -6,8 +6,8 @@ class StepShowtoken extends Step
 	
 	protected function prepareRender()
 	{
-		$token = $this->store->read('token');
-		$this->tpl->set('token', $token);
+		$meta = $this->store->read('meta');
+		$this->tpl->set('token', $meta['token']);
 	}
 
 	public function validate(&$data) 
