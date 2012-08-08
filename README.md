@@ -62,7 +62,7 @@ following paper in your publication:
 > A Framework for Crowd-based Quality Evaluation," in Picture Coding <br />
 > Symposium 2012 (PCS 2012), May 2012, pp. 245-248
 
- - Preprint: https://mediatum.ub.tum.de/doc/1098077/1098077.pdf
- - BibTeX: https://mediatum.ub.tum.de/export/1098077/bibtex
+ - Preprint: https://mediatum.ub.tum.de/doc/1098076/1098076.pdf
+ - BibTeX: https://mediatum.ub.tum.de/export/1098076/bibtex
 
 For the full license see the LICENSE file.
