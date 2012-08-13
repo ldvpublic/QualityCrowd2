@@ -1,4 +1,7 @@
 <?php
+// TODO: fix all these annoying notices...
+error_reporting(E_ALL ^ E_NOTICE);
+
 // handle the funny windows backslash
 //   DS is the directory separator
 //   DSX is the escaped DS for the use in a PCRE
