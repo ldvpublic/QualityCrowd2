@@ -1,17 +1,23 @@
 <?php
+// handle the funny windows backslash
+//   DS is the directory separator
+//   DSX is the escaped DS for the use in a PCRE
+define('DS', DIRECTORY_SEPARATOR);
+define('DSX', preg_quote(DS));
 
-$rootPath = preg_replace('#core/lib/bootstrap.php$#', '', __FILE__);
+// calculate root path
+$rootPath = preg_replace('#core' . DSX . 'lib' . DSX . 'bootstrap.php$#', '', __FILE__);
 
 // read config file
-$cf = require($rootPath . 'core/config.php');
+$cf = require($rootPath . 'core' . DS . 'config.php');
 
 define('ROOT_PATH', $rootPath);
-define('BATCH_PATH', $rootPath . 'batches/');
-define('DATA_PATH', $rootPath . 'data/');
-define('MEDIA_PATH', $rootPath . 'media/');
-define('LIB_PATH', $rootPath . 'core/lib/');
-define('TMP_PATH', $rootPath . 'core/tmp/');
-define('TEMPLATE_PATH', $rootPath . 'core/template/');
+define('BATCH_PATH', $rootPath . 'batches' . DS);
+define('DATA_PATH', $rootPath . 'data' . DS);
+define('MEDIA_PATH', $rootPath . 'media' . DS);
+define('LIB_PATH', $rootPath . 'core' . DS . 'lib' . DS);
+define('TMP_PATH', $rootPath . 'core' . DS . 'tmp' . DS);
+define('TEMPLATE_PATH', $rootPath . 'core' . DS . 'template' . DS);
 
 $baseURL = 'http://' . $_SERVER['HTTP_HOST'];
 $baseURL .= preg_replace('#core/index.php$#', '', $_SERVER['PHP_SELF']);

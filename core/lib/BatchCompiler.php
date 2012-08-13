@@ -61,7 +61,7 @@ page "Hello World"
 
 EOT;
 		$path = BATCH_PATH . $this->batchId;
-		$file = $path . '/definition.qcs';
+		$file = $path . DS . 'definition.qcs';
 
 		mkdir($path);
 		chmod($path, $this->getConfig('dirPermissions'));
@@ -227,8 +227,10 @@ EOT;
 		if (preg_match('/^include\(\s*(.+)\s*\)$/', $value, $matches))
 		{
 			$inc = $matches[1];
+			$inc = str_replace('/', DS, $inc);
+			$inc = str_replace('\\', DS, $inc);
 			
-			$file = BATCH_PATH . $this->batchId . '/' . $inc;
+			$file = BATCH_PATH . $this->batchId . DS . $inc;
 			if (file_exists($file))
 			{
 				$value = file_get_contents($file);
@@ -240,11 +242,11 @@ EOT;
 
 	private function getSourceFileName()
 	{
-		return BATCH_PATH . $this->batchId . '/definition.qcs';
+		return BATCH_PATH . $this->batchId . DS .'definition.qcs';
 	}
 
 	private function getCacheFileName()
 	{
-		return TMP_PATH . 'batch-cache/' . $this->batchId . '.txt';
+		return TMP_PATH . 'batch-cache' . DS . $this->batchId . '.txt';
 	}
 }

@@ -15,7 +15,7 @@ abstract class Base
 
 		if (!is_array(self::$config))
 		{
-			self::$config = require(ROOT_PATH . 'core/config.php');
+			self::$config = require(ROOT_PATH . 'core'.DS.'config.php');
 		}
 	}
 

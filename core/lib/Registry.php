@@ -32,6 +32,7 @@ final class Registry
 
 	public function get($key)
 	{
+		if (!array_key_exists($key, $this->data)) return null;
 		return $this->data[$key];
 	}
 

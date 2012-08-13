@@ -28,7 +28,7 @@ class Request extends Base
 		{
 			$username = $this->login();
 
-			array_shift(&$path);
+			array_shift($path);
 			if (count($path) == 0) $path[] = 'batches';
 			$admin = new Admin($username, $path);
 			echo $admin->render();

@@ -84,6 +84,8 @@ class Main extends Base
 
 	private function handlePostData()
 	{
+		$msg = '';
+		
 		if (!isset($_POST['stepId']))
 		{
 			if ($this->lastStepId < 0) return;

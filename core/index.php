@@ -1,7 +1,5 @@
 <?php
-require_once('lib/bootstrap.php');
-
-//header('Content-Type: text/plain');
+require_once('lib'.DIRECTORY_SEPARATOR.'bootstrap.php');
 
 $req = new Request();
 $req->process();

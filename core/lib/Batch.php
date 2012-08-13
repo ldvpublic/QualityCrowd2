@@ -36,7 +36,7 @@ class Batch extends Base
 	{
 		// validate data
 		$stepObject = $this->getStepObject($stepId);
-		$msg = $stepObject->validate(&$data);
+		$msg = $stepObject->validate($data);
 
 		// save result data to csv file
 		if ($msg === true) {
@@ -86,12 +86,12 @@ class Batch extends Base
 	{
 		$store = new DataStore();
 		$workers = array();
-		$path = DATA_PATH . $this->batchId . '/';
+		$path = DATA_PATH . $this->batchId . DS;
 		$files = glob($path . '*', GLOB_MARK);
 	    foreach ($files as $file) 
 	    {
-	    	$file = preg_replace('#^' . $path . '#', '', $file);
-	    	$wid = preg_replace('#/$#', '', $file);
+	    	$file = preg_replace('#^' . preg_quote($path) . '#', '', $file);
+	    	$wid = preg_replace('#'.DSX.'$#', '', $file);
 
 	    	$meta = $store->read('meta', null, $this->batchId, $wid);
 	    	$workers[$wid] = $meta;

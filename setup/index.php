@@ -1,17 +1,28 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
-ini_set('display_errors','On');
+ini_set('display_errors', 'On');
 
 require('fstools.php');
 
+// initialize variables for the error messages through the setup process
 $err = '';
 $msg = array();
 
 /*
  * Determine paths and URLs
  */
-$rootPath = preg_replace('#setup/index.php$#', '', __FILE__);
+$rootPath = preg_replace('#setup' . DSX . 'index.php$#', '', __FILE__);
 $baseURL = preg_replace('#setup/index.php$#', '', $_SERVER['PHP_SELF']);
+
+/*
+ * check PHP config
+ */
+if (ini_get('short_open_tag') == '' && version_compare(PHP_VERSION, '5.4.0', '<'))
+{
+	$err = "enable 'short_open_tag' in your PHP configuration or update to PHP 5.4.0 or later";
+	goto webpage;
+}
+$msg[] = "checked PHP configuration";
 
 /*
  * check support for mod_rewrite
@@ -31,7 +42,6 @@ if (!$mod_rewrite)
 }
 $msg[] = "checked mod_rewrite support";
 
-
 /* 
  * create directories
  */
@@ -39,8 +49,8 @@ $msg[] = "checked mod_rewrite support";
 $dirs = array(
 	$rootPath . 'data',
 	$rootPath . 'media',
-	$rootPath . 'core/tmp',
-	$rootPath . 'core/tmp/batch-cache',
+	$rootPath . 'core' . DS . 'tmp',
+	$rootPath . 'core' . DS . 'tmp' . DS . 'batch-cache',
 );
 
 foreach($dirs as $dir)
@@ -66,29 +76,12 @@ foreach($dirs as $dir)
 	}
 }
 
-
-/*
- * setup other .htaccess files
- */
-if (!file_exists($rootPath . 'data/.htaccess'))
-{
-	file_put_contents($rootPath . 'data/.htaccess', "Deny from all\n");
-	$msg[] = "written {$rootPath}data/.htaccess";
-}
-
-if (!file_exists($rootPath . 'batches/.htaccess'))
-{
-	file_put_contents($rootPath . 'batches/.htaccess', "Deny from all\n");
-	$msg[] = "written {$rootPath}batches/.htaccess";
-}
-
-
 /*
  * install example scripts
  */
 if (!file_exists($rootPath . 'batches'))
 {
-	rcopy($rootPath . 'setup/example-batches', $rootPath . 'batches');
+	rcopy($rootPath . 'setup' . DS . 'example-batches', $rootPath . 'batches');
 	$msg[] = "installed example batches";
 }
 
@@ -96,10 +89,25 @@ if (!file_exists($rootPath . 'batches'))
  * setup main .htaccess file
  */
 
-$htaccess = file_get_contents($rootPath . 'setup/main.htaccess');
+$htaccess = file_get_contents($rootPath . 'setup' . DS . 'main.htaccess');
 $htaccess = str_replace('##BASEURL##', $baseURL, $htaccess);
 file_put_contents($rootPath . '.htaccess', $htaccess);
 $msg[] = "written $rootPath.htaccess";
+
+/*
+ * setup other .htaccess files
+ */
+if (!file_exists($rootPath . 'data' . DS . '.htaccess'))
+{
+	file_put_contents($rootPath . 'data' . DS . '.htaccess', "Deny from all\n");
+	$msg[] = "written {$rootPath}data" . DS . ".htaccess";
+}
+
+if (!file_exists($rootPath . 'batches' . DS . '.htaccess'))
+{
+	file_put_contents($rootPath . 'batches' . DS . '.htaccess', "Deny from all\n");
+	$msg[] = "written {$rootPath}batches" . DS . ".htaccess";
+}
 
 
 /*

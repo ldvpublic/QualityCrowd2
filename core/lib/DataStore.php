@@ -93,14 +93,14 @@ class DataStore extends Base
 			chmod($path, $this->getConfig('dirPermissions'));
 		}
 
-		$path .= '/' . $workerId;
+		$path .= DS . $workerId;
 		if (!file_exists($path))
 		{
 			mkdir($path, $this->getConfig('dirPermissions'));
 			chmod($path, $this->getConfig('dirPermissions'));
 		}
 
-		$path .= '/';
+		$path .= DS;
 
 		return $path;
 	}

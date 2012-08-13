@@ -19,7 +19,7 @@
 
 		<h1><?= $title ?></h1>
 
-		<?php if (is_array($msg)):?>
+		<?php if (isset($msg) && is_array($msg)):?>
 		<ul class="errormessage">
 			<?php foreach($msg as $m): ?>
 			<li><?= $m ?></li>

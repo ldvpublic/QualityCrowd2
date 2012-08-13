@@ -37,7 +37,7 @@ class AdminBatches extends AdminPage
 		$files = glob(BATCH_PATH . '*/definition.qcs', GLOB_MARK);
 	    foreach ($files as $file) 
 	    {
-	    	$file = preg_replace('#^' . BATCH_PATH . '#', '', $file);
+	    	$file = preg_replace('#^' . preg_quote(BATCH_PATH) . '#', '', $file);
 	    	$file = preg_replace('#/definition.qcs$#', '', $file);
 	    	
 	    	$myBatchCompiler = new BatchCompiler($file);
