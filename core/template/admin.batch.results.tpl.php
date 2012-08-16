@@ -7,10 +7,12 @@ require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_plotli
 // prepare workers graph
 $dataY = array();
 $labelsX = array();
+$finished = 0;
 foreach($steps as $stepId => &$step)
 {
 	$dataY[] = $step['workers'];
 	$labelsX[] = ($stepId + 1);
+	$finished = $step['workers'];
 }
 
 // setup the graph
@@ -22,12 +24,7 @@ $theme_class = new UniversalTheme;
 $graph->SetTheme($theme_class);
 $graph->img->SetAntiAliasing(true);
 $graph->SetBox(false);
-$graph->SetMargin(50,5,50,45);
-
-$graph->title->SetFont(FF_FONT2,FS_BOLD,12);
-$graph->title->Set("Workers per Step");
-$graph->subtitle->SetFont(FF_FONT1,FS_NORMAL,8);
-$graph->subtitle->Set("Batch: " . $id);
+$graph->SetMargin(50,5,5,45);
 
 $graph->yaxis->HideLine(false);
 $graph->yaxis->HideTicks(false, false);
@@ -45,6 +42,10 @@ $p1 = new BarPlot($dataY);
 $graph->Add($p1);
 $p1->SetColor("olivedrab3");
 $p1->SetFillGradient('olivedrab1','olivedrab4',GRAD_VERT);
+
+// plot finished lines
+$pF = new PlotLine(HORIZONTAL, $finished, 'olivedrab4', 1);
+$graph->Add($pF);
 
 // output graph to temp file
 $graph->Stroke(TMP_PATH.'img-cache'.DS.'workers-'.$id.'.png');
@@ -108,7 +109,7 @@ foreach($steps as $stepId => &$step)
 
 ?>
 
-<h3>Workers</h3>
+<h3>Workers per Step</h3>
 
 <img src="<?= BASE_URL.'core/tmp/img-cache/workers-'.$id.'.png' ?>">
 

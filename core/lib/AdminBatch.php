@@ -36,6 +36,16 @@ class AdminBatch extends AdminPage
 				$myTpl->set('qcs', $myBatchCompiler->getSource());
 				break;
 
+			case 'validate':
+				$myTpl = new Template('admin.batch.validate');
+
+				$workerId = (isset($_GET['workerid']) ? $_GET['workerid'] : '');
+				$workerId = preg_replace("/[^a-zA-Z0-9-]/", "", $workerId);
+				$result = $batch->getWorker($workerId);
+				$myTpl->set('result', $result);
+				$myTpl->set('query', $workerId);
+				break;
+
 			case 'results':
 				$myTpl = new Template('admin.batch.results');
 				$myTpl->set('steps', $batch->resultsPerStep());

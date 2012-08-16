@@ -22,6 +22,12 @@ div.steppreview {
 	width: 100%;
 }
 
+/* ==================================== Form */
+
+input {
+	font-size:13px;
+	padding:4px;
+}
 
 /* ==================================== Menu */
 
@@ -78,7 +84,7 @@ ul.submenu li a {
 	color:#333;
 }
 
-/* ==================================== Step Meta List */
+/* ==================================== Meta Table */
 
 table.meta {
 	border-collapse:collapse;
@@ -98,7 +104,7 @@ table.meta td {
 	padding:4px 15px;
 }
 
-/* ==================================== Step List */
+/* ==================================== Step Table */
 
 table.steps {
 	border-collapse:collapse;

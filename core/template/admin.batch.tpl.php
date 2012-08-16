@@ -7,6 +7,9 @@
 	<li <?= ($subpage == 'edit' ? 'class="active"' : '') ?>>
 		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/edit">Edit</a>
 	</li>
+	<li <?= ($subpage == 'validate' ? 'class="active"' : '') ?>>
+		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/validate">Validate Worker</a>
+	</li>
 	<li <?= ($subpage == 'results' ? 'class="active"' : '') ?>>
 		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/results">Results</a>
 	</li>

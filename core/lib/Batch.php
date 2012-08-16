@@ -82,6 +82,18 @@ class Batch extends Base
 		return $this->steps;
 	}
 
+	public function getWorker($wid)
+	{
+		$store = new DataStore();
+		$meta = $store->read('meta', null, $this->batchId, $wid);
+		if (is_array($meta)) {
+    		$meta['stepId'] = $store->read('stepId', null, $this->batchId, $wid);
+    		$meta['finished'] = ($meta['stepId'] == $this->countSteps() - 1);
+    	}
+
+    	return $meta;
+	}
+
 	public function workers($includeResults = false)
 	{
 		$store = new DataStore();
@@ -94,10 +106,9 @@ class Batch extends Base
 	    	$wid = preg_replace('#'.DSX.'$#', '', $file);
 
 	    	$meta = $store->read('meta', null, $this->batchId, $wid);
-	    	$workers[$wid] = $meta;
-
-	    	$stepId = $store->read('stepId', null, $this->batchId, $wid);
-	    	$workers[$wid]['finished'] = ($stepId == $this->countSteps() - 1);
+	    	$meta['stepId'] = $store->read('stepId', null, $this->batchId, $wid);
+    		$meta['finished'] = ($meta['stepId'] == $this->countSteps() - 1);
+    		$workers[$wid] = $meta;
 
 	    	if ($includeResults) {
 	    		$workers[$wid]['results'] = $store->readCSV('results', $this->batchId, $wid);
