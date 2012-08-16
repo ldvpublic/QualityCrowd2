@@ -4,6 +4,9 @@ ini_set('display_errors', 'On');
 
 require('fstools.php');
 
+$fileMode = 0666;
+$dirMode = 0777;
+
 // initialize variables for the error messages through the setup process
 $err = '';
 $msg = array();
@@ -13,6 +16,15 @@ $msg = array();
  */
 $rootPath = preg_replace('#setup' . DSX . 'index.php$#', '', __FILE__);
 $baseURL = preg_replace('#setup/index.php$#', '', $_SERVER['PHP_SELF']);
+
+/*
+ * check if setup is disabled
+ */
+if (file_exists($rootPath.DS.'setup'.DS.'disabled.php'))
+{
+	$err = "setup disabled";
+	goto webpage;
+}
 
 /*
  * check PHP config
@@ -45,7 +57,6 @@ $msg[] = "checked mod_rewrite support";
 /* 
  * create directories
  */
-
 $dirs = array(
 	$rootPath . 'data',
 	$rootPath . 'media',
@@ -65,8 +76,7 @@ foreach($dirs as $dir)
 			goto webpage;
 		}
 
-		mkdir($dir, 0755);
-		@chmod($dir, 0755);
+		mkdir($dir, $dirMode);
 		$msg[] = "created $dir";
 	}
 
@@ -90,10 +100,13 @@ if (!file_exists($rootPath . 'batches'))
  * setup main .htaccess file
  */
 
-$htaccess = file_get_contents($rootPath.'setup'.DS.'main.htaccess');
-$htaccess = str_replace('##BASEURL##', $baseURL, $htaccess);
-file_put_contents($rootPath . '.htaccess', $htaccess);
-$msg[] = "written $rootPath.htaccess";
+if (!file_exists($rootPath . '.htaccess'))
+{
+	$htaccess = file_get_contents($rootPath.'setup'.DS.'main.htaccess');
+	$htaccess = str_replace('##BASEURL##', $baseURL, $htaccess);
+	file_put_contents($rootPath . '.htaccess', $htaccess);
+	$msg[] = "written $rootPath.htaccess";
+}
 
 /*
  * setup other .htaccess files
@@ -120,6 +133,41 @@ if (!file_exists($rootPath.'core'.DS.'tmp'.DS.'img-cache'.DS.'.htaccess'))
 	$msg[] = "written {$rootPath}core".DS.'tmp'.DS.'img-cache'.DS.'.htaccess';
 }
 
+/* 
+ * fix permissions
+ */
+$dirs = array(
+	$rootPath . 'data',
+	$rootPath . 'media',
+	$rootPath . 'core' . DS . 'tmp',
+);
+foreach($dirs as $dir)
+{
+	if (rchmod($dir, $fileMode, $dirMode)) {
+		$msg[] = "fixed permssions for $dir";
+	} else {
+		$msg[] = "error fixing permssions for $dir";
+	}
+}
+
+/*
+ * disable setup script
+ */
+$dir = $rootPath.'setup'.DS;
+if (!is_writable($dir))
+{
+	$err = "'$dir' is not writable";
+	goto webpage;
+}
+if (file_put_contents($dir.'disabled.php', "<?php
+// to reenable the setup script delete this file"))
+{
+	chmod($dir.'disabled.php', $fileMode);
+	$msg[] = "disabled setup script";
+} else {
+
+}
+
 /*
  * display webpage
  */
@@ -137,7 +185,9 @@ webpage:
 		<div class="header">
 			<h1>Setup</h1>
 		</div>
+		<?php if (count($msg)):?>
 		<h3>Done</h3>
+		<?php endif; ?>
 		<ul>
 			<?php foreach($msg as $m): ?>
 			<li><?= $m ?></li>
@@ -153,7 +203,7 @@ webpage:
 		<ul class="errormessage">
 			<li><?= $err ?></li>
 		</ul>
-		<p><a href="<?= $baseURL?>setup">Retry</a></p>
+		<p><a href="<?= $baseURL?>setup/index.php">Retry</a></p>
 		<?php endif; ?>
 		<div class="footer">
 		</div>

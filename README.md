@@ -48,9 +48,8 @@ Setup
 2. Make sure the webserver user has write permissions in this directory.
 3. Browse to `.../setup/` with your web browser.
 4. If any errors are displayed fix them and refresh the `.../setup/`.
-5. Remove the /setup directory.
-6. You may want to change the `$securitySalt` variable to a random string of your choice in `/core/config.php` and set a secure admin password in the same file.
-7. Done. You can acces the admin interface by browsing to the install directory and entering your password.
+5. You may want to change the `$securitySalt` variable to a random string of your choice in `/core/config.php` and set a secure admin password in the same file.
+6. Done. You can access the admin interface by browsing to the install directory and entering your password.
 
 License
 -------

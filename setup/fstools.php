@@ -69,3 +69,34 @@ function rrmdir($dir)
         rmdir($dir);
     }
 }
+
+function rchmod($path, $filemode, $dirmode) { 
+    if (!is_dir($path))
+    {
+        return chmod($path, $filemode); 
+    }
+
+    $dh = opendir($path); 
+    while (($file = readdir($dh)) !== false) 
+    { 
+        if($file != '.' && $file != '..') 
+        { 
+            $fullpath = $path.DS.$file; 
+            if(is_link($fullpath)) {
+                return false; 
+            } elseif(!is_dir($fullpath) && !chmod($fullpath, $filemode)) {
+                return false; 
+            } elseif(!rchmod($fullpath, $filemode, $dirmode)) {
+                return false;
+            }
+        }
+    }
+
+    closedir($dh);
+
+    if(chmod($path, $dirmode)) {
+        return true; 
+    } else { 
+        return false;
+    }
+}
