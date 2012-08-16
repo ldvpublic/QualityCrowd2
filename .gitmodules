@@ -1,3 +1,6 @@
 [submodule "core/3p/codemirror"]
 	path = core/3p/codemirror
 	url = git://github.com/clorch/CodeMirror2.git
+[submodule "core/3p/markdown"]
+	path = core/3p/markdown
+	url = git://github.com/michelf/php-markdown.git
