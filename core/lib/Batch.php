@@ -96,8 +96,10 @@ class Batch extends Base
 	    	$meta = $store->read('meta', null, $this->batchId, $wid);
 	    	$workers[$wid] = $meta;
 
-	    	if ($includeResults)
-	    	{
+	    	$stepId = $store->read('stepId', null, $this->batchId, $wid);
+	    	$workers[$wid]['finished'] = ($stepId == $this->countSteps() - 1);
+
+	    	if ($includeResults) {
 	    		$workers[$wid]['results'] = $store->readCSV('results', $this->batchId, $wid);
 	    	}
 	    }

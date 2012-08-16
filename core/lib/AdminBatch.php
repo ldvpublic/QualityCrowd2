@@ -19,7 +19,9 @@ class AdminBatch extends AdminPage
 		$batch = $myBatchCompiler->getBatch();
 
 		if (isset($this->path[2])) 
-		{
+		{	
+			$this->tpl->set('subpage', $this->path[2]);
+
 			switch($this->path[2])
 			{
 			case 'new':
@@ -39,6 +41,11 @@ class AdminBatch extends AdminPage
 				$myTpl->set('steps', $batch->resultsPerStep());
 				break;
 
+			case 'browsers':
+				$myTpl = new Template('admin.batch.browsers');
+				$myTpl->set('workers', $batch->workers());
+				break;
+
 			default:
 				if (is_numeric($this->path[2]))
 				{
@@ -49,6 +56,8 @@ class AdminBatch extends AdminPage
 				}
 				break;
 			}
+		} else {
+			$this->tpl->set('subpage', '');
 		}
 		
 		if (!isset($myTpl))
@@ -58,6 +67,8 @@ class AdminBatch extends AdminPage
 			$myTpl->set('properties', $batch->meta());
 			$myTpl->set('steps', $batch->steps());
 		}
-		$this->tpl->set('content', $myTpl->render());	
+
+		$this->tpl->set('content', $myTpl->render());
+
 	}
 }

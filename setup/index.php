@@ -63,6 +63,7 @@ $dirs = array(
 	$rootPath . 'core' . DS . 'tmp',
 	$rootPath . 'core' . DS . 'tmp' . DS . 'batch-cache',
 	$rootPath . 'core' . DS . 'tmp' . DS . 'img-cache',
+	$rootPath . 'core' . DS . 'tmp' . DS . 'browscap',
 );
 
 foreach($dirs as $dir)

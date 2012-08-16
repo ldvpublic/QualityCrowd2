@@ -12,7 +12,7 @@ class AdminBatches extends AdminPage
 		$batches = $this->getBatches();
 		ksort($batches);
 		$o = '';
-
+		
 		foreach($batches as $batchId => $batch)
 		{
 			$rowTpl = new Template('admin.batches.row');
@@ -22,7 +22,12 @@ class AdminBatches extends AdminPage
 			$rowTpl->set('title', $batch->meta('title'));
 			$rowTpl->set('steps', $batch->countSteps());
 			$rowTpl->set('workers', count($workers));
-			//$rowTpl->set('finished', $batch->countSteps());
+
+			$finished = 0;
+			foreach($workers as $w) {
+				if ($w['finished']) $finished ++;
+			}
+			$rowTpl->set('finished', $finished);
 
 			$o .= $rowTpl->render();
 		}

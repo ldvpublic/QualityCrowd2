@@ -18,6 +18,7 @@ class Admin extends AdminPage
 		$class = 'Admin' . ucfirst($this->path[0]);
 		$pageObject = new $class($this->path);
 
+		$this->tpl->set('page', $this->path[0]);
 		$this->tpl->set('content', $pageObject->render());
 
 		return $this->tpl->render();

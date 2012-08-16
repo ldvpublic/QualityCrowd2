@@ -86,19 +86,19 @@ foreach($steps as $stepId => &$step)
 	$p1->SetColor("olivedrab3");
 	$p1->SetFillGradient('olivedrab1','olivedrab4',GRAD_VERT);
 
-	$pAvg = new PlotLine(HORIZONTAL, $step['results-avg'], '#000000', 2);
+	$pAvg = new PlotLine(HORIZONTAL, $step['results-avg'], '#000000', 1);
 	$graph->Add($pAvg);
 
-	$pMin = new PlotLine(HORIZONTAL, $step['results-min'], '#008800', 2);
+	$pMin = new PlotLine(HORIZONTAL, $step['results-min'], '#008800', 1);
 	$graph->Add($pMin);
 
-	$pMax = new PlotLine(HORIZONTAL, $step['results-max'], '#ff0000', 2);
+	$pMax = new PlotLine(HORIZONTAL, $step['results-max'], '#ff0000', 1);
 	$graph->Add($pMax);
 
-	$pSd1 = new PlotLine(HORIZONTAL, $step['results-avg'] + $step['results-sd'] / 2, '#0000ff', 2);
+	$pSd1 = new PlotLine(HORIZONTAL, $step['results-avg'] + $step['results-sd'] / 2, '#0000ff', 1);
 	$graph->Add($pSd1);
 
-	$pSd2 = new PlotLine(HORIZONTAL, $step['results-avg'] - $step['results-sd'] / 2, '#0000ff', 2);
+	$pSd2 = new PlotLine(HORIZONTAL, $step['results-avg'] - $step['results-sd'] / 2, '#0000ff', 1);
 	$graph->Add($pSd2);
 
 	// output graph to temp file
