@@ -105,6 +105,79 @@ class Batch extends Base
 	    return $workers;
 	}
 
+	public function resultsPerStep()
+	{
+		$workers = $this->workers(true);
+		$steps = array();
+
+		foreach($workers as $wid => $w)
+		{	
+			if (!is_array($w['results'])) continue;
+
+			foreach($w['results'] as $stepId => $stepResults)
+			{
+				$steps[$stepId]['command'] = $stepResults[1];
+				$steps[$stepId]['timestamp'][$wid] = $stepResults[2];
+				if ($stepId > 0) {
+					$steps[$stepId]['duration'][$wid] = $stepResults[2] - 
+						$steps[$stepId - 1]['timestamp'][$wid];
+				} else {
+					$steps[$stepId]['duration'][$wid] = 0;
+				}
+
+				array_shift($stepResults);
+				array_shift($stepResults);
+				array_shift($stepResults);
+				$steps[$stepId]['results'][$wid] = $stepResults;
+			}
+		}
+
+		// process durations
+		foreach($steps as $stepId => &$step)
+		{
+			$sum = 0;
+			$max = 0;
+			$min = time();
+
+			foreach($step['duration'] as $wid => $duration)
+			{
+				if ($duration > $max) $max = $duration;
+				if ($duration < $min) $min = $duration;
+				$sum += $duration;
+			}
+
+			$step['duration-avg'] = $sum / count($step['duration']);
+			$step['duration-max'] = $max;
+			$step['duration-min'] = $min;
+		}
+
+		// consolidate results
+		foreach($steps as $stepId => &$step)
+		{
+			$sum = 0;
+			$max = 0;
+			$min = 1000;
+
+			foreach($step['results'] as $wid => $result)
+			{
+				if (count($result) == 0) continue;
+
+				$value = $result[0];
+				if ($value > $max) $max = $value;
+				if ($value < $min) $min = $value;
+				$sum += $value;
+			}
+
+			$step['results-avg'] = $sum / count($step['results']);
+			$step['results-max'] = $max;
+			$step['results-min'] = $min;
+
+			$step['workers'] = count($step['results']);
+		}
+
+		return $steps;
+	}
+
 	private function getStepObject($stepId)
 	{
 		$step = $this->steps[$stepId];

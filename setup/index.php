@@ -51,6 +51,7 @@ $dirs = array(
 	$rootPath . 'media',
 	$rootPath . 'core' . DS . 'tmp',
 	$rootPath . 'core' . DS . 'tmp' . DS . 'batch-cache',
+	$rootPath . 'core' . DS . 'tmp' . DS . 'img-cache',
 );
 
 foreach($dirs as $dir)
@@ -89,7 +90,7 @@ if (!file_exists($rootPath . 'batches'))
  * setup main .htaccess file
  */
 
-$htaccess = file_get_contents($rootPath . 'setup' . DS . 'main.htaccess');
+$htaccess = file_get_contents($rootPath.'setup'.DS.'main.htaccess');
 $htaccess = str_replace('##BASEURL##', $baseURL, $htaccess);
 file_put_contents($rootPath . '.htaccess', $htaccess);
 $msg[] = "written $rootPath.htaccess";
@@ -97,18 +98,27 @@ $msg[] = "written $rootPath.htaccess";
 /*
  * setup other .htaccess files
  */
-if (!file_exists($rootPath . 'data' . DS . '.htaccess'))
+if (!file_exists($rootPath.'data'.DS.'.htaccess'))
 {
-	file_put_contents($rootPath . 'data' . DS . '.htaccess', "Deny from all\n");
-	$msg[] = "written {$rootPath}data" . DS . ".htaccess";
+	file_put_contents($rootPath.'data'.DS.'.htaccess', "Deny from all\n");
+	$msg[] = "written {$rootPath}data".DS.".htaccess";
 }
 
-if (!file_exists($rootPath . 'batches' . DS . '.htaccess'))
+if (!file_exists($rootPath.'batches'.DS.'.htaccess'))
 {
-	file_put_contents($rootPath . 'batches' . DS . '.htaccess', "Deny from all\n");
-	$msg[] = "written {$rootPath}batches" . DS . ".htaccess";
+	file_put_contents($rootPath.'batches'.DS.'.htaccess', "Deny from all\n");
+	$msg[] = "written {$rootPath}batches".DS.'.htaccess';
 }
-
+if (!file_exists($rootPath.'core'.DS.'tmp'.DS.'.htaccess'))
+{
+	file_put_contents($rootPath.'core'.DS.'tmp'.DS.'.htaccess', "Deny from all\n");
+	$msg[] = "written {$rootPath}core".DS.'tmp'.DS.'.htaccess';
+}
+if (!file_exists($rootPath.'core'.DS.'tmp'.DS.'img-cache'.DS.'.htaccess'))
+{
+	file_put_contents($rootPath.'core'.DS.'tmp'.DS.'img-cache'.DS.'.htaccess', "Allow from all\n");
+	$msg[] = "written {$rootPath}core".DS.'tmp'.DS.'img-cache'.DS.'.htaccess';
+}
 
 /*
  * display webpage

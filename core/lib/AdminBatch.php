@@ -36,8 +36,7 @@ class AdminBatch extends AdminPage
 
 			case 'results':
 				$myTpl = new Template('admin.batch.results');
-				$myTpl->set('steps', $batch->steps());
-				$myTpl->set('workers', $batch->workers(true));
+				$myTpl->set('steps', $batch->resultsPerStep());
 				break;
 
 			default:
