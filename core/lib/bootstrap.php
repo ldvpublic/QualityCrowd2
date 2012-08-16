@@ -1,7 +1,6 @@
 <?php
 // TODO: fix all these annoying notices...
-//error_reporting(E_ALL ^ E_NOTICE);
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 // handle the funny windows backslash
 //   DS is the directory separator
