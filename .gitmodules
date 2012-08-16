@@ -1,0 +1,3 @@
+[submodule "core/3p/codemirror"]
+	path = core/3p/codemirror
+	url = git://github.com/clorch/CodeMirror2.git
