@@ -174,6 +174,9 @@ if (file_put_contents($dir.'disabled.php', "<?php
  */
 
 webpage:
+
+$returnPage = (isset($_GET['r']) ? '/' . $_GET['r'] : '');
+
 ?>
 <!doctype html>
 <html>
@@ -184,8 +187,11 @@ webpage:
 	</head>
 	<body>
 		<div class="header">
-			<h1>Setup</h1>
+			<h1>QualityCrowd</h1>
 		</div>
+		
+		<h2>Setup</h2>
+
 		<?php if (count($msg)):?>
 		<h3>Done</h3>
 		<?php endif; ?>
@@ -197,7 +203,11 @@ webpage:
 
 		<?php if ($err == ''): ?>
 		<p>Setup complete</p>
-		<p><a href="<?= $baseURL?>admin">Admin Panel</a></p>
+		<p>
+			<a href="<?= $baseURL?>admin<?= $returnPage ?>">
+				<?= ($returnPath = '' ? 'Admin Panel' : 'Return') ?>
+			</a>
+		</p>
 
 		<?php else: ?>
 		<h3>Error</h3>

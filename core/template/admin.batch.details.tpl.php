@@ -1,4 +1,4 @@
-<h3>Metadata</h3>
+<h3>Info</h3>
 <table class="meta">
 <?php foreach($properties as $k => $v): ?>
 	<tr>
@@ -6,6 +6,10 @@
 		<td><?= $v ?></td>
 	</tr>
 <?php endforeach; ?>
+	<tr>
+		<th>Worker URL</th>
+		<td><?= (BASE_URL . $id . '/&lt;worker id&gt;') ?></td>
+	</tr>
 </table>
 
 <h3>Steps</h3>

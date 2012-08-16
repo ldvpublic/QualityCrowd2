@@ -27,6 +27,9 @@
 				<li <?= ($page == 'doc' ? 'class="active"' : '') ?>> 
 					<a href="<?= BASE_URL ?>admin/doc">Documentation</a>
 				</li>
+				<li <?= ($page == 'maintenance' ? 'class="active"' : '') ?>> 
+					<a href="<?= BASE_URL ?>admin/maintenance">Maintenance</a>
+				</li>
 			</ul>
 		</div>
 
