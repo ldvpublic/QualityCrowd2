@@ -4,6 +4,8 @@ $securitySalt = 'QualityCrowd2-7078e430';
 
 return array(
 
+'timezone' => 'Europe/Berlin',
+
 'securitySalt' => $securitySalt,
 
 'adminUsers' => array(
