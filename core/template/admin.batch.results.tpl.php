@@ -55,9 +55,14 @@ $graph->Stroke(TMP_PATH.'img-cache'.DS.'workers-'.$id.'.png');
 
 <h3>Consolidated Results</h3>
 <table class="steps">
-<?php foreach($steps as $stepId => &$step): ?>
+
+<?php foreach($steps as $stepId => &$step): 
+	$rows = 2;
+	if ($stepId > 0) $rows += 3;
+	if ($step['results-cnt'] > 0) $rows += 4;
+?>
 	<tr class="step">
-		<td class="number" rowspan="8"><?= ($stepId + 1) ?></td>
+		<td class="number" rowspan="<?= $rows ?>"><?= ($stepId + 1) ?></td>
 		<td class="command" colspan="2"><?= $step['command'] ?></td>
 		<td></td>
 	</tr>
@@ -65,32 +70,40 @@ $graph->Stroke(TMP_PATH.'img-cache'.DS.'workers-'.$id.'.png');
 		<td class="property-key" colspan="2">workers</td>
 		<td class="property-value"><?= $step['workers'] ?></td>
 	</tr>
+	<?php if ($stepId > 0): ?>
 	<tr class="property">
 		<td class="property-key" rowspan="3">duration</td>
-		<td class="property-key">average</td>
+		<td class="property-key2">average</td>
 		<td class="property-value"><?= date('i:s', $step['duration-avg']) ?></td>
 	</tr>
 	<tr class="property">
-		<td class="property-key">maximum</td>
+		<td class="property-key2">maximum</td>
 		<td class="property-value"><?= date('i:s', $step['duration-max']) ?></td>
 	</tr>
 	<tr class="property">
-		<td class="property-key">minimum</td>
+		<td class="property-key2">minimum</td>
 		<td class="property-value"><?= date('i:s', $step['duration-min']) ?></td>
 	</tr>
+	<?php endif; ?>
+	<?php if ($step['results-cnt'] > 0): ?>
 	<tr class="property">
-		<td class="property-key" rowspan="3">result</td>
-		<td class="property-key">average</td>
-		<td class="property-value"><?= round($step['results-avg'],1) ?></td>
+		<td class="property-key" rowspan="4">result</td>
+		<td class="property-key2">average</td>
+		<td class="property-value"><?= round($step['results-avg'], 1) ?></td>
 	</tr>
 	<tr class="property">
-		<td class="property-key">maximum</td>
+		<td class="property-key2">standard deviation</td>
+		<td class="property-value"><?= round($step['results-sd'], 1) ?></td>
+	</tr>
+	<tr class="property">
+		<td class="property-key2">maximum</td>
 		<td class="property-value"><?= $step['results-max'] ?></td>
 	</tr>
 	<tr class="property">
-		<td class="property-key">minimum</td>
+		<td class="property-key2">minimum</td>
 		<td class="property-value"><?= $step['results-min'] ?></td>
 	</tr>
+	<?php endif; ?>
 <?php endforeach; ?>
 </table>
 

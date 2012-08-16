@@ -151,12 +151,13 @@ class Batch extends Base
 			$step['duration-min'] = $min;
 		}
 
-		// consolidate results
+		// consolidate results part 1 - average, min, max
 		foreach($steps as $stepId => &$step)
 		{
 			$sum = 0;
-			$max = 0;
-			$min = 1000;
+			$max = -0xffffffff;
+			$min = 0xffffffff;
+			$cnt = 0;
 
 			foreach($step['results'] as $wid => $result)
 			{
@@ -166,13 +167,34 @@ class Batch extends Base
 				if ($value > $max) $max = $value;
 				if ($value < $min) $min = $value;
 				$sum += $value;
+				$cnt ++;
 			}
 
-			$step['results-avg'] = $sum / count($step['results']);
-			$step['results-max'] = $max;
-			$step['results-min'] = $min;
+			$step['results-cnt'] = $cnt;
+			if ($cnt > 0) {
+				$step['results-avg'] = $sum / $cnt;
+				$step['results-max'] = $max;
+				$step['results-min'] = $min;
+				$step['results-cnt'] = $cnt;
+			}
 
 			$step['workers'] = count($step['results']);
+		}
+
+		// consolidate results part 2 - standard deviation
+		foreach($steps as $stepId => &$step)
+		{
+			$sd = 0;
+
+			foreach($step['results'] as $wid => $result)
+			{
+				if (count($result) == 0) continue;
+
+				$value = $result[0];
+				$sd += ($step['results-avg'] - $value) * ($step['results-avg'] - $value);
+			}
+
+			$step['results-sd'] = sqrt($sd / ($step['workers'] - 1));
 		}
 
 		return $steps;

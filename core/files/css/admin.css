@@ -119,8 +119,20 @@ table.steps td.argument {
 	font-size:17px;
 }
 
+table.steps tr.property {
+	border-bottom: 1px dotted #888;
+}
+
 table.steps tr.property td {
 	padding:4px 15px;
+}
+
+table.steps tr.property td.property-key {
+	font-weight:bold;
+}
+
+table.steps tr.property td.property-key2 {
+	font-style: italic;
 }
 
 /* ==================================== Batch List */
