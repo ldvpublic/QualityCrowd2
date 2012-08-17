@@ -138,6 +138,7 @@ if (!file_exists($rootPath.'core'.DS.'tmp'.DS.'img-cache'.DS.'.htaccess'))
  * fix permissions
  */
 $dirs = array(
+	$rootPath . 'batches',
 	$rootPath . 'data',
 	$rootPath . 'media',
 	$rootPath . 'core' . DS . 'tmp',
