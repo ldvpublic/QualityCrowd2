@@ -51,7 +51,7 @@ class Request extends Base
 
 		// extract worker id
 		$workerId = preg_replace("/[^a-zA-Z0-9-]/", "", $path[1]);
-		if ($workerId == '') die('invalid URL');
+		if ($workerId == '' || strlen($workerId > 64)) die('invalid URL');
 
 		$returnBatch = null;
 		if (isset($_GET['return']))
@@ -68,7 +68,12 @@ class Request extends Base
 		}
 
 		$myPage = new Main($batchId, $workerId, $restart, $returnBatch);
-		echo $myPage->render();
+
+		try {
+			echo $myPage->render();
+		} catch (Exception $e) {
+			return $this->renderException($e);
+		}	
 	}
 
 	private function login()
@@ -106,5 +111,14 @@ class Request extends Base
 		{
 			return false;
 		}
+	}
+
+	private function renderException(Exception $e)
+	{
+		$errorTpl = new Template('error');
+		$errorTpl->set('message', $e->getMessage());
+		//$errorTpl->set('trace', $e->getTraceAsString());
+
+		echo $errorTpl->render();
 	}
 }

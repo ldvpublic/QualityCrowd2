@@ -7,6 +7,10 @@
 	</tr>
 <?php endforeach; ?>
 	<tr>
+		<th>State</th>
+		<td><?= Batch::readableState($state) ?></td>
+	</tr>
+	<tr>
 		<th>Worker URL</th>
 		<td><?= (BASE_URL . $id . '/&lt;worker id&gt;') ?></td>
 	</tr>

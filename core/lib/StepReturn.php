@@ -6,14 +6,14 @@ class StepReturn extends Step
 
 	protected function init() 
 	{
-		$returnBatch = $this->store->read('returnBatch', false);
+		$returnBatch = $this->store->readWorker('returnBatch', false);
 		if ($returnBatch === false)
 		{
 			throw new Exception("No return target found");
 		}
 
-		$this->store->delete('returnBatch');
-		$this->store->write('done', true);
+		$this->store->deleteWorker('returnBatch');
+		$this->store->writeWorker('done', true);
 
 		$url = BASE_URL . $returnBatch;
 		$url .= '/' . $this->registry->get('workerId');

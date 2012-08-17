@@ -26,28 +26,23 @@ class Main extends Base
 		$this->tpl->set('workerId', $this->workerId);
 
 		// handle manual restart
-		if ($restart) $this->store->delete();
+		if ($restart) $this->store->deleteWorker();
 
 		// handle 'returnBatch' parameter
-		if ($returnBatch <> null)
-		{
+		if ($returnBatch <> null) {
 			$this->registry->set('returnBatch', $returnBatch);
-			$this->store->write('returnBatch', $returnBatch);
+			$this->store->writeWorker('returnBatch', $returnBatch);
 		}
 	}
 
 	public function render()
 	{
 		// compile the batch script
-		try {
-			$myBatchCompiler = new BatchCompiler($this->batchId);
-			$this->batch = $myBatchCompiler->getBatch();
-		} catch (Exception $e) {
-			return $this->renderException($e);
-		}
+		$myBatchCompiler = new BatchCompiler($this->batchId);
+		$this->batch = $myBatchCompiler->getBatch();
 
 		// read last step id
-		$this->lastStepId = $this->store->read('stepId', -1);
+		$this->lastStepId = $this->store->readWorker('stepId', -1);
 		if ($this->lastStepId == -1) $this->batch->init();
 
 		// process submitted post data
@@ -58,25 +53,20 @@ class Main extends Base
 		if ($this->refreshStep) $stepId--;
 		if ($stepId < 0) $stepId = 0;
 		if ($stepId >= $this->batch->countSteps()) $stepId = $this->batch->countSteps() - 1;
-		$this->store->write('stepId', $stepId);
+		$this->store->writeWorker('stepId', $stepId);
 
 		// display error messages
-		if (is_array($this->registry->get('errors')))
-		{
+		if (is_array($this->registry->get('errors'))) {
 			$this->tpl->set('msg', $this->registry->get('errors'));
 		}
 
 		// set variables
 		$this->tpl->set('stepId', $stepId);
 		$this->tpl->set('stepCount', $this->batch->countSteps());
+		$this->tpl->set('state', $this->batch->state());
 
-		// render step or display error message
-		try {
-			$content = $this->batch->renderStep($stepId);
-		} catch (Exception $e) {
-			return $this->renderException($e);
-		}
-
+		// render step
+		$content = $this->batch->renderStep($stepId);
 		$this->tpl->set('content', $content);
 
 		return $this->tpl->render();
@@ -116,17 +106,5 @@ class Main extends Base
 		}
 		
 		$this->registry->set('errors', $msg);
-	}
-
-	private function renderException(Exception $e)
-	{
-		$this->tpl->set('stepId', -1);
-
-		$errorTpl = new Template('error');
-		$errorTpl->set('message', $e->getMessage());
-		//$errorTpl->set('trace', $e->getTraceAsString());
-
-		$this->tpl->set('content', $errorTpl->render());
-		return $this->tpl->render();
 	}
 }

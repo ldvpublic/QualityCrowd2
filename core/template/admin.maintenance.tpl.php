@@ -1,7 +1,7 @@
 <?php if ($message <> ''): ?>
-<ul class="successmessage">
-	<li><?= $message ?></li>
-</ul>
+<div class="successmessage">
+	<?= $message ?>
+</div>
 <?php endif; ?>
 
 <h3>Cache</h3>

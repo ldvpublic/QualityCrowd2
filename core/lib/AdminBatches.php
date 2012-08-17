@@ -19,6 +19,7 @@ class AdminBatches extends AdminPage
 			$workers = $batch->workers();
 
 			$rowTpl->set('id', $batchId);
+			$rowTpl->set('state', $batch->state());
 			$rowTpl->set('title', $batch->meta('title'));
 			$rowTpl->set('steps', $batch->countSteps());
 			$rowTpl->set('workers', count($workers));

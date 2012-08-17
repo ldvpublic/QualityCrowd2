@@ -1,7 +1,4 @@
 <?php
-// handle the funny windows backslash
-define('DS', DIRECTORY_SEPARATOR);
-define('DSX', preg_quote(DS));
 
 function rcopy($path, $dest, $dmode = 0755, $fmode = 0644)
 {

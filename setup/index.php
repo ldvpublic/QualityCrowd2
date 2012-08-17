@@ -2,7 +2,9 @@
 error_reporting(E_ALL ^ E_NOTICE);
 ini_set('display_errors', 'On');
 
-require('fstools.php');
+// handle the funny windows backslash
+define('DS', DIRECTORY_SEPARATOR);
+define('DSX', preg_quote(DS));
 
 $fileMode = 0666;
 $dirMode = 0777;
@@ -16,6 +18,8 @@ $msg = array();
  */
 $rootPath = preg_replace('#setup' . DSX . 'index.php$#', '', __FILE__);
 $baseURL = preg_replace('#setup/index.php$#', '', $_SERVER['PHP_SELF']);
+
+require($rootPath.'core'.DS.'lib'.DS.'fstools.php');
 
 /*
  * check if setup is disabled

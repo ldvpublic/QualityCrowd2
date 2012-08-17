@@ -116,8 +116,9 @@ EOT;
 				break;
 
 				case 'set':
+				$value = (isset($sourceStep['arguments'][1]) ? $sourceStep['arguments'][1] : null);
 				$stepProperties[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1], $variables);
+					$this->parseValue($value, $variables);
 				break;
 
 				case 'var':

@@ -1,62 +1,117 @@
 <?php
 
+require(ROOT_PATH.'core'.DS.'lib'.DS.'fstools.php');
+
 class DataStore extends Base
 {
-	public function write($filename, $data)
+	public function writeWorker($key, $data, $batchId = '', $workerId = '')
 	{
-		$file = $this->getDataPath() . $filename . '.txt';
-		$data = serialize($data);
-		file_put_contents($file, $data);
+		$path = $this->getDataPath('worker', $batchId, $workerId, true);
+		$this->write('json', $path, $key, $data);
+	}
+
+	public function writeWorkerCSV($key, $data, $batchId = '', $workerId = '')
+	{
+		$path = $this->getDataPath('worker', $batchId, $workerId, true);
+		$this->write('csv', $path, $key, $data);
+	}
+
+	public function writeBatch($key, $data, $batchId = '')
+	{
+		$path = $this->getDataPath('meta', $batchId, '', true);
+		$this->write('json', $path, $key, $data);
+	}
+
+	public function readWorker($key, $default = null, $batchId = '', $workerId = '')
+	{
+		$path = $this->getDataPath('worker', $batchId, $workerId);
+		return $this->read('json', $path, $key, $default);
+	}
+
+	public function readWorkerCSV($key, $batchId = '', $workerId = '')
+	{
+		$path = $this->getDataPath('worker', $batchId, $workerId);
+		return $this->read('csv', $path, $key, null);
+	}
+
+	public function readBatch($key, $default = null, $batchId = '')
+	{
+		$path = $this->getDataPath('meta', $batchId);
+		return $this->read('json', $path, $key, $default);
+	}
+
+	public function deleteWorker($key = '', $batchId = '', $workerId = '')
+	{
+		$path = $this->getDataPath('worker', $batchId, $workerId);
+		$this->delete('json', $path, $key);
+	}
+
+	public function deleteAllWorkers($batchId)
+	{
+		$path = $this->getDataPath('batch', $batchId);
+		rrmdir($path . 'workers' . DS);
+	}
+
+	private function read($type, $path, $key, $default)
+	{
+		$file = $path . $key . $this->getExtensionFromType($type);
+
+		switch($type)
+		{
+			case 'json':
+				if (!file_exists($file)) return $default;
+				$data = file_get_contents($file);
+				$data = unserialize($data);
+				return $data;
+
+			case 'csv':
+				if (!file_exists($file)) return null;
+
+				$rows = array();
+				$fh = fopen($file, 'r');
+				while($row = fgetcsv($fh)) {
+					$rows[] = $row;
+				}
+				fclose($fh);
+
+				return $rows;
+
+			default:
+				throw new Exception("Unknown data type '$type'");
+				break;
+		}
+	}
+
+	private function write($type, $path, $key, $data)
+	{
+		$file = $path . $key . $this->getExtensionFromType($type);
+
+		switch($type)
+		{
+			case 'json':
+				$data = serialize($data);
+				file_put_contents($file, $data);
+				break;
+
+			case 'csv':
+				$fh = fopen($file, 'a');
+				foreach($data as $row) {
+					fputcsv($fh, $row);
+				}
+				fclose($fh);
+				break;
+
+			default:
+				throw new Exception("Unknown data type '$type'");
+				break;
+		}
+
 		chmod($file, $this->getConfig('filePermissions'));
 	}
 
-	public function writeCSV($filename, $data)
+	private function delete($type, $path, $key)
 	{
-		$file = $this->getDataPath() . $filename . '.csv';
-		$fh = fopen($file, 'a');
-		foreach($data as $row)
-		{
-			fputcsv($fh, $row);
-		}
-		fclose($fh);
-		chmod($file, $this->getConfig('filePermissions'));
-	}
-
-	public function read($filename, $default = null, $batchId = '', $workerId = '')
-	{
-		$file = $this->getDataPath($batchId, $workerId) . $filename . '.txt';
-		if (file_exists($file))
-		{
-			$data = file_get_contents($file);
-			$data = unserialize($data);
-			return $data;
-		} else
-		{
-			return $default;
-		}
-	}
-
-	public function readCSV($filename, $batchId = '', $workerId = '')
-	{
-		$file = $this->getDataPath($batchId, $workerId) . $filename . '.csv';
-		if (!file_exists($file)) return null;
-
-		$rows = array();
-		$fh = fopen($file, 'r');
-		while($row = fgetcsv($fh))
-		{
-			$rows[] = $row;
-		}
-		fclose($fh);
-
-		return $rows;
-	}
-
-	public function delete($file = '')
-	{
-		$path = $this->getDataPath();
-
-		if ($file == '')
+		if ($key == '')
 		{
 		    $files = glob($path . '*', GLOB_MARK);
 		    foreach ($files as $file) 
@@ -66,7 +121,8 @@ class DataStore extends Base
 		    rmdir($path);
 		} else
 		{
-			$file = $path . $file;
+			$file = $path . $key . $this->getExtensionFromType($type);
+			echo $file;
 			if (file_exists($file))
 			{
 				unlink($file);
@@ -74,34 +130,67 @@ class DataStore extends Base
 		}
 	}
 
-	private function getDataPath($batchId = '', $workerId = '') 
+
+	/* possible scopes:
+	 *  - batch    /data/<batchid>/
+	 *  - meta     /data/<batchid>/meta/<key> 
+	 *  - workers  /data/<batchid>/workers/<workerid>/<key> 
+	 */
+
+	private function getDataPath($scope, $batchId = '', $workerId = '', $create = false) 
 	{
-		if ($batchId == '')
+		$path = '';
+		switch ($scope)
 		{
-			$batchId = $this->registry->get('batchId');
-		}
+			case 'batch':
+				if ($batchId == '') {
+					$batchId = $this->registry->get('batchId');
+				}
+				$path = DATA_PATH . $batchId;
+				if ($create) $this->createDir($path);
+				break;
 
-		if ($workerId == '')
-		{
-			$workerId = $this->registry->get('workerId');
-		}
+			case 'meta':
+				$path = $this->getDataPath('batch', $batchId, '', $create);
 
-		$path = DATA_PATH . $batchId;
-		if (!file_exists($path))
-		{
-			mkdir($path, $this->getConfig('dirPermissions'));
-			chmod($path, $this->getConfig('dirPermissions'));
-		}
+				$path = $path . 'meta';
+				if ($create) $this->createDir($path);
+				break;
 
-		$path .= DS . $workerId;
-		if (!file_exists($path))
-		{
-			mkdir($path, $this->getConfig('dirPermissions'));
-			chmod($path, $this->getConfig('dirPermissions'));
+			case 'worker':
+				$path = $this->getDataPath('batch', $batchId, '', $create);
+
+				$path = $path . 'workers';
+				if ($create) $this->createDir($path);
+
+				if ($workerId == '') {
+					$workerId = $this->registry->get('workerId');
+				}
+				$path = $path . DS . $workerId;
+				if ($create) $this->createDir($path);
+
+				break;
 		}
 
 		$path .= DS;
-
 		return $path;
+	}
+
+	private function createDir($path)
+	{
+		if (!file_exists($path))
+		{
+			mkdir($path, $this->getConfig('dirPermissions'));
+			chmod($path, $this->getConfig('dirPermissions'));
+		}
+	}
+
+	private function getExtensionFromType($type) 
+	{
+		switch($type)
+		{
+			case 'json': return '.txt';
+			case 'csv':  return '.csv';
+		}
 	}
 }

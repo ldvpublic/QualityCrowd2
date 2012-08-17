@@ -5,7 +5,7 @@ class StepQualification extends Step
 	protected function init() 
 	{
 		$qualiBatch = $this->arguments[0];
-		$done = $this->store->read('done', false, $qualiBatch);
+		$done = $this->store->readWorker('done', false, $qualiBatch);
 
 		if (!$done)
 		{

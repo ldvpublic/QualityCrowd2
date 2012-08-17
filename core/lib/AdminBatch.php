@@ -27,13 +27,18 @@ class AdminBatch extends AdminPage
 			case 'new':
 			case 'edit':
 				// save QC-Script
-				if (isset($_POST['qcs']))
-				{
+				if (isset($_POST['qcs'])) {
 					$myBatchCompiler->setSource($_POST['qcs']);
+				}
+
+				// save QC-Script
+				if (isset($_POST['state'])) {
+					$batch->setState($_POST['state']);
 				}
 
 				$myTpl = new Template('admin.batch.edit');
 				$myTpl->set('qcs', $myBatchCompiler->getSource());
+				$myTpl->set('state', $batch->state());
 				break;
 
 			case 'validate':
@@ -76,6 +81,7 @@ class AdminBatch extends AdminPage
 
 			$myTpl->set('properties', $batch->meta());
 			$myTpl->set('steps', $batch->steps());
+			$myTpl->set('state', $batch->state());
 		}
 
 		$this->tpl->set('content', $myTpl->render());

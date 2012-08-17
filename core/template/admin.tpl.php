@@ -14,7 +14,6 @@
     	<script src="<?= BASE_URL ?>core/3p/codemirror/lib/codemirror.js"></script>
     	<script src="<?= BASE_URL ?>core/3p/codemirror/mode/qc-script/qc-script.js"></script>
 
-    	<link rel="stylesheet" href="<?= BASE_URL ?>core/files/css/style.css" />
 		<link rel="stylesheet" href="<?= BASE_URL ?>core/files/css/admin.css" />
     </head>
 	<body>

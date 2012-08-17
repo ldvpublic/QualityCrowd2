@@ -5,6 +5,7 @@ class Batch extends Base
 	private $batchId;
 	private $steps;
 	private $meta;
+	private $state;
 
 	public function __construct($batchId, $meta, $steps) 
 	{
@@ -13,6 +14,8 @@ class Batch extends Base
 		$this->batchId = $batchId;
 		$this->meta = $meta;
 		$this->steps = $steps;
+
+		$this->state = $this->store->readBatch('state', 'edit', $this->batchId);
 	}
 
 	public function __sleep() 
@@ -24,6 +27,17 @@ class Batch extends Base
 	public function __wakeup() 
 	{
 		parent::__wakeup();
+		$this->state = $this->store->readBatch('state', 'edit', $this->batchId);
+	}
+
+	public static function readableState($state) 
+	{
+		switch($state)
+		{
+			case 'edit':   return 'Edit';
+			case 'active': return 'Active';
+			case 'post':   return 'Complete';
+		}
 	}
 
 	public function init()
@@ -44,7 +58,7 @@ class Batch extends Base
 			$data = array('command' => $this->steps[$stepId]['command']) + $data;
 			$data = array('stepId' => $stepId) + $data;
 			$store = new DataStore();
-			$store->writeCSV('results', array($data));
+			$store->writeWorkerCSV('results', array($data));
 		} 
 
 		return $msg;
@@ -52,8 +66,7 @@ class Batch extends Base
 
 	public function renderStep($stepId)
 	{
-		if ($stepId < 0 || $stepId >= count($this->steps))
-		{
+		if ($stepId < 0 || $stepId >= count($this->steps)) {
 			throw new Exception('Invalid step id');
 		}
 
@@ -68,11 +81,9 @@ class Batch extends Base
 
 	public function meta($key = null)
 	{
-		if ($key == null)
-		{
+		if ($key == null) {
 			return $this->meta;
-		} else
-		{
+		} else {
 			return $this->meta[$key];
 		}
 	}
@@ -82,12 +93,32 @@ class Batch extends Base
 		return $this->steps;
 	}
 
+	public function state()
+	{
+		return $this->state;
+	}
+
+	public function setState($state)
+	{
+		if ($state <> 'edit' 
+			&& $state <> 'active' 
+			&& $state <> 'post') return false;
+
+		// delete all data when changing from edit to active state
+		if ($this->state == 'edit' && $state = 'active') {
+			$this->store->deleteAllWorkers($this->batchId);
+		}
+
+		$this->state = $state;
+		$this->store->writeBatch('state', $state, $this->batchId);
+	}
+
 	public function getWorker($wid)
 	{
 		$store = new DataStore();
-		$meta = $store->read('meta', null, $this->batchId, $wid);
+		$meta = $store->readWorker('meta', null, $this->batchId, $wid);
 		if (is_array($meta)) {
-    		$meta['stepId'] = $store->read('stepId', null, $this->batchId, $wid);
+    		$meta['stepId'] = $store->readWorker('stepId', null, $this->batchId, $wid);
     		$meta['finished'] = ($meta['stepId'] == $this->countSteps() - 1);
     	}
 
@@ -98,20 +129,20 @@ class Batch extends Base
 	{
 		$store = new DataStore();
 		$workers = array();
-		$path = DATA_PATH . $this->batchId . DS;
+		$path = DATA_PATH . $this->batchId . DS . 'workers' . DS;
 		$files = glob($path . '*', GLOB_MARK);
 	    foreach ($files as $file) 
 	    {
 	    	$file = preg_replace('#^' . preg_quote($path) . '#', '', $file);
 	    	$wid = preg_replace('#'.DSX.'$#', '', $file);
 
-	    	$meta = $store->read('meta', null, $this->batchId, $wid);
-	    	$meta['stepId'] = $store->read('stepId', null, $this->batchId, $wid);
+	    	$meta = $store->readWorker('meta', null, $this->batchId, $wid);
+	    	$meta['stepId'] = $store->readWorker('stepId', null, $this->batchId, $wid);
     		$meta['finished'] = ($meta['stepId'] == $this->countSteps() - 1);
     		$workers[$wid] = $meta;
 
 	    	if ($includeResults) {
-	    		$workers[$wid]['results'] = $store->readCSV('results', $this->batchId, $wid);
+	    		$workers[$wid]['results'] = $store->readWorkerCSV('results', $this->batchId, $wid);
 	    	}
 	    }
 
@@ -207,7 +238,11 @@ class Batch extends Base
 				$sd += ($step['results-avg'] - $value) * ($step['results-avg'] - $value);
 			}
 
-			$step['results-sd'] = sqrt($sd / ($step['workers'] - 1));
+			if ($step['workers'] > 1) {
+				$step['results-sd'] = sqrt($sd / ($step['workers'] - 1));
+			} else {
+				$step['results-sd'] = 0;
+			}
 		}
 
 		return $steps;
@@ -263,6 +298,6 @@ class Batch extends Base
 			'useragent' 	=> $_SERVER['HTTP_USER_AGENT'],
 		);
 
-		$this->store->write('meta', $meta);
+		$this->store->writeWorker('meta', $meta);
 	}
 }

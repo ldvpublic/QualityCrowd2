@@ -27,7 +27,7 @@ class StepQuestion extends Step
 		{
 			unset($data['watched']);
 			unset($data['answered']);
-			$data['media'] = $this->arguments[0];
+			$data['media'] = (isset($this->arguments[0]) ? $this->arguments[0] : null);
 			return true;
 		} else 
 		{

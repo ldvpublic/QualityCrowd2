@@ -16,6 +16,8 @@ $data = array(
 
 foreach($workers as $w)
 {
+	if (!isset($w['useragent'])) continue;
+	
 	$browser = $bc->getBrowser($w['useragent']);
 	$data['browsers'][] = $browser->Browser;
 	$data['platforms'][] = $browser->Platform;

@@ -1,3 +1,40 @@
+html, body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size:13px;
+}
+
+html {
+	margin:0;
+	background-color:#ccc;
+}
+
+body {
+	margin: 20px auto;
+	width:800px;
+	padding:0px 15px;
+	background-color:white;
+}
+
+div.successmessage {
+	background-color:#77ff77;
+	padding:10px;
+	padding-left:30px;
+}
+
+div.header {
+	background-color:#eee;
+	border-bottom: 2px solid #bbb;
+	margin:0px -15px 15px -15px;
+	padding:7px 15px;
+}
+
+div.footer {
+	background-color:#eee;
+	border-top: 2px solid #bbb;
+	margin:20px -15px 0px -15px;
+	padding:7px 15px;
+}
+
 pre {
 	background-color:#ddd;
 	padding:4px;
@@ -24,9 +61,52 @@ div.steppreview {
 
 /* ==================================== Form */
 
-input {
-	font-size:13px;
-	padding:4px;
+fieldset {
+	border: 1px dotted #888;
+	margin:15px 0;
+	padding:10px;
+}
+
+legend {
+	padding:0 5px;
+}
+
+label {
+    float: left;
+    width: 5em;
+    padding-top: 9px;
+    text-align: right;
+    margin-right: 15px;
+    margin-bottom:5px;
+}
+
+input, button, select {
+    display: block;
+    font-size: 13px;
+    padding: 5px;
+    margin-bottom: 10px;
+    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+select {
+	-webkit-appearance: push-button;
+	-webkit-border-radius: 3px;
+	-webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+	background-image: url(../img/selectarrow.png);
+	background-position: center right;
+	background-repeat: no-repeat;
+	border: 1px solid #AAA;
+	font-size: inherit;
+	overflow: hidden;
+	padding: 5px 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 150px;
+}
+
+button {
+	padding:7px 18px;
+	font-size: 14px;
 }
 
 /* ==================================== Menu */
@@ -199,7 +279,7 @@ table.steps tr.property td.property-key2 {
 .batchrow .infofloat {
 	font-size:25px;
 	text-align:center;
-	margin-left:25px;
+	margin-left:20px;
 	float:right;
 }
 
@@ -220,3 +300,113 @@ table.steps tr.property td.property-key2 {
 .batchrow .finished:after {
 	content: "Finished";
 }
+
+.batchrow .state:after {
+	content: "State";
+}
+
+
+
+/* ==================================== Icons */
+
+div.icon {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+}
+div.icon:after,
+div.icon:before {
+    border: 2px solid black;
+    content: '';
+    position: absolute;
+}
+
+.batchrow:hover div.icon:after,
+.batchrow:hover div.icon:before {
+	border: 2px solid white;
+}
+
+/* Edit Icon */
+
+div.icon-edit {
+    height: 26px;
+    width: 26px;
+}
+div.icon-edit:after {
+    height: 11px;
+    left: 6px;
+    top: 5px;
+    width:11px;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+    
+}
+
+div.icon-edit:before,
+.batchrow:hover div.icon-edit:before {
+	border: none;
+}
+
+/* Active Icon */
+
+div.icon-active {
+    height: 26px;
+    width: 26px;
+}
+div.icon-active:after {
+    border-bottom: 8px solid transparent;
+    border-left: 13px solid black;
+    border-right: 13px solid transparent;
+    border-top: 8px solid transparent;
+    height: 0;
+    left: 8px;
+    top: 5px;
+    width: 0;
+}
+
+.batchrow:hover div.icon-active:after {
+	border-bottom: 8px solid transparent;
+    border-left: 13px solid white;
+    border-right: 13px solid transparent;
+    border-top: 8px solid transparent;
+}
+
+div.icon-active:before,
+.batchrow:hover div.icon-active:before {
+    border: none;
+}
+
+/* Complete Icon */
+
+div.icon-post {
+    height: 26px;
+    width: 26px;
+}
+div.icon-post:after {
+    height: 14px;
+    left: 13px;
+    top: 5px;
+    width: 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+    
+}
+div.icon-post:before {
+	position:absolute;
+    height: 0;
+    left: 4px;
+    top: 14px;
+    width: 2px;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+}
+

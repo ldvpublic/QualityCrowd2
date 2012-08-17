@@ -36,12 +36,6 @@ ul.errormessage {
 	padding-left:30px;
 }
 
-ul.successmessage {
-	background-color:#77ff77;
-	padding:10px;
-	padding-left:30px;
-}
-
 div.header {
 	background-color:#eee;
 	border-bottom: 2px solid #bbb;
@@ -54,6 +48,12 @@ div.footer {
 	border-top: 2px solid #bbb;
 	margin:20px -15px 0px -15px;
 	padding:7px 15px;
+}
+
+span.debugmessage {
+	font-weight: bold;
+	margin: 0 20px;
+	color: red;
 }
 
 

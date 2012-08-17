@@ -1,9 +1,11 @@
-<h3>Search</h3>
 <form action="?" method="get">
-	<label for="workerid">Worker ID</label>
-	<input name="workerid">
+	<fieldset>
+		<legend>Search</legend>
+		<label for="workerid">Worker ID</label>
+		<input name="workerid">
+	</fieldset>
 
-	<input type="submit" value="Search">
+	<button>Search</button>
 </form>
 
 <?php if ($query <> ''): ?>

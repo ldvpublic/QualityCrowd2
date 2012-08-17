@@ -14,7 +14,9 @@
 	<body>
 		<div class="header">
 			Step <?= ($stepId+1) ?> of <?= $stepCount ?>
-			<?php /*<a href="<?= BASE_URL ?><?= $batchId ?>/<?= $workerId ?>?restart=">Restart</a> */ ?>
+			<?php if($state == 'edit'): ?>
+				<span class="debugmessage">PREVIEW MODE, all data will be deleted</span>
+			<?php endif; ?>
 		</div>
 
 		<h1><?= $title ?></h1>
@@ -27,30 +29,28 @@
 		</ul>
 		<?php endif; ?>
 
-		<form action="<?= BASE_URL ?><?= $batchId ?>/<?= $workerId ?>" method="post" id="stepform">
+		<form action="<?= BASE_URL.$batchId.'/'.$workerId ?>" method="post" id="stepform">
 			<input type="hidden" name="stepId" value="<?= $stepId ?>">
 
 			<?= $content ?>
 		</form>
 
+		<?php if($state == 'post'): ?>
+			<span class="debugmessage">
+				This test is already completed, no more work for you. Sorry.
+			</span>
+		<?php endif; ?>
+
 		<div class="footer">
-			<?php if ($stepId + 1 <> $stepCount): ?>
+			<?php if ($stepId + 1 <> $stepCount && $state <> 'post'): ?>
 			<button id="button_next">Next</button>
-			<?php endif; ?>
-			<?php if ($stepId == -1): ?>
-			<button id="button_restart">Restart</button>
 			<?php endif; ?>
 		</div>
 
+		<?php if ($stepId + 1 <> $stepCount): ?>
 		<script type="text/javascript">
-			<?php if ($stepId + 1 <> $stepCount): ?>
 			$('#button_next').click(function() {$('#stepform').trigger('submit');});
-			<?php endif; ?>
-			<?php if ($stepId == -1): ?>
-			$('#button_restart').click(function() {
-				window.location.href = window.location.href + '?restart='; 
-			});
-			<?php endif; ?>
 		</script>
+		<?php endif; ?>
 	</body>
 </html>
