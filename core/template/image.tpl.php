@@ -1,9 +1,9 @@
-<p><?= $text ?></p>
+<p><?= ifset($text) ?></p>
 
 <p>
 <img src="<?= $image ?>" alt="">
 </p>
 
-<p><?= $question ?></p>
+<p><?= ifset($question) ?></p>
 
 <?= $answerform ?>

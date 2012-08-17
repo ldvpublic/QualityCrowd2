@@ -29,4 +29,8 @@ function trimText($input, $length, $ellipses = true, $strip_html = true) {
   
     return $trimmed_text;
 }
+
+function ifset(&$val, $else = '') {
+    return (isset($val) ? $val : $else);
+}
 ?>
