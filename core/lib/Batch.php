@@ -105,7 +105,7 @@ class Batch extends Base
 			&& $state <> 'post') return false;
 
 		// delete all data when changing from edit to active state
-		if ($this->state == 'edit' && $state = 'active') {
+		if ($this->state == 'edit' && $state == 'active') {
 			$this->store->deleteAllWorkers($this->batchId);
 		}
 

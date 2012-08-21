@@ -31,7 +31,7 @@ class AdminBatch extends AdminPage
 					$myBatchCompiler->setSource($_POST['qcs']);
 				}
 
-				// save QC-Script
+				// save state
 				if (isset($_POST['state'])) {
 					$batch->setState($_POST['state']);
 				}
