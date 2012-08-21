@@ -53,12 +53,8 @@ class AdminBatch extends AdminPage
 
 			case 'results':
 				$myTpl = new Template('admin.batch.results');
-				$myTpl->set('steps', $batch->resultsPerStep());
-				break;
-
-			case 'browsers':
-				$myTpl = new Template('admin.batch.browsers');
-				$myTpl->set('workers', $batch->workers());
+				$myTpl->set('steps', $batch->steps());
+				$myTpl->set('results', $batch->resultsPerStep());
 				break;
 
 			case 'results.csv':
@@ -77,6 +73,11 @@ class AdminBatch extends AdminPage
 				$myTpl->set('workers', $batch->workers(true));
 				echo $myTpl->render();
 				exit;
+				break;
+
+			case 'browsers':
+				$myTpl = new Template('admin.batch.browsers');
+				$myTpl->set('workers', $batch->workers());
 				break;
 
 			default:

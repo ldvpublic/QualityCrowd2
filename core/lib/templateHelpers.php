@@ -33,4 +33,18 @@ function trimText($input, $length, $ellipses = true, $strip_html = true) {
 function ifset(&$val, $else = '') {
     return (isset($val) ? $val : $else);
 }
+
+function formatTime($seconds)
+{
+    $hours = floor($seconds / 3600);
+    $seconds = $seconds - ($hours * 3600);
+    $minutes = floor($seconds / 60);
+    $seconds = round($seconds - ($minutes * 60), 0);
+
+    $hours = str_pad($hours, 2 ,'0', STR_PAD_LEFT);
+    $minutes = str_pad($minutes, 2 ,'0', STR_PAD_LEFT);
+    $seconds = str_pad($seconds, 2 ,'0', STR_PAD_LEFT);
+
+    return $hours . ':' . $minutes . ':' . $seconds;
+}
 ?>

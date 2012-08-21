@@ -8,7 +8,7 @@ require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_plotli
 $dataY = array();
 $labelsX = array();
 $finished = 0;
-foreach($steps as $stepId => &$step)
+foreach($results as $stepId => &$step)
 {
 	$dataY[] = $step['workers'];
 	$labelsX[] = ($stepId + 1);
@@ -54,7 +54,7 @@ $graph->Stroke(TMP_PATH.'img-cache'.DS.'workers-'.$id.'.png');
 /*
  * render step graphs
  */
-foreach($steps as $stepId => &$step)
+foreach($results as $stepId => &$step)
 {
 	if ($step['results-cnt'] == 0) continue;
 	// prepare graph
@@ -66,7 +66,7 @@ foreach($steps as $stepId => &$step)
 	}
 
 	// setup the graph
-	$graph = new Graph(410,180);
+	$graph = new Graph(400,180);
 	$graph->SetScale("textint");
 
 	$theme_class = new UniversalTheme;
@@ -106,8 +106,8 @@ foreach($steps as $stepId => &$step)
 	$graph->Stroke(TMP_PATH.'img-cache'.DS.'results-'.$id.'-' . $stepId .'.png');
 }
 
-
 ?>
+
 
 <h3>Download Results</h3>
 <ul>
@@ -122,15 +122,17 @@ foreach($steps as $stepId => &$step)
 <h3>Consolidated Results</h3>
 <table class="steps">
 
-<?php foreach($steps as $stepId => &$step): 
+<?php foreach($results as $stepId => &$step): 
 	$rows = 2;
 	if ($stepId > 0) $rows += 3;
 	if ($step['results-cnt'] > 0) $rows += 4;
 ?>
 	<tr class="step">
 		<td class="number" rowspan="<?= $rows ?>"><?= ($stepId + 1) ?></td>
-		<td class="command" colspan="3"><?= $step['command'] ?></td>
-		<td></td>
+		<td class="command"><?= $step['command'] ?></td>
+		<td class="argument" colspan="3">
+			<?= trimText(implode(' &nbsp; &nbsp; ', $steps[$stepId]['arguments']), 70) ?>
+		</td>
 	</tr>
 	<tr class="property">
 		<td class="property-key" colspan="2">workers</td>
@@ -145,15 +147,15 @@ foreach($steps as $stepId => &$step)
 	<tr class="property">
 		<td class="property-key" rowspan="3">duration</td>
 		<td class="property-key2">average</td>
-		<td class="property-value"><?= date('i:s', $step['duration-avg']) ?></td>
+		<td class="property-value"><?= formatTime($step['duration-avg']) ?></td>
 	</tr>
 	<tr class="property">
 		<td class="property-key2">maximum</td>
-		<td class="property-value"><?= date('i:s', $step['duration-max']) ?></td>
+		<td class="property-value"><?= formatTime($step['duration-max']) ?></td>
 	</tr>
 	<tr class="property">
 		<td class="property-key2">minimum</td>
-		<td class="property-value"><?= date('i:s', $step['duration-min']) ?></td>
+		<td class="property-value"><?= formatTime($step['duration-min']) ?></td>
 	</tr>
 	<?php endif; ?>
 	<?php if ($step['results-cnt'] > 0): ?>
