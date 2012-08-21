@@ -123,15 +123,14 @@ foreach($results as $stepId => &$step)
 <table class="steps">
 
 <?php foreach($results as $stepId => &$step): 
-	$rows = 2;
-	if ($stepId > 0) $rows += 3;
+	$rows = 5;
 	if ($step['results-cnt'] > 0) $rows += 4;
 ?>
 	<tr class="step">
 		<td class="number" rowspan="<?= $rows ?>"><?= ($stepId + 1) ?></td>
-		<td class="command"><?= $step['command'] ?></td>
-		<td class="argument" colspan="3">
-			<?= trimText(implode(' &nbsp; &nbsp; ', $steps[$stepId]['arguments']), 70) ?>
+		<td class="command" colspan="2"><?= $step['command'] ?></td>
+		<td class="argument" colspan="2">
+			<?= trimText(implode(' &nbsp; &nbsp; ', $steps[$stepId]['arguments']), 60) ?>
 		</td>
 	</tr>
 	<tr class="property">
@@ -143,7 +142,7 @@ foreach($results as $stepId => &$step)
 			<?php endif; ?>
 		</td>
 	</tr>
-	<?php if ($stepId > 0): ?>
+
 	<tr class="property">
 		<td class="property-key" rowspan="3">duration</td>
 		<td class="property-key2">average</td>
@@ -157,7 +156,7 @@ foreach($results as $stepId => &$step)
 		<td class="property-key2">minimum</td>
 		<td class="property-value"><?= formatTime($step['duration-min']) ?></td>
 	</tr>
-	<?php endif; ?>
+
 	<?php if ($step['results-cnt'] > 0): ?>
 	<tr class="property">
 		<td class="property-key" rowspan="4">result</td>

@@ -142,7 +142,22 @@ class Batch extends Base
     		$workers[$wid] = $meta;
 
 	    	if ($includeResults) {
-	    		$workers[$wid]['results'] = $store->readWorkerCSV('results', $this->batchId, $wid);
+	    		$results = $store->readWorkerCSV('results', $this->batchId, $wid);
+	    		$durations = array();
+
+	    		// calculate durations
+	    		if (is_array($results))
+	    		{
+	    			$lastTimestamp = $meta['timestamp'];
+					foreach($results as $stepId => &$stepResults)
+					{
+						$durations[$stepId] = $stepResults[2] - $lastTimestamp;
+						$lastTimestamp = $stepResults[2];
+					}
+				}
+
+				$workers[$wid]['durations'] = $durations;
+				$workers[$wid]['results'] = $results;
 	    	}
 	    }
 
@@ -161,18 +176,16 @@ class Batch extends Base
 			foreach($w['results'] as $stepId => $stepResults)
 			{
 				$steps[$stepId]['command'] = $stepResults[1];
-				$steps[$stepId]['timestamp'][$wid] = $stepResults[2];
-				if ($stepId > 0) {
-					$steps[$stepId]['duration'][$wid] = $stepResults[2] - 
-						$steps[$stepId - 1]['timestamp'][$wid];
-				} else {
-					$steps[$stepId]['duration'][$wid] = 0;
-				}
-
+				
 				array_shift($stepResults);
 				array_shift($stepResults);
 				array_shift($stepResults);
 				$steps[$stepId]['results'][$wid] = $stepResults;
+			}
+
+			foreach($w['durations'] as $stepId => $duration)
+			{
+				$steps[$stepId]['durations'][$wid] = $duration;
 			}
 		}
 
@@ -183,14 +196,14 @@ class Batch extends Base
 			$max = 0;
 			$min = time();
 
-			foreach($step['duration'] as $wid => $duration)
+			foreach($step['durations'] as $wid => $duration)
 			{
 				if ($duration > $max) $max = $duration;
 				if ($duration < $min) $min = $duration;
 				$sum += $duration;
 			}
 
-			$step['duration-avg'] = $sum / count($step['duration']);
+			$step['duration-avg'] = $sum / count($step['durations']);
 			$step['duration-max'] = $max;
 			$step['duration-min'] = $min;
 		}
