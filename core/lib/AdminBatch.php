@@ -61,6 +61,24 @@ class AdminBatch extends AdminPage
 				$myTpl->set('workers', $batch->workers());
 				break;
 
+			case 'results.csv':
+				$myTpl = new Template('admin.batch.results.csv');
+				$myTpl->set('batchId', $batchId);
+				$myTpl->set('steps', $batch->steps());
+				$myTpl->set('workers', $batch->workers(true));
+				echo $myTpl->render();
+				exit;
+				break;
+
+			case 'results.xlsx':
+				$myTpl = new Template('admin.batch.results.xlsx');
+				$myTpl->set('batchId', $batchId);
+				$myTpl->set('steps', $batch->steps());
+				$myTpl->set('workers', $batch->workers(true));
+				echo $myTpl->render();
+				exit;
+				break;
+
 			default:
 				if (is_numeric($this->path[2]))
 				{

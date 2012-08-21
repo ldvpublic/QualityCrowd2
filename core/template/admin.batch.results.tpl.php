@@ -109,6 +109,12 @@ foreach($steps as $stepId => &$step)
 
 ?>
 
+<h3>Download Results</h3>
+<ul>
+	<li><a href="<?= BASE_URL.'admin/batch/'.$id.'/results.csv' ?>">Downlad as CSV-file</a></li>
+	<li><a href="<?= BASE_URL.'admin/batch/'.$id.'/results.xlsx' ?>">Downlad as XLSX-file</a></li>
+</ul>
+
 <h3>Workers per Step</h3>
 
 <img src="<?= BASE_URL.'core/tmp/img-cache/workers-'.$id.'.png' ?>">

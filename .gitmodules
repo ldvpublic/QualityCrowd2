@@ -10,3 +10,6 @@
 [submodule "core/3p/phpbrowscap"]
 	path = core/3p/phpbrowscap
 	url = git://github.com/GaretJax/phpbrowscap.git
+[submodule "core/3p/phpexcel"]
+	path = core/3p/phpexcel
+	url = git://github.com/PHPOffice/PHPExcel.git

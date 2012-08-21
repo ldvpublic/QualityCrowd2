@@ -34,7 +34,9 @@ define('BASE_URL', $baseURL);
 define('MEDIA_URL', $baseURL . 'media/');
 
 // autoload PHP classes
-spl_autoload_register(function ($class) 
+spl_autoload_register('myAutoloader');
+
+function myAutoloader($class) 
 {
 	$file = LIB_PATH . $class . '.php';
 	if (!file_exists($file))
@@ -42,4 +44,4 @@ spl_autoload_register(function ($class)
 		throw new Exception("Class \"$class\" not found");
 	}
 	include_once($file);
-});
+}
