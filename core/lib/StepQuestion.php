@@ -62,8 +62,14 @@ class StepQuestion extends Step
 			$tpl = new Template('player');
 			$tpl->set('file', $this->getMediaUrl() . $video);
 			$tpl->set('filename', $video);
-			$tpl->set('width', 352);
-			$tpl->set('height', 288);
+
+			$width = 352;
+			if (isset($this->properties['videowidth'])) $width = $this->properties['videowidth'];
+			$height = 288;
+			if (isset($this->properties['videoheight'])) $height = $this->properties['videoheight'];
+
+			$tpl->set('width', $width);
+			$tpl->set('height', $height);
 			$videos[$video] = $tpl->render();
 		}
 
