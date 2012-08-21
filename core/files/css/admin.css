@@ -61,17 +61,17 @@ div.steppreview {
 
 /* ==================================== Form */
 
-fieldset {
+form fieldset {
 	border: 1px dotted #888;
 	margin:15px 0;
 	padding:10px;
 }
 
-legend {
+form legend {
 	padding:0 5px;
 }
 
-label {
+form label {
     float: left;
     width: 5em;
     padding-top: 9px;
@@ -80,7 +80,7 @@ label {
     margin-bottom:5px;
 }
 
-input, button, select {
+form input, form button, form select {
     display: block;
     font-size: 13px;
     padding: 5px;
@@ -88,7 +88,7 @@ input, button, select {
     -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-select {
+form select {
 	-webkit-appearance: push-button;
 	-webkit-border-radius: 3px;
 	-webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
@@ -104,7 +104,7 @@ select {
 	min-width: 150px;
 }
 
-button {
+form button {
 	padding:7px 18px;
 	font-size: 14px;
 }
