@@ -57,7 +57,8 @@ meta title "New Batch"
 meta description "New batch description"
 
 set title "New Batch"
-page "Hello World"
+set text "Hello World"
+page
 
 EOT;
 		$path = BATCH_PATH . $this->batchId;
@@ -169,20 +170,20 @@ EOT;
 			
 			if (!isset($this->commands[$words[0]]))
 			{
-				throw new Exception ('unknown command "' . $words[0] . '"');
+				throw new Exception ($this->batchId . ': unknown command "' . $words[0] . '"');
 			}
 			$cmd = $this->commands[$words[0]];
 
 			if (count($words) < $cmd['minArguments'] + 1) 
 			{
-				throw new Exception(
+				throw new Exception($this->batchId . ': ' .
 					'"' . $words[0] . '" requires at least ' . 
 					$cmd['minArguments'] . ' arguments');
 			}
 
 			if (count($words) > $cmd['maxArguments'] + 1) 
 			{
-				throw new Exception(
+				throw new Exception($this->batchId . ': ' .
 					'"' . $words[0] . '" accepts a maximum of ' . 
 					$cmd['maxArguments'] . ' arguments');
 			}
@@ -212,6 +213,9 @@ EOT;
 
 		// remove multiple spaces
 		$source = preg_replace("/\ {2,}/", ' ', $source);
+
+		// remove spaces at line endings
+		$source = preg_replace("/\ *\n/", "\n", $source);
 
 		return $source;
 	}
