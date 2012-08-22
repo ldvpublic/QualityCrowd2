@@ -1,4 +1,4 @@
-<p><?= ifset($text) ?></p>
+<p><?= $text ?></p>
 
 <?php foreach($videos as $k => $v): ?>
 	<?= $v ?>
@@ -27,6 +27,6 @@
 	}
 </script>
 
-<p><?= ifset($question) ?></p>
+<p><?= $question ?></p>
 
 <?= $answerform ?>

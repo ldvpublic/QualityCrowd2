@@ -1,5 +1,5 @@
-<p><?= ifset($text) ?></p>
+<p><?= $text ?></p>
 
-<p><?= ifset($question) ?></p>
+<p><?= $question ?></p>
 
 <?= $answerform ?>

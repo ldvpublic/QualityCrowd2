@@ -11,6 +11,6 @@ class StepPage extends Step
 
 	protected function prepareRender()
 	{
-		$this->tpl->set('text', $this->properties['text']);
+		// nothing to do
 	}
 }

@@ -1,1 +1,1 @@
-<p><?= ifset($text) ?></p>
+<p><?= $text ?></p>

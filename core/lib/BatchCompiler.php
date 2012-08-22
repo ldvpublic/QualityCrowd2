@@ -23,6 +23,51 @@ class BatchCompiler extends Base
 			'qualification' => array('minArguments' => 1, 'maxArguments' => 1),
 			'return'        => array('minArguments' => 0, 'maxArguments' => 0),
 			);
+
+		$this->propertyList = array(
+			'page' => array(
+				'title' 		 => '',
+				'text' 			 => '',
+				),
+			'video' => array(
+				'skipvalidation' => false,
+				'title' 		 => '',
+				'text' 			 => '',
+				'question' 		 => '',
+				'answermode'	 => 'discrete',
+				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
+				'mediaurl' 		 => MEDIA_URL,
+				'videowidth' 	 => 352,
+				'videoheight' 	 => 288,
+				),
+			'image' => array(
+				'skipvalidation' => false,
+				'title' 		 => '',
+				'text' 			 => '',
+				'question' 		 => '',
+				'answermode'	 => 'discrete',
+				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
+				'mediaurl' 		 => MEDIA_URL,
+				),
+			'question' => array(
+				'skipvalidation' => false,
+				'title' 		 => '',
+				'text' 			 => '',
+				'question' 		 => '',
+				'answermode'	 => 'discrete',
+				'answers'		 => '1: First answer; 2: Second answer; 3: Third answer',
+				),
+			'showtoken' => array(
+				'title' 		 => '',
+				'text' 			 => '',
+				),
+			'qualification' => array(
+				'title' 		 => '',
+				'text' 			 => '',
+				),
+			'return' => array(
+				),
+			);
 	}
 
 	public function getSource() 
@@ -112,43 +157,56 @@ EOT;
 			switch($sourceStep['command']) 
 			{
 				case 'meta':
-				$meta[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1], $variables);
-				break;
+					$meta[$sourceStep['arguments'][0]] = 
+						$this->parseValue($sourceStep['arguments'][1], $variables);
+					break;
 
 				case 'set':
-				$value = (isset($sourceStep['arguments'][1]) ? $sourceStep['arguments'][1] : null);
-				$stepProperties[$sourceStep['arguments'][0]] = 
-					$this->parseValue($value, $variables);
-				break;
+					$value = (isset($sourceStep['arguments'][1]) ? $sourceStep['arguments'][1] : true);
+					$stepProperties[$sourceStep['arguments'][0]] = 
+						$this->parseValue($value, $variables);
+					break;
 
 				case 'var':
-				$variables[$sourceStep['arguments'][0]] = 
-					$this->parseValue($sourceStep['arguments'][1], $variables);
-				break;
+					$variables[$sourceStep['arguments'][0]] = 
+						$this->parseValue($sourceStep['arguments'][1], $variables);
+					break;
 
 				case 'unset':
-				if ($sourceStep['arguments'][0] == 'all')
-				{
-					unset($stepProperties[$sourceStep['arguments'][0]]);	
-				} else
-				{
-					$stepProperties = array();
-				}
-				break;
+					if ($sourceStep['arguments'][0] == 'all')
+					{
+						unset($stepProperties[$sourceStep['arguments'][0]]);	
+					} else
+					{
+						$stepProperties = array();
+					}
+					break;
 
 				default:
-				$batchStep['command'] = $sourceStep['command'];
-				$batchStep['properties'] = $stepProperties;
-				$batchStep['arguments'] = array();
-				foreach($sourceStep['arguments'] as $arg)
-				{
-					$batchStep['arguments'][] = $this->parseValue($arg, $variables);
-				}
-				$batchSteps[] = $batchStep;
+					$batchStep['command'] = $sourceStep['command'];
+
+					// set properties
+					foreach($this->propertyList[$sourceStep['command']] as $property => $default)
+					{
+						if (isset($stepProperties[$property])) {
+							$batchStep['properties'][$property] = $stepProperties[$property];
+						} else {
+							$batchStep['properties'][$property] = $default;
+						}
+					}
+
+					// set arguments
+					$batchStep['arguments'] = array();
+					foreach($sourceStep['arguments'] as $arg) 
+					{
+						$batchStep['arguments'][] = $this->parseValue($arg, $variables);
+					}
+
+					$batchSteps[] = $batchStep;
+					break;
 			}
 		}
-
+		
 		$myBatch = new Batch($this->batchId, $meta, $batchSteps);
 		$myBatch->renderStep(0);
 
@@ -222,6 +280,9 @@ EOT;
 
 	private function parseValue($value, $variables)
 	{
+		// leave ints, bools, etc. untouched
+		if (gettype($value) <> 'string') return $value;
+
 		// resolve variables
 		foreach($variables as $k => $v)
 		{

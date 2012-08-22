@@ -1,5 +1,7 @@
 <?php
 
+// this class handles the step commands "video", "image" and "question"
+
 class StepQuestion extends Step
 {
 	protected function init() 
@@ -11,7 +13,7 @@ class StepQuestion extends Step
 	{
 		$msg = array();
 
-		if (!isset($this->properties['skipvalidation'])) {
+		if ($this->properties['skipvalidation']) {
 			if ($this->command == 'video' && 
 				(!isset($data['watched']) || $data['watched'] <> true))
 			{
@@ -49,7 +51,7 @@ class StepQuestion extends Step
 	private function prepareImage()
 	{
 		$img = $this->arguments[0];
-		$this->tpl->set('image', $this->getMediaUrl() . $img);
+		$this->tpl->set('image', $this->properties['mediaurl'] . $img);
 	}
 
 	private function prepareVideo()
@@ -60,16 +62,10 @@ class StepQuestion extends Step
 		foreach ($this->arguments as $video)
 		{
 			$tpl = new Template('player');
-			$tpl->set('file', $this->getMediaUrl() . $video);
+			$tpl->set('file', $this->properties['mediaurl'] . $video);
 			$tpl->set('filename', $video);
-
-			$width = 352;
-			if (isset($this->properties['videowidth'])) $width = $this->properties['videowidth'];
-			$height = 288;
-			if (isset($this->properties['videoheight'])) $height = $this->properties['videoheight'];
-
-			$tpl->set('width', $width);
-			$tpl->set('height', $height);
+			$tpl->set('width',  $this->properties['videowidth']);
+			$tpl->set('height', $this->properties['videoheight']);
 			$videos[$video] = $tpl->render();
 		}
 
@@ -103,16 +99,5 @@ class StepQuestion extends Step
 		$tpl->set('answers', $answers);
 		$answerform = $tpl->render();
 		$this->tpl->set('answerform', $answerform);
-	}
-
-	private function getMediaUrl()
-	{
-		$mediaUrl = MEDIA_URL;
-		if (isset($this->properties['mediaurl']) && $this->properties['mediaurl'] <> '')
-		{
-			$mediaUrl = $this->properties['mediaurl'];
-		}
-
-		return $mediaUrl;
 	}
 }

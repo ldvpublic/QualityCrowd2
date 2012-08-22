@@ -25,6 +25,6 @@ class StepQualification extends Step
 
 	protected function prepareRender()
 	{
-
+		// nothing to do
 	}
 }
