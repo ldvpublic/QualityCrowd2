@@ -43,4 +43,12 @@ function formatTime($seconds)
 
     return $hours . ':' . $minutes . ':' . $seconds;
 }
+
+function formatPropertyValue($pv)
+{
+    if ($pv === true) return '<i>True</i>';
+    if ($pv === false) return '<i>False</i>';
+    if ($pv === '') return '';
+    return trimText($pv, 90);
+}
 ?>

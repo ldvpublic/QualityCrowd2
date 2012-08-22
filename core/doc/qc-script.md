@@ -19,66 +19,14 @@ Each statement begins with a command and may be followed by one or more argument
 	# I am a comment
 Lines starting with a number sign (#) are comments and removed before parsing.
 
-## Command Reference
+### Macros
 
-### Special Commands
+#### include()
+	<command> include(<file>)
+Can be used instead of a commmand argument to pass the contents of `<file>` as the argument value.
 
-#### meta
-	meta <key> [<value>]
-
-#### set
-	set <key> [<value>]
-The `set` command sets a property defined by the `<key>`-argument to the value specified by `<value>`. This property can be used by all further commands and its value will be set until a matching `unset`-command is processed.
-
-#### unset
-	unset <key>
-Unsets the property with the passed `<key>`. If `all` is passed all properties will be unset.
-
-#### var
-	var <key> <value>
-Sets an internal variable to `<value>`. To use this variable for example in a `set` command, use the following syntax:
-
-	set title $titlevar
-
-### Step Commands
-
-The following commands will produce their own page which is presented to the test subject. Therefore a corresponding template has to exists under `/core/template/<command>.tpl.php`.
-
-#### image
-	image <file>
-
-Used properties: `answermode`, `question`, `skipvalidation`, `text`, `title`
-
-#### page
-	page
-Displays a simple HTML-Page which is particularly useful as a welcome page. It is recommended to use the `include()`-macro to set the page text property (e.g. `set text include(welcome.html)`)
-
-Used properties: `text`, `title`
-
-#### qualification
-	qualification <batchId>
-
-Used properties: `text, `title`
-
-#### question
-	question
-
-Used properties: `question`, `text, `title`
-
-#### return
-	return
-
-Used properties: none
-
-#### showtoken
-	showtoken
-
-Used properties: `text`, `title`
-
-#### video
-	image <file> [<file>]
-
-Used properties: `answermode`, `question`, `skipvalidation`, `title`
+#### variables
+	<command> $<var>
 
 ## Properties
 
@@ -112,11 +60,4 @@ Sets the title of a step page to `<text>`; will be displayed as page heading on 
 ### videoheight
 	set videoheight <number>
 
-## Macros
 
-### include()
-	<command> include(<file>)
-Can be used instead of a commmand argument to pass the contents of `<file>` as the argument value.
-
-### variables
-	<command> $<var>

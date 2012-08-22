@@ -3,33 +3,45 @@
 class BatchCompiler extends Base
 {
 	private $batchId;
-	private $commands;
 	private $source;
 
-	public function __construct($batchId) 
-	{
-		$this->batchId = $batchId;
+	public static $syntax = array(
+		// special commands
+		'meta'          => array(
+			'minArguments' => 1,
+			'arguments' => array('key', 'value'),
+			'description' => '',
+			),
+		'var'           => array(
+			'minArguments' => 2,
+			'arguments' => array('variable', 'value'),
+			'description' => 'Sets an internal variable to `<value>`. To use this variable for example in a `set` command, use the following syntax: `set title $titlevar`',
+			),
+		'set'           => array(
+			'minArguments' => 1,
+			'arguments' => array('property', 'value'),
+			'description' => 'The `set` command sets a property defined by the `<property>`-argument to the value specified by `<value>`. This property can be used by all further commands and its value will be set until a matching `unset`-command is processed.',
+			),
+		'unset'         => array(
+			'minArguments' => 1,
+			'arguments' => array('property'),
+			'description' => 'Unsets the property with the passed `<property>`. If `all` is passed all properties will be unset.',
+			),
 
-		$this->commands = array(
-			'meta'          => array('minArguments' => 1, 'maxArguments' => 2),
-			'set'           => array('minArguments' => 1, 'maxArguments' => 2),
-			'var'           => array('minArguments' => 2, 'maxArguments' => 2),
-			'unset'         => array('minArguments' => 1, 'maxArguments' => 1),
-			'page'          => array('minArguments' => 0, 'maxArguments' => 0),
-			'video'         => array('minArguments' => 1, 'maxArguments' => 2),
-			'image'         => array('minArguments' => 1, 'maxArguments' => 1),
-			'question'      => array('minArguments' => 0, 'maxArguments' => 0),
-			'showtoken'     => array('minArguments' => 0, 'maxArguments' => 0),
-			'qualification' => array('minArguments' => 1, 'maxArguments' => 1),
-			'return'        => array('minArguments' => 0, 'maxArguments' => 0),
-			);
-
-		$this->propertyList = array(
-			'page' => array(
+		// step commands
+		'page'          => array(
+			'minArguments' => 0, 
+			'arguments' => array(),
+			'properties'   => array(
 				'title' 		 => '',
 				'text' 			 => '',
 				),
-			'video' => array(
+			'description' => 'Displays a simple HTML-Page which is particularly useful as a welcome page. It is recommended to use the `include()`-macro to set the page text property (e.g. `set text include(welcome.html)`)',
+			),
+		'video' => array(
+			'minArguments' => 1, 
+			'arguments' => array('video1', 'video2'),
+			'properties'   => array(
 				'skipvalidation' => false,
 				'title' 		 => '',
 				'text' 			 => '',
@@ -40,7 +52,12 @@ class BatchCompiler extends Base
 				'videowidth' 	 => 352,
 				'videoheight' 	 => 288,
 				),
-			'image' => array(
+			'description' => '',
+			),
+		'image' => array(
+			'minArguments' => 1,
+			'arguments' => array('image'),
+			'properties'   => array(
 				'skipvalidation' => false,
 				'title' 		 => '',
 				'text' 			 => '',
@@ -49,7 +66,12 @@ class BatchCompiler extends Base
 				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
 				'mediaurl' 		 => MEDIA_URL,
 				),
-			'question' => array(
+			'description' => '',
+			),
+		'question' => array(
+			'minArguments' => 0,
+			'arguments' => array(),
+			'properties'   => array(
 				'skipvalidation' => false,
 				'title' 		 => '',
 				'text' 			 => '',
@@ -57,17 +79,37 @@ class BatchCompiler extends Base
 				'answermode'	 => 'discrete',
 				'answers'		 => '1: First answer; 2: Second answer; 3: Third answer',
 				),
-			'showtoken' => array(
+			'description' => '',
+			),
+		'showtoken' => array(
+			'minArguments' => 0,
+			'arguments' => array(),
+			'properties'   => array(
 				'title' 		 => '',
 				'text' 			 => '',
 				),
-			'qualification' => array(
+			'description' => '',
+			),
+		'qualification' => array(
+			'minArguments' => 1,
+			'arguments' => array('qualification-batch'),
+			'properties'   => array(
 				'title' 		 => '',
 				'text' 			 => '',
 				),
-			'return' => array(
-				),
-			);
+			'description' => '',
+			),
+		'return' => array(
+			'minArguments' => 0,
+			'arguments' => array(),
+			'properties'   => array(),
+			'description' => '',
+			),
+		);
+
+	public function __construct($batchId) 
+	{
+		$this->batchId = $batchId;
 	}
 
 	public function getSource() 
@@ -186,7 +228,7 @@ EOT;
 					$batchStep['command'] = $sourceStep['command'];
 
 					// set properties
-					foreach($this->propertyList[$sourceStep['command']] as $property => $default)
+					foreach(self::$syntax[$sourceStep['command']]['properties'] as $property => $default)
 					{
 						if (isset($stepProperties[$property])) {
 							$batchStep['properties'][$property] = $stepProperties[$property];
@@ -226,11 +268,11 @@ EOT;
 			$words = explode(' ', $line);
 			$words = str_getcsv($line, ' ', '"');
 			
-			if (!isset($this->commands[$words[0]]))
+			if (!isset(self::$syntax[$words[0]]))
 			{
 				throw new Exception ($this->batchId . ': unknown command "' . $words[0] . '"');
 			}
-			$cmd = $this->commands[$words[0]];
+			$cmd = self::$syntax[$words[0]];
 
 			if (count($words) < $cmd['minArguments'] + 1) 
 			{
@@ -239,11 +281,11 @@ EOT;
 					$cmd['minArguments'] . ' arguments');
 			}
 
-			if (count($words) > $cmd['maxArguments'] + 1) 
+			if (count($words) > count($cmd['arguments']) + 1) 
 			{
 				throw new Exception($this->batchId . ': ' .
 					'"' . $words[0] . '" accepts a maximum of ' . 
-					$cmd['maxArguments'] . ' arguments');
+					count($cmd['arguments']) . ' arguments');
 			}
 
 			$data[] = array(

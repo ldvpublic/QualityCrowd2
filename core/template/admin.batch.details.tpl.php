@@ -30,14 +30,7 @@
 	foreach($v['properties'] as $pk => $pv): ?>
 	<tr class="property">
 		<td class="property-key"><?= $pk ?></td>
-		<td class="property-value" colspan="2">
-			<?php
-			if ($pv === true) echo '<i>True</i>';
-			elseif ($pv === false) echo '<i>False</i>';
-			elseif ($pv === '') echo '';
-			else echo trimText($pv, 90);
-			?>
-		</td>
+		<td class="property-value" colspan="2"><?= formatPropertyValue($pv) ?></td>
 	</tr>
 	<?php endforeach; ?>
 <?php endforeach; ?>
