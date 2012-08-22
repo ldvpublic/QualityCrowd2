@@ -13,9 +13,14 @@
 	</head>
 	<body>
 		<div class="header">
-			Step <?= ($stepId+1) ?> of <?= $stepCount ?>
+			<span id="step">Step <?= ($stepId+1) ?> of <?= $stepCount ?></span>
+
 			<?php if($state == 'edit'): ?>
-				<span class="debugmessage">PREVIEW MODE, all data will be deleted</span>
+			<span class="debugmessage">PREVIEW MODE, all data will be deleted</span>
+			<?php endif; ?>
+
+			<?php if($isLocked && $stepId < $stepCount - 1): ?>
+			<span id="timeout">Remaining time to finish this step: <?= formatTime($timeout) ?></span>
 			<?php endif; ?>
 		</div>
 
@@ -35,22 +40,56 @@
 			<?= $content ?>
 		</form>
 
-		<?php if($state == 'post'): ?>
-			<span class="debugmessage">
-				This test is already completed, no more work for you. Sorry.
-			</span>
-		<?php endif; ?>
-
 		<div class="footer">
-			<?php if ($stepId + 1 <> $stepCount && $state <> 'post'): ?>
-			<button id="button_next">Next</button>
+			<?php if ($stepId + 1 < $stepCount && $state <> 'post' && $isLocked): ?>
+				<button id="button_next">Next</button>
+			<?php endif; ?>
+
+			<?php if($state == 'post'): ?>
+			<span class="debugmessage">
+				This job is already completed, no more work for you. Sorry.
+			</span>
+			<?php endif; ?>
+
+			<?php if(!$isLocked && $stepId < $stepCount - 1): ?>
+			<span class="debugmessage">
+				There are currently working enough people on this job. Try again later.
+			</span>
 			<?php endif; ?>
 		</div>
 
-		<?php if ($stepId + 1 <> $stepCount): ?>
 		<script type="text/javascript">
+			<?php if ($stepId + 1 < $stepCount && $state <> 'post' && $isLocked): ?>
 			$('#button_next').click(function() {$('#stepform').trigger('submit');});
+			<?php endif; ?>
+
+			<?php if($isLocked && $stepId < $stepCount - 1): ?>
+			var remainingTime = <?= $timeout ?>;
+			var timer = window.setInterval(function () 
+			{	
+				if (remainingTime > 0) {
+					remainingTime--;
+					$('#timeout').html('Remaining time to finish this step: ' + formatTime(remainingTime));
+				} else {
+					window.clearInterval(timer);
+				}
+			}, 1000);
+
+			function formatTime(seconds)
+			{
+			    var hours = Math.floor(seconds / 3600);
+			    seconds = seconds - (hours * 3600);
+			    var minutes = Math.floor(seconds / 60);
+			    seconds = Math.round(seconds - (minutes * 60), 0);
+			    
+			    if(hours < 10) hours = "0" + hours;
+				if(minutes < 10) minutes = "0" + minutes;
+				if(seconds < 10) seconds = "0" + seconds;
+
+			    return hours + ':' + minutes + ':' + seconds;
+			}
+
+			<?php endif; ?>
 		</script>
-		<?php endif; ?>
 	</body>
 </html>

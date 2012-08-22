@@ -5,6 +5,7 @@ class Batch extends Base
 	private $batchId;
 	private $steps;
 	private $meta;
+
 	private $state;
 
 	public function __construct($batchId, $meta, $steps) 
@@ -91,6 +92,52 @@ class Batch extends Base
 	public function steps()
 	{
 		return $this->steps;
+	}
+
+	public function lockingUpdate($workerId)
+	{
+		// read table
+		$lockingTable = $this->store->readBatch('locking', array(), $this->batchId);
+
+		// clean table
+		foreach($lockingTable as $wid => $value)
+		{
+			if ($value == 'finished') continue;
+			if ($value < (time() - $this->meta['timeout'])) unset($lockingTable[$wid]);
+		}
+
+		// check new worker
+		if (!array_key_exists($workerId, $lockingTable)) {
+			if ($this->meta['workers'] > 0 && count($lockingTable) >= $this->meta['workers']) {
+				return false;
+			}
+		} else {
+			if ($lockingTable[$workerId] == 'finished') return true;
+		}
+
+		// set lock
+		$lockingTable[$workerId] = time();
+		
+		// write table
+		$this->store->writeBatch('locking', $lockingTable);
+		return true;
+	}
+
+	public function lockingFinish($workerId)
+	{
+		// read table
+		$lockingTable = $this->store->readBatch('locking', array(), $this->batchId);
+
+		// update table
+		if (array_key_exists($workerId, $lockingTable)) {
+			$lockingTable[$workerId] = 'finished';	
+		} else {
+			return false;
+		}
+		
+		// write table back
+		$this->store->writeBatch('locking', $lockingTable);
+		return true;
 	}
 
 	public function state()

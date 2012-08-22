@@ -11,7 +11,7 @@ html {
 body {
 	margin: 20px auto;
 	width:800px;
-	padding:0px 15px;
+	padding:0 15px;
 	background-color:white;
 }
 
@@ -20,7 +20,7 @@ button {
 	padding:7px 20px;
 }
 
-input.token {
+.token {
 	padding:10px;
 	font-size:16px;
 	font-family:monospace;
@@ -30,32 +30,38 @@ input.token {
 	border:2px solid;
 }
 
-ul.errormessage {
+.errormessage {
 	background-color:#ff7777;
 	padding:10px;
 	padding-left:30px;
 }
 
-div.header {
+.header {
 	background-color:#eee;
 	border-bottom: 2px solid #bbb;
-	margin:0px -15px 15px -15px;
+	margin:0 -15px 15px -15px;
 	padding:7px 15px;
 }
 
-div.footer {
+.footer {
 	background-color:#eee;
 	border-top: 2px solid #bbb;
-	margin:20px -15px 0px -15px;
+	margin:20px -15px 0 -15px;
 	padding:7px 15px;
 }
 
-span.debugmessage {
+.debugmessage {
 	font-weight: bold;
-	margin: 0 20px;
 	color: red;
 }
 
+#step {
+	margin-right:25px;
+}
+
+#timeout {
+	margin-left:25px;
+}
 
 /* ========================================= PLAYER */
 
@@ -65,18 +71,18 @@ div.video-box {
 	display:inline-block;
 }
 
-div.video-box * {
+.video-box * {
 	outline:0;
 }
 
-div.videotitle {
-	margin-top:0px;
+.videotitle {
+	margin-top:0;
 	margin-bottom:5px;
 	font-size:16px;
 	font-weight:bold;
 }
 
-div.flash-fallback {
+.flash-fallback {
 	display:none; 
 	padding:10px; 
 	border: 1px solid red;
@@ -87,22 +93,22 @@ video {
 	background-color:#ccc;
 }
 
-div.button {
+.button {
 	width:24px;
 	height:24px;
 	background-image:url('../img/playerbuttons.png');
 	float:left;
 }
 
-div.playbutton {
+.playbutton {
 	background-position:24px;
 }
 
-div.pausebutton {
+.pausebutton {
 	background-position:0px;
 }
 
-div.progressbox {
+.progressbox {
 	margin-top:4px;
 	margin-left:10px;
 	float:right; 
@@ -111,21 +117,21 @@ div.progressbox {
 	position:relative;
 }
 
-div.progress {
-	width:0px; height:100%; 
+.progress {
+	width:0; height:100%; 
 	background:#888;
 	z-index:10;
 	position:absolute;
 }
 
-div.buffered {
-	width:0px; height:100%; 
+.buffered {
+	width:0; height:100%; 
 	background:#bbb;
 	position:absolute;
 	z-index:5;
 }
 
-div.buftext {
+.buftext {
 	font-size:10px;
 	padding-left:4px;
 	position:absolute;

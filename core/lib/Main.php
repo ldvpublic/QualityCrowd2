@@ -55,6 +55,11 @@ class Main extends Base
 		if ($stepId >= $this->batch->countSteps()) $stepId = $this->batch->countSteps() - 1;
 		$this->store->writeWorker('stepId', $stepId);
 
+		// handle last step
+		if ($stepId == $this->batch->countSteps() - 1) {
+			$this->batch->lockingFinish($this->workerId);
+		}
+
 		// display error messages
 		if (is_array($this->registry->get('errors'))) {
 			$this->tpl->set('msg', $this->registry->get('errors'));
@@ -64,6 +69,9 @@ class Main extends Base
 		$this->tpl->set('stepId', $stepId);
 		$this->tpl->set('stepCount', $this->batch->countSteps());
 		$this->tpl->set('state', $this->batch->state());
+		$this->tpl->set('isLocked', $this->batch->lockingUpdate($this->workerId));
+		$meta = $this->batch->meta();
+		$this->tpl->set('timeout', $meta['timeout']);
 
 		// render step
 		$content = $this->batch->renderStep($stepId);

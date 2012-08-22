@@ -3,7 +3,7 @@
 <?php foreach($properties as $k => $v): ?>
 	<tr>
 		<th><?= ucfirst($k) ?></th>
-		<td><?= $v ?></td>
+		<td><?= ($k == 'timeout' ? formatTime($v) : $v) ?></td>
 	</tr>
 <?php endforeach; ?>
 	<tr>

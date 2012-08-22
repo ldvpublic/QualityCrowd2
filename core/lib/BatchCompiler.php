@@ -11,6 +11,12 @@ class BatchCompiler extends Base
 			'minArguments' => 1,
 			'arguments' => array('key', 'value'),
 			'description' => '',
+			'keys' => array(
+				'title' 		=> '',
+				'description'	=> '',
+				'workers'		=> -1,
+				'timeout'		=> 600,
+				),
 			),
 		'var'           => array(
 			'minArguments' => 2,
@@ -246,6 +252,14 @@ EOT;
 
 					$batchSteps[] = $batchStep;
 					break;
+			}
+		}
+
+		// clean up meta properties
+		foreach(self::$syntax['meta']['keys'] as $property => $default)
+		{
+			if (!isset($meta[$property])) {
+				$meta[$property] = $default;
 			}
 		}
 		

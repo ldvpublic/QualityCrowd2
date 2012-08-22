@@ -3,7 +3,10 @@
 #
 
 meta title "QualityCrowd Example Batch"
-meta comment "This Batch demonstrates all implemented features."
+meta description "This Batch demonstrates all implemented features."
+
+meta workers 30
+meta timeout 1200
 
 var fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent; 6: Wow!"
 

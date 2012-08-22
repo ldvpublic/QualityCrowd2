@@ -11,27 +11,27 @@ html {
 body {
 	margin: 20px auto;
 	width:800px;
-	padding:0px 15px;
+	padding:0 15px;
 	background-color:white;
 }
 
-div.successmessage {
+.successmessage {
 	background-color:#77ff77;
 	padding:10px;
 	padding-left:30px;
 }
 
-div.header {
+.header {
 	background-color:#eee;
 	border-bottom: 2px solid #bbb;
-	margin:0px -15px 15px -15px;
+	margin:0 -15px 15px -15px;
 	padding:7px 15px;
 }
 
-div.footer {
+.footer {
 	background-color:#eee;
 	border-top: 2px solid #bbb;
-	margin:20px -15px 0px -15px;
+	margin:20px -15px 0 -15px;
 	padding:7px 15px;
 }
 
@@ -40,7 +40,7 @@ pre {
 	padding:4px;
 }
 
-div.steppreview {
+.steppreview {
 	padding:10px;
 	background-color:#FFFCE8;
 	border: 1px solid #9E8B00;
@@ -73,7 +73,7 @@ form legend {
 
 form label {
     float: left;
-    width: 5em;
+    width: 80px;
     padding-top: 9px;
     text-align: right;
     margin-right: 15px;
@@ -85,12 +85,12 @@ form input, button, form select {
     font-size: 13px;
     padding: 5px;
     margin-bottom: 10px;
-    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 form select {
 	-webkit-appearance: push-button;
-	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	-webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
 	background-image: url(../img/selectarrow.png);
 	background-position: center right;
@@ -200,17 +200,17 @@ table.steps tr.step td {
 	padding:7px 15px;
 }
 
-table.steps td.number {
+table.steps .number {
 	font-size:35px;
 	vertical-align: top;
 }
 
-table.steps td.command {
+table.steps .command {
 	font-size:17px;
 	font-weight:bold;
 }
 
-table.steps td.argument {
+table.steps .argument {
 	font-size:17px;
 }
 
@@ -222,11 +222,11 @@ table.steps tr.property td {
 	padding:4px 15px;
 }
 
-table.steps tr.property td.property-key {
+table.steps .property .property-key {
 	font-weight:bold;
 }
 
-table.steps tr.property td.property-key2 {
+table.steps .property .property-key2 {
 	font-style: italic;
 }
 
