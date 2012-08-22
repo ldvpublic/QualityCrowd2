@@ -1,6 +1,10 @@
 meta title "QualityCrowd Example Qualification Batch"
 
 set title "Qualification test"
-page "Lorem ipsum"
-page "Lorem ipsum 2"
+set text "Lorem ipsum"
+page 
+
+set text "Lorem ipsum 2"
+page
+
 return

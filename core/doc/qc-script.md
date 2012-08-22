@@ -28,7 +28,7 @@ Lines starting with a number sign (#) are comments and removed before parsing.
 
 #### set
 	set <key> [<value>]
-The `set` command sets a property defined by the `<key>`-argument to the value specified by `<value>`. This property can be used by all further commands an its value will be set until a matching `unset`-command is processed.
+The `set` command sets a property defined by the `<key>`-argument to the value specified by `<value>`. This property can be used by all further commands and its value will be set until a matching `unset`-command is processed.
 
 #### unset
 	unset <key>
@@ -47,23 +47,23 @@ The following commands will produce their own page which is presented to the tes
 #### image
 	image <file>
 
-Used properties: `answermode`, `question`, `skipvalidation`, `title`
+Used properties: `answermode`, `question`, `skipvalidation`, `text`, `title`
 
 #### page
-	page <pagecontent>
-Displays a simple HTML-Page with the specified content and is particularly useful as a welcome page. It is recommended to use the `include()`-macro with this command.
+	page
+Displays a simple HTML-Page which is particularly useful as a welcome page. It is recommended to use the `include()`-macro to set the page text property (e.g. `set text include(welcome.html)`)
 
-Used properties: `title`
+Used properties: `text`, `title`
 
 #### qualification
 	qualification <batchId>
 
-Used properties: `title`
+Used properties: `text, `title`
 
 #### question
 	question
 
-Used properties: `question`, `title`, ...
+Used properties: `question`, `text, `title`
 
 #### return
 	return
@@ -73,7 +73,7 @@ Used properties: none
 #### showtoken
 	showtoken
 
-Used properties: `title`
+Used properties: `text`, `title`
 
 #### video
 	image <file> [<file>]
@@ -105,6 +105,12 @@ Disables the validation of the answer values. The main purpose of this flag is t
 ### title
 	set title <text>
 Sets the title of a step page to `<text>`; will be displayed as page heading on all pages.
+
+### videowidth
+	set videowidth <number>
+
+### videoheight
+	set videoheight <number>
 
 ## Macros
 

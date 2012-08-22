@@ -15,7 +15,7 @@ class BatchCompiler extends Base
 			'set'           => array('minArguments' => 1, 'maxArguments' => 2),
 			'var'           => array('minArguments' => 2, 'maxArguments' => 2),
 			'unset'         => array('minArguments' => 1, 'maxArguments' => 1),
-			'page'          => array('minArguments' => 1, 'maxArguments' => 1),
+			'page'          => array('minArguments' => 0, 'maxArguments' => 0),
 			'video'         => array('minArguments' => 1, 'maxArguments' => 2),
 			'image'         => array('minArguments' => 1, 'maxArguments' => 1),
 			'question'      => array('minArguments' => 0, 'maxArguments' => 0),

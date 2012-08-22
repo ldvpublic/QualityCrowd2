@@ -80,7 +80,7 @@ form label {
     margin-bottom:5px;
 }
 
-form input, form button, form select {
+form input, button, form select {
     display: block;
     font-size: 13px;
     padding: 5px;

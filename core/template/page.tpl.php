@@ -1,1 +1,1 @@
-<?= $pagebody ?>
+<?= $text ?>
