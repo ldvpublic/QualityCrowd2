@@ -23,16 +23,23 @@
 		<td class="number" rowspan="<?= (count($v['properties']) + 1) ?>"><?= ($k + 1) ?></td>
 		<td class="command"><?= $v['command'] ?></td>
 		<td class="argument"><?= trimText(implode(' &nbsp; &nbsp; ', $v['arguments']), 70) ?></td>
-		<td class="argument"><a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/<?= $k ?>">Preview</a></td>
+		<td class="argument">
+			<?php if($v['command'] <> 'qualification'): ?>
+			<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/<?= $k ?>">Preview</a>
+			<?php endif; ?>
+		</td>
 	</tr>
-	<?php 
-	ksort($v['properties']);
-	foreach($v['properties'] as $pk => $pv): ?>
-	<tr class="property">
-		<td class="property-key"><?= $pk ?></td>
-		<td class="property-value" colspan="2"><?= formatPropertyValue($pv) ?></td>
-	</tr>
-	<?php endforeach; ?>
+	<?php
+	if (isset($v['properties'])) {
+		ksort($v['properties']);
+		foreach($v['properties'] as $pk => $pv): ?>
+		<tr class="property">
+			<td class="property-key"><?= $pk ?></td>
+			<td class="property-value" colspan="2"><?= formatPropertyValue($pv) ?></td>
+		</tr>
+		<?php endforeach; 
+	}	
+	?>
 <?php endforeach; ?>
 </table>
 

@@ -99,15 +99,6 @@ class BatchCompiler extends Base
 		'qualification' => array(
 			'minArguments' => 1,
 			'arguments' => array('qualification-batch'),
-			'properties'   => array(
-				'title' 		 => '',
-				'text' 			 => '',
-				),
-			'description' => '',
-			),
-		'return' => array(
-			'minArguments' => 0,
-			'arguments' => array(),
 			'properties'   => array(),
 			'description' => '',
 			),
@@ -201,7 +192,12 @@ EOT;
 
 		foreach($sourceData as $sourceStep) 
 		{
-			$batchStep = array();
+			$batchStep = array(
+				'command', 
+				'arguments' => array(), 
+				'properties' => array()
+				);
+			
 			switch($sourceStep['command']) 
 			{
 				case 'meta':
@@ -264,7 +260,6 @@ EOT;
 		}
 		
 		$myBatch = new Batch($this->batchId, $meta, $batchSteps);
-		$myBatch->renderStep(0);
 
 		return $myBatch;
 	}

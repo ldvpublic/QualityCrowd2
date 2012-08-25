@@ -31,6 +31,11 @@ class Batch extends Base
 		$this->state = $this->store->readBatch('state', 'edit', $this->batchId);
 	}
 
+	public function id()
+	{
+		return $this->batchId;
+	}
+
 	public static function readableState($state) 
 	{
 		switch($state)
@@ -41,38 +46,29 @@ class Batch extends Base
 		}
 	}
 
-	public function init()
+	public function init($workerId)
 	{
-		$this->generateToken();
-		$this->collectMetaData();
-	}
+		// generate token
+		$token = $this->getConfig('securitySalt') . '-'; 
+		$token .= $this->batchId . '-';
+		$token .= $workerId . '-';
+		$token .= md5($_SERVER['HTTP_USER_AGENT']) . '-';
+		$token .= md5($_SERVER['REMOTE_ADDR']) . '-';
+		$token .= date('d.m.Y');
 
-	public function validateAndSave($stepId, $data)
-	{
-		// validate data
-		$stepObject = $this->getStepObject($stepId);
-		$msg = $stepObject->validate($data);
+		$token = md5($token);
+		$token = substr($token, 20);
 
-		// save result data to csv file
-		if ($msg === true) {
-			$data = array('timestamp' => time()) + $data;
-			$data = array('command' => $this->steps[$stepId]['command']) + $data;
-			$data = array('stepId' => $stepId) + $data;
-			$store = new DataStore();
-			$store->writeWorkerCSV('results', array($data));
-		} 
+		// collect and write meta data
+		$meta = array(
+			'workerId' 		=> $workerId,
+			'token' 		=> $token,
+			'timestamp' 	=> time(),
+			'remoteaddr' 	=> md5($_SERVER['REMOTE_ADDR']),
+			'useragent' 	=> $_SERVER['HTTP_USER_AGENT'],
+		);
 
-		return $msg;
-	}
-
-	public function renderStep($stepId)
-	{
-		if ($stepId < 0 || $stepId >= count($this->steps)) {
-			throw new Exception('Invalid step id');
-		}
-
-		$stepObject = $this->getStepObject($stepId);
-		return $stepObject->render();
+		$this->store->writeWorker('meta', $meta, $this->batchId, $workerId);
 	}
 
 	public function countSteps()
@@ -119,7 +115,7 @@ class Batch extends Base
 		$lockingTable[$workerId] = time();
 		
 		// write table
-		$this->store->writeBatch('locking', $lockingTable);
+		$this->store->writeBatch('locking', $lockingTable, $this->batchId, $workerId);
 		return true;
 	}
 
@@ -136,7 +132,7 @@ class Batch extends Base
 		}
 		
 		// write table back
-		$this->store->writeBatch('locking', $lockingTable);
+		$this->store->writeBatch('locking', $lockingTable, $this->batchId, $workerId);
 		return true;
 	}
 
@@ -308,7 +304,7 @@ class Batch extends Base
 		return $steps;
 	}
 
-	private function getStepObject($stepId)
+	public function getStepObject($stepId, $workerId)
 	{
 		$step = $this->steps[$stepId];
 
@@ -322,42 +318,14 @@ class Batch extends Base
 			case 'video':
 			case 'image':
 			case 'question':
-			$stepObject = new StepQuestion($step);
+			$stepObject = new StepQuestion($step, $this->batchId, $workerId, $stepId);
 			break;
 
 			default:
 			$class = 'Step' . ucfirst($step['command']);
-			$stepObject = new $class($step);			
+			$stepObject = new $class($step, $this->batchId, $workerId, $stepId);
 		}
 
 		return $stepObject;
-	}
-
-	private function generateToken() 
-	{
-		$token = $this->getConfig('securitySalt') . '-'; 
-		$token .= $this->registry->get('batchId') . '-';
-		$token .= $this->registry->get('workerId') . '-';
-		$token .= md5($_SERVER['HTTP_USER_AGENT']) . '-';
-		$token .= md5($_SERVER['REMOTE_ADDR']) . '-';
-		$token .= date('d.m.Y');
-
-		$token = md5($token);
-		$token = substr($token, 20);
-
-		$this->registry->set('token', $token);
-	}
-
-	private function collectMetaData()
-	{
-		$meta = array(
-			'workerId' 		=> $this->registry->get('workerId'),
-			'token' 		=> $this->registry->get('token'),
-			'timestamp' 	=> time(),
-			'remoteaddr' 	=> md5($_SERVER['REMOTE_ADDR']),
-			'useragent' 	=> $_SERVER['HTTP_USER_AGENT'],
-		);
-
-		$this->store->writeWorker('meta', $meta);
 	}
 }

@@ -13,7 +13,7 @@
 	</head>
 	<body>
 		<div class="header">
-			<span id="step">Step <?= ($stepId+1) ?> of <?= $stepCount ?></span>
+			<span class="step">Step <?= ($stepId+1) ?> of <?= $stepCount ?></span>
 
 			<?php if($state == 'edit'): ?>
 			<span class="debugmessage">PREVIEW MODE, all data will be deleted</span>
@@ -24,8 +24,6 @@
 			<?php endif; ?>
 		</div>
 
-		<h1><?= $title ?></h1>
-
 		<?php if (isset($msg) && is_array($msg)):?>
 		<ul class="errormessage">
 			<?php foreach($msg as $m): ?>
@@ -35,7 +33,7 @@
 		<?php endif; ?>
 
 		<form action="<?= BASE_URL.$batchId.'/'.$workerId ?>" method="post" id="stepform">
-			<input type="hidden" name="stepId" value="<?= $stepId ?>">
+			<input type="hidden" name="stepId-<?= $scope ?>" value="<?= $stepId ?>">
 
 			<?= $content ?>
 		</form>

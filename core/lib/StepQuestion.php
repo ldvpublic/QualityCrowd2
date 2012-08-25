@@ -13,7 +13,7 @@ class StepQuestion extends Step
 	{
 		$msg = array();
 
-		if ($this->properties['skipvalidation']) {
+		if (!$this->properties['skipvalidation']) {
 			if ($this->command == 'video' && 
 				(!isset($data['watched']) || $data['watched'] <> true))
 			{
@@ -61,7 +61,7 @@ class StepQuestion extends Step
 
 		foreach ($this->arguments as $video)
 		{
-			$tpl = new Template('player');
+			$tpl = new Template('player', $this->batchId);
 			$tpl->set('file', $this->properties['mediaurl'] . $video);
 			$tpl->set('filename', $video);
 			$tpl->set('width',  $this->properties['videowidth']);
@@ -95,7 +95,7 @@ class StepQuestion extends Step
 			$answermode = 'continous';
 		}
 
-		$tpl = new Template('answer.' . $answermode);
+		$tpl = new Template('answer.' . $answermode, $this->batchId);
 		$tpl->set('answers', $answers);
 		$answerform = $tpl->render();
 		$this->tpl->set('answerform', $answerform);

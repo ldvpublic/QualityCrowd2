@@ -53,13 +53,6 @@ class Request extends Base
 		$workerId = preg_replace("/[^a-zA-Z0-9-]/", "", $path[1]);
 		if ($workerId == '' || strlen($workerId > 64)) die('invalid URL');
 
-		$returnBatch = null;
-		if (isset($_GET['return']))
-		{
-			$returnBatch = $_GET['return'];
-			$returnBatch = preg_replace("/[^a-zA-Z0-9\s]/", "", $returnBatch);
-		}
-
 		// handle manual restart
 		$restart = false;
 		if (isset($_GET['restart']))
@@ -67,7 +60,7 @@ class Request extends Base
 			$restart = true;
 		}
 
-		$myPage = new Main($batchId, $workerId, $restart, $returnBatch);
+		$myPage = new Main($batchId, $workerId, 'main', $restart);
 
 		try {
 			echo $myPage->render();

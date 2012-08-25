@@ -3,9 +3,10 @@
 class Template
 {
 	private $name;
+	private $scope;
 	private static $fields;
 
-	public function __construct($name)
+	public function __construct($name, $scope = '')
 	{
 		if (!self::exists($name))
 		{
@@ -13,10 +14,14 @@ class Template
 		}
 
 		$this->name = $name;
+		$this->scope = $scope;
 
-		if (!isset(self::$fields))
-		{
+		if (!isset(self::$fields)) {
 			self::$fields = array();
+		}
+
+		if (!isset(self::$fields[$this->scope])) {
+			self::$fields[$this->scope] = array();
 		}
 	}
 
@@ -27,21 +32,21 @@ class Template
 
 	public function set($key, $value)
 	{
-		self::$fields[$key] = $value;
+		self::$fields[$this->scope][$key] = $value;
 	}
 
 	public function setArray($array) 
 	{
-		if (!is_array($array))
-		{
+		if (!is_array($array)) {
 			throw new Exception("Parameter has to be an array");
 		}
-		self::$fields = self::$fields + $array;
+
+		self::$fields[$this->scope] = self::$fields[$this->scope] + $array;
 	}
 
 	public function render()
 	{	
-		foreach(self::$fields as $key => $value)
+		foreach(self::$fields[$this->scope] as $key => $value)
 		{
 			$$key = $value;
 		}

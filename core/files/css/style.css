@@ -43,6 +43,10 @@ button {
 	padding:7px 15px;
 }
 
+.header-qualification {
+	margin-top:-15px;
+}
+
 .footer {
 	background-color:#eee;
 	border-top: 2px solid #bbb;
@@ -55,7 +59,7 @@ button {
 	color: red;
 }
 
-#step {
+.step {
 	margin-right:25px;
 }
 

@@ -13,6 +13,7 @@ var fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent; 6: Wow!"
 #set mediaurl "http://.../media/"
 set videowidth 352
 set videoheight 288
+#set skipvalidation
 
 #
 # The Steps
@@ -22,11 +23,9 @@ set title "Welcome"
 set text include(page.welcome.html)
 page
 
-set text "You have passed the qualification test! Now you can start working on the real task."
 qualification example-qualification
-unset text
 
-#set skipvalidation
+unset text
 
 set answermode discrete
 set answers $fivepoints

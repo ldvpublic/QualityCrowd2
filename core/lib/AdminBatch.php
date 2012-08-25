@@ -85,8 +85,9 @@ class AdminBatch extends AdminPage
 				{
 					$myTpl = new Template('admin.batch.preview');
 					$stepId = $this->path[2];
+					$step = $batch->getStepObject($stepId, 'WID');
 					$myTpl->set('stepid', $stepId);
-					$myTpl->set('preview', $batch->renderStep($stepId));
+					$myTpl->set('preview', $step->render());
 				}
 				break;
 			}

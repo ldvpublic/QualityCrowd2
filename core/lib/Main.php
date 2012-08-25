@@ -4,65 +4,76 @@ class Main extends Base
 {
 	private $batch;
 	private $tpl;
+	private $scope;
 
 	private $batchId;
 	private $workerId;
 	private $lastStepId;
 	private $refreshStep = false;
 
-	public function __construct($batchId, $workerId, $restart = false, $returnBatch = null)
+	public function __construct($batchId, $workerId, $scope = 'main', $restart = false)
 	{
 		parent::__construct();
 		$this->store = new DataStore();
 
-		$this->tpl = new Template('main');
-
-		$this->batchId = $batchId;
-		$this->registry->set('batchId', $batchId);
-		$this->tpl->set('batchId', $this->batchId);
-
+		$this->batchId = $batchId;		
 		$this->workerId = $workerId;
-		$this->registry->set('workerId', $workerId);
+		$this->scope = $scope;
+
+		$this->tpl = new Template($this->scope, $this->batchId);
 		$this->tpl->set('workerId', $this->workerId);
+		$this->tpl->set('batchId', $this->batchId);
+		$this->tpl->set('scope', $this->scope);
 
 		// handle manual restart
-		if ($restart) $this->store->deleteWorker();
+		if ($restart) $this->store->deleteWorker($this->batchId, $this->workerId);
 
-		// handle 'returnBatch' parameter
-		if ($returnBatch <> null) {
-			$this->registry->set('returnBatch', $returnBatch);
-			$this->store->writeWorker('returnBatch', $returnBatch);
-		}
+		// compile the batch script
+		$myBatchCompiler = new BatchCompiler($this->batchId);
+		$this->batch = $myBatchCompiler->getBatch();
+	}
+
+	public function getBatch()
+	{
+		return $this->batch;
 	}
 
 	public function render()
 	{
-		// compile the batch script
-		$myBatchCompiler = new BatchCompiler($this->batchId);
-		$this->batch = $myBatchCompiler->getBatch();
-
 		// read last step id
-		$this->lastStepId = $this->store->readWorker('stepId', -1);
-		if ($this->lastStepId == -1) $this->batch->init();
+		$this->lastStepId = $this->store->readWorker('stepId', -1, $this->batchId, $this->workerId);
+		if ($this->lastStepId == -1) $this->batch->init($this->workerId);
 
 		// process submitted post data
-		$this->handlePostData();
+		$errorMessages = $this->handlePostData();
+
+		// display error messages
+		if (is_array($errorMessages)) {
+			$this->tpl->set('msg', $errorMessages);
+		}
 
 		// calculate current step id
-		$stepId = $this->lastStepId + 1;
-		if ($this->refreshStep) $stepId--;
+		$stepId = $this->lastStepId;
+		if (!$this->refreshStep) $stepId++;
+
+		while(true) {
+			$step = $this->batch->getStepObject($stepId, $this->workerId, $stepId);
+			if ($step->skip()) {
+				$stepId++;
+			} else {
+				break;
+			}
+		}
+
 		if ($stepId < 0) $stepId = 0;
 		if ($stepId >= $this->batch->countSteps()) $stepId = $this->batch->countSteps() - 1;
-		$this->store->writeWorker('stepId', $stepId);
+	
+		$this->store->writeWorker('stepId', $stepId, $this->batchId, $this->workerId);
 
 		// handle last step
 		if ($stepId == $this->batch->countSteps() - 1) {
 			$this->batch->lockingFinish($this->workerId);
-		}
-
-		// display error messages
-		if (is_array($this->registry->get('errors'))) {
-			$this->tpl->set('msg', $this->registry->get('errors'));
+			$this->store->writeWorker('done', true, $this->batchId, $this->workerId);
 		}
 
 		// set variables
@@ -74,8 +85,8 @@ class Main extends Base
 		$this->tpl->set('timeout', $meta['timeout']);
 
 		// render step
-		$content = $this->batch->renderStep($stepId);
-		$this->tpl->set('content', $content);
+		
+		$this->tpl->set('content', $step->render());
 
 		return $this->tpl->render();
 	}
@@ -84,20 +95,20 @@ class Main extends Base
 	{
 		$msg = '';
 		
-		if (!isset($_POST['stepId']))
+		if (!isset($_POST['stepId-' . $this->scope]))
 		{
 			if ($this->lastStepId < 0) return;
 			// user hit "reload" in his browser, changed the browser, ...
 			$this->refreshStep = true;
 
 		} else {
-			if (!is_numeric($_POST['stepId']))
+			if (!is_numeric($_POST['stepId-' . $this->scope]))
 			{
 				$msg = array('invalid form data submitted');
 				$this->refreshStep = true;
 			}
 
-			$stepId = $_POST['stepId'];
+			$stepId = $_POST['stepId-' . $this->scope];
 			settype($stepId, 'int');
 
 			$data = $_POST;
@@ -108,11 +119,19 @@ class Main extends Base
 				// user hit "reload" in his browser and sent the post data again
 				$this->refreshStep = true;
 			} else {
-				$msg = $this->batch->validateAndSave($stepId, $data);
-				if (is_array($msg)) $this->refreshStep = true;
+				// validate answer data
+				$step = $this->batch->getStepObject($stepId, $this->workerId, $stepId);
+				$msg = $step->validate($data);
+
+				// save answer data if valid
+				if ($msg === true) {
+					$step->save($data);
+				} else {
+					$this->refreshStep = true;
+				}
 			}
 		}
 		
-		$this->registry->set('errors', $msg);
+		return $msg;
 	}
 }

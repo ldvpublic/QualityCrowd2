@@ -4,43 +4,43 @@ require(ROOT_PATH.'core'.DS.'lib'.DS.'fstools.php');
 
 class DataStore extends Base
 {
-	public function writeWorker($key, $data, $batchId = '', $workerId = '')
+	public function writeWorker($key, $data, $batchId, $workerId)
 	{
 		$path = $this->getDataPath('worker', $batchId, $workerId, true);
 		$this->write('json', $path, $key, $data);
 	}
 
-	public function writeWorkerCSV($key, $data, $batchId = '', $workerId = '')
+	public function writeWorkerCSV($key, $data, $batchId, $workerId)
 	{
 		$path = $this->getDataPath('worker', $batchId, $workerId, true);
 		$this->write('csv', $path, $key, $data);
 	}
 
-	public function writeBatch($key, $data, $batchId = '')
+	public function writeBatch($key, $data, $batchId)
 	{
 		$path = $this->getDataPath('meta', $batchId, '', true);
 		$this->write('json', $path, $key, $data);
 	}
 
-	public function readWorker($key, $default = null, $batchId = '', $workerId = '')
+	public function readWorker($key, $default = null, $batchId, $workerId)
 	{
 		$path = $this->getDataPath('worker', $batchId, $workerId);
 		return $this->read('json', $path, $key, $default);
 	}
 
-	public function readWorkerCSV($key, $batchId = '', $workerId = '')
+	public function readWorkerCSV($key, $batchId, $workerId)
 	{
 		$path = $this->getDataPath('worker', $batchId, $workerId);
 		return $this->read('csv', $path, $key, null);
 	}
 
-	public function readBatch($key, $default = null, $batchId = '')
+	public function readBatch($key, $default = null, $batchId)
 	{
 		$path = $this->getDataPath('meta', $batchId);
 		return $this->read('json', $path, $key, $default);
 	}
 
-	public function deleteWorker($key = '', $batchId = '', $workerId = '')
+	public function deleteWorker($batchId, $workerId, $key = '')
 	{
 		$path = $this->getDataPath('worker', $batchId, $workerId);
 		$this->delete('json', $path, $key);
@@ -137,15 +137,12 @@ class DataStore extends Base
 	 *  - workers  /data/<batchid>/workers/<workerid>/<key> 
 	 */
 
-	private function getDataPath($scope, $batchId = '', $workerId = '', $create = false) 
+	private function getDataPath($scope, $batchId, $workerId = '', $create = false) 
 	{
 		$path = '';
 		switch ($scope)
 		{
 			case 'batch':
-				if ($batchId == '') {
-					$batchId = $this->registry->get('batchId');
-				}
 				$path = DATA_PATH . $batchId;
 				if ($create) $this->createDir($path);
 				break;
@@ -163,9 +160,6 @@ class DataStore extends Base
 				$path = $path . 'workers';
 				if ($create) $this->createDir($path);
 
-				if ($workerId == '') {
-					$workerId = $this->registry->get('workerId');
-				}
 				$path = $path . DS . $workerId;
 				if ($create) $this->createDir($path);
 
