@@ -12,12 +12,20 @@ $objPHPExcel->getProperties()->setCreator("QualityCrowd 2")
 
 // fill in results
 outputHeaders($objPHPExcel->getSheet(0), $steps);
-outputResults($objPHPExcel->getSheet(0), $workers);
+outputResults($objPHPExcel->getSheet(0), $workers, 3);
+$objPHPExcel->getSheet(0)->setTitle('results');
+
+// fill in text results
+$objPHPExcel->createSheet();
+outputHeaders($objPHPExcel->getSheet(1), $steps);
+outputResults($objPHPExcel->getSheet(1), $workers, 4);
+$objPHPExcel->getSheet(1)->setTitle('text results');
 
 // fill in durations
 $objPHPExcel->createSheet();
-outputHeaders($objPHPExcel->getSheet(1), $steps);
-outputDurations($objPHPExcel->getSheet(1), $workers);
+outputHeaders($objPHPExcel->getSheet(2), $steps);
+outputDurations($objPHPExcel->getSheet(2), $workers);
+$objPHPExcel->getSheet(2)->setTitle('durations');
 
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 $objPHPExcel->setActiveSheetIndex(0);
@@ -66,7 +74,7 @@ function outputHeaders($sheet, $steps)
 
 }
 
-function outputResults($sheet, $workers)
+function outputResults($sheet, $workers, $colId)
 {
 	$r = 4;
 	foreach($workers as $worker)
@@ -81,8 +89,8 @@ function outputResults($sheet, $workers)
 			$c = 3;
 			foreach($worker['results'] as $result)
 			{
-				if (isset($result[3])) {
-					$sheet->setCellValueByColumnAndRow($c, $r, $result[3]);
+				if (isset($result[$colId])) {
+					$sheet->setCellValueByColumnAndRow($c, $r, $result[$colId]);
 				} else {
 					$sheet->setCellValueByColumnAndRow($c, $r, '-');
 				}
@@ -92,8 +100,6 @@ function outputResults($sheet, $workers)
 
 		$r++;
 	}
-
-	$sheet->setTitle('results');
 }
 
 function outputDurations($sheet, $workers)
@@ -118,8 +124,6 @@ function outputDurations($sheet, $workers)
 
 		$r++;
 	}
-
-	$sheet->setTitle('durations');
 }
 
 

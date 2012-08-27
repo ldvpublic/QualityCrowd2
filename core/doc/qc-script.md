@@ -31,7 +31,7 @@ Can be used instead of a commmand argument to pass the contents of `<file>` as t
 ## Properties
 
 ### answermode
-	set answermode <continous|discrete|...>
+	set answermode <continous|discrete|text>
 
 ### answers
 	set answers "1: first answer; 2: second answer [;...]"

@@ -113,7 +113,7 @@ class Main extends Base
 
 			$data = $_POST;
 			unset($data['batchId']);
-			unset($data['stepId']);
+			unset($data['stepId-' . $this->scope]);
 
 			if ($stepId <> $this->lastStepId) {
 				// user hit "reload" in his browser and sent the post data again

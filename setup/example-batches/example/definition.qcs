@@ -23,6 +23,12 @@ set title "Welcome"
 set text include(page.welcome.html)
 page
 
+set answermode text
+set title "Let's begin"
+set text "with an easy question:"
+set question "Where are you from?"
+question
+
 qualification example-qualification
 
 unset text
