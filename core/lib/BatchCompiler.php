@@ -219,10 +219,10 @@ EOT;
 				case 'unset':
 					if ($sourceStep['arguments'][0] == 'all')
 					{
-						unset($stepProperties[$sourceStep['arguments'][0]]);	
+						$stepProperties = array();
 					} else
 					{
-						$stepProperties = array();
+						unset($stepProperties[$sourceStep['arguments'][0]]);	
 					}
 					break;
 
