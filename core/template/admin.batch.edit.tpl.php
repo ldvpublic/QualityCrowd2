@@ -21,13 +21,19 @@
 		<p>Changing from "<?= Batch::readableState('edit') ?>" to "<?= Batch::readableState('active') ?>" deletes all result data!</p>
 		<?php endif; ?>
 	</fieldset>
-	<?php if ($state == 'edit'): ?>
+
+	<?php if ($state <> 'edit'): ?>
+	<button id="button_save">Save</button>
+	<?php endif; ?>
+
 	<fieldset>
-		<legend>QC-Script</legend>
+		<legend>QC-Script<?php if ($state <> 'edit'): ?> (read only)<?php endif; ?></legend>
 		<textarea id="code" name="qcs"><?= $qcs ?></textarea>
 	</fieldset>
-	<?php endif; ?>
+	
+	<?php if ($state == 'edit'): ?>
 	<button id="button_save">Save</button>
+	<?php endif; ?>
 </form>
 
 <script>
@@ -35,5 +41,8 @@
 		lineNumbers: true,
 		theme: 'ambiance',
 		lineWrapping: true,
+		<?php if ($state <> 'edit'): ?>
+		readOnly: true,
+		<?php endif; ?>
 	});
 </script>
