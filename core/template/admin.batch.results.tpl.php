@@ -125,6 +125,9 @@ foreach($results as $stepId => &$step)
 <?php foreach($results as $stepId => &$step): 
 	$rows = 5;
 	if ($step['results-cnt'] > 0) $rows += 4;
+	$graphRows = $rows;
+	if (isset($steps[$stepId]['properties']['question'])) $rows += 1;
+	if (isset($steps[$stepId]['properties']['answers'])) $rows += 1;
 ?>
 	<tr class="step">
 		<td class="number" rowspan="<?= $rows ?>"><?= ($stepId + 1) ?></td>
@@ -133,10 +136,25 @@ foreach($results as $stepId => &$step)
 			<?= trimText(implode(' &nbsp; &nbsp; ', $steps[$stepId]['arguments']), 60) ?>
 		</td>
 	</tr>
+
+	<?php if(isset($steps[$stepId]['properties']['question'])): ?>
+	<tr class="property">
+		<td class="property-key" colspan="2">question</td>
+		<td class="property-value" colspan="2"><?= $steps[$stepId]['properties']['question'] ?></td>
+	</tr>
+	<?php endif; ?>
+
+	<?php if(isset($steps[$stepId]['properties']['answers'])): ?>
+	<tr class="property">
+		<td class="property-key" colspan="2">answers</td>
+		<td class="property-value" colspan="2"><?= $steps[$stepId]['properties']['answers'] ?></td>
+	</tr>
+	<?php endif; ?>
+
 	<tr class="property">
 		<td class="property-key" colspan="2">workers</td>
 		<td class="property-value"><?= $step['workers'] ?></td>
-		<td rowspan="<?= ($rows - 1)?>">
+		<td rowspan="<?= ($graphRows - 1)?>">
 			<?php if ($step['results-cnt'] > 0): ?>
 			<img src="<?= BASE_URL.'core/tmp/img-cache/results-'.$id.'-'.$stepId.'.png' ?>">
 			<?php endif; ?>
