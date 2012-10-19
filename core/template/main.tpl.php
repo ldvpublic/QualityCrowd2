@@ -43,6 +43,8 @@
 				<button id="button_next">Next</button>
 			<?php endif; ?>
 
+			<img src="<?= BASE_URL?>core/files/img/loading.gif" class="acitvityspinner" style="display:none;">
+
 			<?php if($state == 'post'): ?>
 			<span class="debugmessage">
 				This job is already completed, no more work for you. Sorry.
@@ -58,7 +60,17 @@
 
 		<script type="text/javascript">
 			<?php if ($stepId + 1 < $stepCount && $state <> 'post' && $isLocked): ?>
-			$('#button_next').click(function() {$('#stepform').trigger('submit');});
+			$('#button_next').click(function() {
+				<?php if (isset($delay) && $delay > 0): ?>
+				$('#button_next').attr("disabled", true);
+				$('img.acitvityspinner').show();
+				window.setTimeout(function() {
+					$('#stepform').trigger('submit');
+				}, <?= ($delay * 1000) ?> );
+				<?php else: ?>
+				$('#stepform').trigger('submit');
+				<?php endif; ?>
+			});
 			<?php endif; ?>
 
 			<?php if($isLocked && $stepId < $stepCount - 1): ?>

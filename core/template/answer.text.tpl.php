@@ -8,7 +8,6 @@
 <script type="text/javascript">
 
 	$('textarea[name=text]').keyup( function() {
-		console.log('test');
 		var text = $('textarea[name=text]').val();
 		$('input[name=value]').val(text.length);
 		$('input[name=answered]').val(text.length > 0);
