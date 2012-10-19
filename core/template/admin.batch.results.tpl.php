@@ -1,4 +1,9 @@
 <?php
+if (count($results) == 0) {
+	echo "<p>No results available</p>";
+	return;
+}
+
 require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph.php');
 require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_bar.php');
 require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_line.php');
@@ -8,6 +13,7 @@ require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_plotli
 $dataY = array();
 $labelsX = array();
 $finished = 0;
+
 foreach($results as $stepId => &$step)
 {
 	$dataY[] = $step['workers'];
@@ -62,8 +68,12 @@ foreach($results as $stepId => &$step)
 
 	foreach($step['results'] as $wid => &$result)
 	{
-		$dataY[] = $result[0];
+		if (is_numeric($result[0])) {
+			$dataY[] = $result[0];
+		}
 	}
+
+	if (count($dataY) == 0) continue;
 
 	// setup the graph
 	$graph = new Graph(400,180);

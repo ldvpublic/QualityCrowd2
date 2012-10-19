@@ -1,4 +1,8 @@
 <?php
+if (count($workers) == 0) {
+	echo "<p>No results available</p>";
+	return;
+}
 
 require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph.php');
 require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_pie.php');

@@ -28,6 +28,4 @@
 	}
 </script>
 
-<p><?= $question ?></p>
-
 <?= $answerform ?>

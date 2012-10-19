@@ -1,9 +1,11 @@
 <input type="hidden" name="answered" value="0">
 <input type="hidden" name="value" value="">
-
-<textarea name="text"></textarea>
-
 <input type="hidden" name="answermode" value="text">
+
+<fieldset>
+	<legend><?= $question ?></legend>
+	<textarea name="text"></textarea>
+</fieldset>
 
 <script type="text/javascript">
 

@@ -264,6 +264,8 @@ class Batch extends Base
 				if (count($result) == 0) continue;
 
 				$value = $result[0];
+				if (!is_numeric($value)) continue;
+
 				if ($value > $max) $max = $value;
 				if ($value < $min) $min = $value;
 				$sum += $value;
@@ -275,7 +277,10 @@ class Batch extends Base
 				$step['results-avg'] = $sum / $cnt;
 				$step['results-max'] = $max;
 				$step['results-min'] = $min;
-				$step['results-cnt'] = $cnt;
+			} else {
+				$step['results-avg'] = null;
+				$step['results-max'] = null;
+				$step['results-min'] = null;
 			}
 
 			$step['workers'] = count($step['results']);

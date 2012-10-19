@@ -23,11 +23,17 @@ set title "Welcome"
 set text include(page.welcome.html)
 page
 
-
 set answermode text
 set title "Let's begin"
 set text "with an easy question:"
 set question "Where are you from?"
+question
+
+set answermode strings
+set answers "animal: What is your favorite animal?; color: What is your favorite color?"
+set title ""
+set text "Here comes another question for starters:"
+set question "What do you like most?"
 question
 
 qualification example-qualification
@@ -43,7 +49,6 @@ image lena.png
 
 set delay 0
 image lena-bad.png
-
 
 set answermode discrete
 set answers "1: A woman; 2: A man; 3: Two women; 4: An elephant"

@@ -28,65 +28,17 @@ foreach($answers as $row) {
 
 ?>
 
-<style type="text/css">
-div.slider-area {
-	position:relative;
-	height:<?= $fullHeight ?>px;
-	margin:10px;
-	padding:0;
-}
+<fieldset>
+	<legend><?= $question ?></legend>
 
-div.slider-box {
-	width:15px;
-	height:<?= $fullHeight ?>px;
-	position:absolute;
-	top:0px;
-	background-color:#ddd;
-	left:12px;
-}
-
-div.slider-handle {
-	width:20px;
-	height:10px;
-	background-color: red;
-	border:1px solid #660000;
-	position:absolute;
-	cursor:row-resize;
-	top:<?= $fullHeight / 2 - 5?>px;
-	left:8px;
-	border-radius:7px;
-}
-
-div.slider-label {
-	position:absolute;
-	left:40px;
-	font-size:12px;
-}
-
-div.slider-scale {
-	position:absolute;
-	border-bottom:1px solid #888;
-	width:32px;
-	height:0px;
-	left:3px;
-}
-
-div.slider-scale-end {
-	position:absolute;
-	border-bottom:2px solid #333;
-	width:40px;
-	height:0px;
-}
-
-</style>
-
-<div id="slider-area" class="slider-area">
-	<div id="slider-box" class="slider-box"></div>
-	<div id="slider-handle" class="slider-handle"></div>
-	<div class="slider-scale-end" style="top:0px;"></div>
-	<?= $labels ?>
-	<div class="slider-scale-end" style="top:<?= ($fullHeight) ?>px;"></div>
-</div>
+	<div id="slider-area" class="slider-area" style="height:<?= $fullHeight ?>px;">
+		<div id="slider-box" class="slider-box" style="height:<?= $fullHeight ?>px;"></div>
+		<div id="slider-handle" class="slider-handle" style="top:<?= ($fullHeight / 2 - 5) ?>px;"></div>
+		<div class="slider-scale-end" style="top:0px;"></div>
+		<?= $labels ?>
+		<div class="slider-scale-end" style="top:<?= ($fullHeight) ?>px;"></div>
+	</div>
+</fieldset>
 
 <script type="text/javascript">
 	
