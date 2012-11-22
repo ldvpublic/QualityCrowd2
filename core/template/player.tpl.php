@@ -1,6 +1,4 @@
 <?php
-$uid = uniqid();
-
 $swf = BASE_URL . 'core/files/flash/qcplayer.swf';
 $buttons = BASE_URL . 'core/files/img/playerbuttons.png';
 

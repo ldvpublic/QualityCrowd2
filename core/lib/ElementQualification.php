@@ -1,6 +1,6 @@
 <?php
 
-class StepQualification extends Step
+class ElementQualification extends StepElement
 {
 	private $qualiMain;
 

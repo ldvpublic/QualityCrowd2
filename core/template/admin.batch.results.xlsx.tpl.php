@@ -44,10 +44,9 @@ function outputHeaders($sheet, $steps)
 {
 	// Header line 1
 	$sheet->setCellValue('A1', 'Worker ID')
-        ->setCellValue('B1', 'Token')
-        ->setCellValue('C1', 'Finished');
+        ->setCellValue('B1', 'Finished');
 
-	$c = 3;
+	$c = 2;
 	foreach($steps as $stepId => $step)
 	{
 	    $sheet->setCellValueByColumnAndRow($c, 1, 'Step ' . ($stepId + 1));
@@ -55,7 +54,7 @@ function outputHeaders($sheet, $steps)
 	}
 
 	// Header line 2
-	$c = 3;
+	$c = 2;
 	foreach($steps as $step)
 	{
 		$sheet->setCellValueByColumnAndRow($c, 2, $step['command']);
@@ -63,7 +62,7 @@ function outputHeaders($sheet, $steps)
 	}
 
 	// Header line 3
-	$c = 3;
+	$c = 2;
 	foreach($steps as $step)
 	{
 		if (isset($step['arguments'][0]) && $step['command'] <> 'page') {
@@ -81,12 +80,10 @@ function outputResults($sheet, $workers, $colId)
 	{
 		$sheet->setCellValueExplicitByColumnAndRow(0, $r, $worker['workerId'],
 			PHPExcel_Cell_DataType::TYPE_STRING);
-	    $sheet->setCellValueExplicitByColumnAndRow(1, $r, $worker['token'], 
-	    	PHPExcel_Cell_DataType::TYPE_STRING);
-	    $sheet->setCellValueByColumnAndRow(2, $r, ($worker['finished'] ? 'Yes' : 'No'));
+	    $sheet->setCellValueByColumnAndRow(1, $r, ($worker['finished'] ? 'Yes' : 'No'));
 
 		if (is_array($worker['results'])) {
-			$c = 3;
+			$c = 2;
 			foreach($worker['results'] as $result)
 			{
 				if (isset($result[$colId])) {

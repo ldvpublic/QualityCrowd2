@@ -7,7 +7,9 @@ class BatchCompiler extends Base
 
 	public static $syntax = array(
 		// special commands
-		'meta'          => array(
+		'meta' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 1,
 			'arguments' => array('key', 'value'),
 			'description' => '',
@@ -18,89 +20,99 @@ class BatchCompiler extends Base
 				'timeout'		=> 600,
 				),
 			),
-		'var'           => array(
+		'var' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 2,
 			'arguments' => array('variable', 'value'),
 			'description' => 'Sets an internal variable to `<value>`. To use this variable for example in a `set` command, use the following syntax: `set title $titlevar`',
 			),
-		'set'           => array(
+		'set' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 1,
 			'arguments' => array('property', 'value'),
 			'description' => 'The `set` command sets a property defined by the `<property>`-argument to the value specified by `<value>`. This property can be used by all further commands and its value will be set until a matching `unset`-command is processed.',
 			),
-		'unset'         => array(
+		'unset' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 1,
 			'arguments' => array('property'),
 			'description' => 'Unsets the property with the passed `<property>`. If `all` is passed all properties will be unset.',
 			),
+		'end' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
+			'minArguments' => 1,
+			'arguments' => array('block'),
+			'description' => 'TODO',
+			),
 
-		// step commands
-		'page'          => array(
+		// commands
+		'step' => array(
+			'isBlock' => true,
+			'needsBlock' => false,
 			'minArguments' => 0, 
 			'arguments' => array(),
-			'properties'   => array(
-				'title' 		 => '',
-				'text' 			 => '',
+			'properties' => array(
 				'delay' 		 => 0,
+				'skipvalidation' => false,
 				),
+			'description' => 'TODO',
+			),
+		'title' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
+			'minArguments' => 1, 
+			'arguments' => array('title'),
+			'properties' => array(),
+			'description' => 'Todo',
+			),
+		'text' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
+			'minArguments' => 1, 
+			'arguments' => array('text'),
+			'properties' => array(),
 			'description' => 'Displays a simple HTML-Page which is particularly useful as a welcome page. It is recommended to use the `include()`-macro to set the page text property (e.g. `set text include(welcome.html)`)',
 			),
 		'video' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
 			'minArguments' => 1, 
 			'arguments' => array('video1', 'video2'),
-			'properties'   => array(
-				'skipvalidation' => false,
-				'title' 		 => '',
-				'text' 			 => '',
-				'question' 		 => '',
-				'answermode'	 => 'discrete',
-				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
+			'properties' => array(
 				'mediaurl' 		 => MEDIA_URL,
 				'videowidth' 	 => 352,
 				'videoheight' 	 => 288,
-				'delay' 		 => 0,
 				),
 			'description' => '',
 			),
 		'image' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
 			'minArguments' => 1,
 			'arguments' => array('image'),
-			'properties'   => array(
-				'skipvalidation' => false,
-				'title' 		 => '',
-				'text' 			 => '',
-				'question' 		 => '',
-				'answermode'	 => 'discrete',
-				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
+			'properties' => array(	
 				'mediaurl' 		 => MEDIA_URL,
-				'delay' 		 => 0,
 				),
 			'description' => '',
 			),
 		'question' => array(
-			'minArguments' => 0,
-			'arguments' => array(),
+			'isBlock' => false,
+			'needsBlock' => true,
+			'minArguments' => 1,
+			'arguments' => array('question'),
 			'properties'   => array(
-				'skipvalidation' => false,
-				'title' 		 => '',
-				'text' 			 => '',
-				'question' 		 => '',
 				'answermode'	 => 'discrete',
 				'answers'		 => '1: First answer; 2: Second answer; 3: Third answer',
-				'delay' 		 => 0,
-				),
-			'description' => '',
-			),
-		'showtoken' => array(
-			'minArguments' => 0,
-			'arguments' => array(),
-			'properties'   => array(
-				'title' 		 => '',
-				'text' 			 => '',
 				),
 			'description' => '',
 			),
 		'qualification' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
 			'minArguments' => 1,
 			'arguments' => array('qualification-batch'),
 			'properties'   => array(),
@@ -169,7 +181,7 @@ EOT;
 		$myBatch = null;
 
 		if (!file_exists($this->getCacheFileName()) ||
-			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()))
+			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) )
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
@@ -187,70 +199,100 @@ EOT;
 
 	private function compile() 
 	{
-		$batchSteps = array();
+		$steps = array();
 		$sourceData = $this->parse();
 
 		$meta = array();
-		$stepProperties = array();
-		$variables = array();
+		$properties = array('global' => array(), 'step' => array());
+		$variables = array('global' => array(), 'step' => array());
+
+		$currentScope = 'global';
 
 		foreach($sourceData as $sourceStep) 
 		{
-			$batchStep = array(
-				'command', 
-				'arguments' => array(), 
-				'properties' => array()
-				);
-			
 			switch($sourceStep['command']) 
 			{
 				case 'meta':
 					$meta[$sourceStep['arguments'][0]] = 
-						$this->parseValue($sourceStep['arguments'][1], $variables);
+						$this->parseValue($sourceStep['arguments'][1], $variables[$currentScope]);
 					break;
 
 				case 'set':
 					$value = (isset($sourceStep['arguments'][1]) ? $sourceStep['arguments'][1] : true);
-					$stepProperties[$sourceStep['arguments'][0]] = 
-						$this->parseValue($value, $variables);
+					$properties[$currentScope][$sourceStep['arguments'][0]] = 
+						$this->parseValue($value, $variables[$currentScope]);
 					break;
 
 				case 'var':
-					$variables[$sourceStep['arguments'][0]] = 
-						$this->parseValue($sourceStep['arguments'][1], $variables);
+					$variables[$currentScope][$sourceStep['arguments'][0]] = 
+						$this->parseValue($sourceStep['arguments'][1], $variables[$currentScope]);
 					break;
 
 				case 'unset':
-					if ($sourceStep['arguments'][0] == 'all')
-					{
-						$stepProperties = array();
+					if ($sourceStep['arguments'][0] == 'all') {
+						$properties[$currentScope] = array();
 					} else
 					{
-						unset($stepProperties[$sourceStep['arguments'][0]]);	
+						unset($properties[$currentScope][$sourceStep['arguments'][0]]);	
 					}
 					break;
 
+				case 'step':
+					$step = array(
+						'properties' => array(),
+					 	'elements' => array()
+					 	);
+
+					// set properties
+					foreach(self::$syntax['step']['properties'] as $property => $default)
+					{
+						if (isset($properties['global'][$property])) {
+							$step['properties'][$property] = $properties['global'][$property];
+						} else {
+							$step['properties'][$property] = $default;
+						}
+					}
+
+					$properties['step'] = $properties['global'];
+					$variables['step'] = $variables['global'];
+					$currentScope = 'step';
+					break;
+
+				case 'end':
+					$steps[] = $step;
+					$currentScope = 'global';
+					break;
+
 				default:
-					$batchStep['command'] = $sourceStep['command'];
+				
+					$element = array(
+						'command' => $sourceStep['command'],
+						'arguments' => array(),
+						'properties' => array(),
+						);
 
 					// set properties
 					foreach(self::$syntax[$sourceStep['command']]['properties'] as $property => $default)
 					{
-						if (isset($stepProperties[$property])) {
-							$batchStep['properties'][$property] = $stepProperties[$property];
+						if (isset($properties['step'][$property])) {
+							$element['properties'][$property] = $properties['step'][$property];
 						} else {
-							$batchStep['properties'][$property] = $default;
+							$element['properties'][$property] = $default;
 						}
 					}
 
 					// set arguments
-					$batchStep['arguments'] = array();
+					$element['arguments'] = array();
+					$i = 0;
 					foreach($sourceStep['arguments'] as $arg) 
 					{
-						$batchStep['arguments'][] = $this->parseValue($arg, $variables);
+						$argumentKey = self::$syntax[$sourceStep['command']]['arguments'][$i];
+						$element['arguments'][$argumentKey] = $this->parseValue($arg, $variables['step']);
+						$i++;
 					}
 
-					$batchSteps[] = $batchStep;
+					$step['elements'][] = $element;
+					
 					break;
 			}
 		}
@@ -263,7 +305,7 @@ EOT;
 			}
 		}
 		
-		$myBatch = new Batch($this->batchId, $meta, $batchSteps);
+		$myBatch = new Batch($this->batchId, $meta, $steps);
 
 		return $myBatch;
 	}
@@ -315,20 +357,24 @@ EOT;
 		// remove comments
 		$source = preg_replace("/^\s*#.*$/m", '', $source);
 
-		// clean up line endings
-		$source = str_replace("\r\n", "\n", $source);
-		$source = preg_replace("/\n{2,}/", "\n", $source);
-		$source = preg_replace("/\n$/", '', $source);
-		$source = preg_replace("/^\n/", '', $source);
-
 		// replace tabs with spaces
 		$source = str_replace("\t", ' ', $source);
+
+		// clean up line endings
+		$source = str_replace("\r\n", "\n", $source);
+
+		// remove empty lines
+		$source = preg_replace('/^\s*$/m', '', $source);
+		$source = str_replace("\n\n", "\n", $source);
 
 		// remove multiple spaces
 		$source = preg_replace("/\ {2,}/", ' ', $source);
 
+		// remove spaces at line beginnings
+		$source = preg_replace("/^\ /m", "", $source);
+
 		// remove spaces at line endings
-		$source = preg_replace("/\ *\n/", "\n", $source);
+		$source = preg_replace('/\ *\n/', "\n", $source);
 
 		return $source;
 	}

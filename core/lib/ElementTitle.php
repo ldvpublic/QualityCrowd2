@@ -1,6 +1,6 @@
 <?php
 
-class StepPage extends Step
+class ElementTitle extends StepElement
 {
 	protected function init() {}
 	

@@ -191,12 +191,17 @@ table.steps {
 	border:1px solid #aaa;
 }
 
-table.steps tr.step {
+table.steps .step {
 	background-color:#ccc;
 	border-top:1px solid #888;
 }
 
-table.steps tr.step td {
+table.steps .element {
+	border-top:1px solid #666;
+	border-bottom: 1px dotted #888;
+}
+
+table.steps tr td {
 	padding:7px 15px;
 }
 
@@ -210,10 +215,6 @@ table.steps .command {
 	font-weight:bold;
 }
 
-table.steps .argument {
-	font-size:17px;
-}
-
 table.steps tr.property {
 	border-bottom: 1px dotted #888;
 }
@@ -224,10 +225,15 @@ table.steps tr.property td {
 
 table.steps .property .property-key {
 	font-weight:bold;
+	padding-left:25px;
 }
 
 table.steps .property .property-key2 {
 	font-style: italic;
+}
+
+table.steps .preview {
+	text-align: right;
 }
 
 /* ==================================== Batch List */

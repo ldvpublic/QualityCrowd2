@@ -17,10 +17,6 @@
 		<td><?= $result['workerId'] ?></td>
 	</tr>
 	<tr>
-		<th>Token</th>
-		<td>xy<?= $result['token'] ?>yx</td>
-	</tr>
-	<tr>
 		<th>Started at</th>
 		<td><?= date('d.m.Y, H:i:s', $result['timestamp']) ?></td>
 	</tr>
