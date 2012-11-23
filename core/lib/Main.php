@@ -41,8 +41,13 @@ class Main extends Base
 	public function render()
 	{
 		// read last step id
-		$this->lastStepId = $this->store->readWorker('stepId', 0, $this->batchId, $this->workerId);
-		if ($this->lastStepId == -1) $this->batch->init($this->workerId);
+		$this->lastStepId = $this->store->readWorker('stepId', -1, $this->batchId, $this->workerId);
+
+		// fresh start
+		if ($this->lastStepId == -1) {
+			$this->batch->init($this->workerId);
+			$this->lastStepId = 0;
+		}
 
 		// process submitted post data
 		$errorMessages = $this->handlePostData();

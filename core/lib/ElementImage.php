@@ -14,6 +14,6 @@ class ElementImage extends StepElement
 
 	protected function prepareRender()
 	{
-		
+		$this->tpl->set('image', $this->properties['mediaurl'] . $this->arguments['image']);
 	}
 }
