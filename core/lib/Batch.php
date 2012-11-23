@@ -160,8 +160,10 @@ class Batch extends Base
 	{
 		$store = new DataStore();
 		$workers = array();
+
 		$path = DATA_PATH . $this->batchId . DS . 'workers' . DS;
 		$files = glob($path . '*', GLOB_MARK);
+
 	    foreach ($files as $file) 
 	    {
 	    	$file = preg_replace('#^' . preg_quote($path) . '#', '', $file);
@@ -182,8 +184,8 @@ class Batch extends Base
 	    			$lastTimestamp = $meta['timestamp'];
 					foreach($results as $stepId => &$stepResults)
 					{
-						$durations[$stepId] = $stepResults[2] - $lastTimestamp;
-						$lastTimestamp = $stepResults[2];
+						$durations[$stepId] = $stepResults[1] - $lastTimestamp;
+						$lastTimestamp = $stepResults[1];
 					}
 				}
 
@@ -208,7 +210,6 @@ class Batch extends Base
 			{
 				$steps[$stepId]['command'] = $stepResults[1];
 				
-				array_shift($stepResults);
 				array_shift($stepResults);
 				array_shift($stepResults);
 				$steps[$stepId]['results'][$wid] = $stepResults;

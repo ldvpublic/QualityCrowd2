@@ -12,13 +12,13 @@ $objPHPExcel->getProperties()->setCreator("QualityCrowd 2")
 
 // fill in results
 outputHeaders($objPHPExcel->getSheet(0), $steps);
-outputResults($objPHPExcel->getSheet(0), $workers, 3);
+outputResults($objPHPExcel->getSheet(0), $workers, 2);
 $objPHPExcel->getSheet(0)->setTitle('results');
 
 // fill in text results
 $objPHPExcel->createSheet();
 outputHeaders($objPHPExcel->getSheet(1), $steps);
-outputResults($objPHPExcel->getSheet(1), $workers, 4);
+outputResults($objPHPExcel->getSheet(1), $workers, 3);
 $objPHPExcel->getSheet(1)->setTitle('text results');
 
 // fill in durations
@@ -57,20 +57,9 @@ function outputHeaders($sheet, $steps)
 	$c = 2;
 	foreach($steps as $step)
 	{
-		$sheet->setCellValueByColumnAndRow($c, 2, $step['command']);
+		$sheet->setCellValueByColumnAndRow($c, 2, ifset($step['arguments']['name']));
 	    $c++;
 	}
-
-	// Header line 3
-	$c = 2;
-	foreach($steps as $step)
-	{
-		if (isset($step['arguments'][0]) && $step['command'] <> 'page') {
-			$sheet->setCellValueByColumnAndRow($c, 3, $step['arguments'][0]);
-		}
-		$c++;
-	}
-
 }
 
 function outputResults($sheet, $workers, $colId)
@@ -106,12 +95,10 @@ function outputDurations($sheet, $workers)
 	{
 		$sheet->setCellValueExplicitByColumnAndRow(0, $r, $worker['workerId'],
 			PHPExcel_Cell_DataType::TYPE_STRING);
-	    $sheet->setCellValueExplicitByColumnAndRow(1, $r, $worker['token'], 
-	    	PHPExcel_Cell_DataType::TYPE_STRING);
-	    $sheet->setCellValueByColumnAndRow(2, $r, ($worker['finished'] ? 'Yes' : 'No'));
+	    $sheet->setCellValueByColumnAndRow(1, $r, ($worker['finished'] ? 'Yes' : 'No'));
 
 		if (is_array($worker['durations'])) {
-			$c = 3;
+			$c = 2;
 			foreach($worker['durations'] as $stepId => $duration)
 			{
 				$sheet->setCellValueByColumnAndRow($c, $r, $duration);

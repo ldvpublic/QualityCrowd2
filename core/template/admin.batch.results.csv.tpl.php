@@ -14,21 +14,10 @@ echo "\n";
 echo ',';
 foreach($steps as $step)
 {
-	echo ',' . $step['command'];
+	echo ',' . ifset($step['arguments']['name']);
 }
 echo "\n";
 
-// Header line 3
-echo ',';
-foreach($steps as $step)
-{
-	if (isset($step['arguments'][0]) && $step['command'] <> 'page') {
-		echo ',' . $step['arguments'][0];
-	} else {
-		echo ',';
-	}
-}
-echo "\n";
 
 // Results
 foreach($workers as $worker)

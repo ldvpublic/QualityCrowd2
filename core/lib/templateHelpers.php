@@ -51,4 +51,9 @@ function formatPropertyValue($pv)
     if ($pv === '') return '';
     return trimText($pv, 90);
 }
+
+function ifset(&$var) 
+{
+    return (isset($var) ? $var : '');
+}
 ?>

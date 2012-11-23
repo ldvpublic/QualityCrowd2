@@ -43,7 +43,8 @@
 	?>
 	<tr class="step">
 		<td class="number" rowspan="<?= $rows ?>"><?= ($sk + 1) ?></td>
-		<td class="preview" colspan="2">
+		<td class="command"><?= ifset($step['arguments']['name']) ?></td>
+		<td class="preview">
 			<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/<?= $sk ?>">Preview</a>
 		</td>
 	</tr>

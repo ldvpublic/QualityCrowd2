@@ -141,10 +141,7 @@ foreach($results as $stepId => &$step)
 ?>
 	<tr class="step">
 		<td class="number" rowspan="<?= $rows ?>"><?= ($stepId + 1) ?></td>
-		<td class="command" colspan="2"><?= $step['command'] ?></td>
-		<td class="argument" colspan="2">
-			<?= trimText(implode(' &nbsp; &nbsp; ', $steps[$stepId]['arguments']), 60) ?>
-		</td>
+		<td class="command" colspan="4"><?= ifset($steps[$stepId]['arguments']['name']) ?></td>
 	</tr>
 
 	<?php if(isset($steps[$stepId]['properties']['question'])): ?>

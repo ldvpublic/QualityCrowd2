@@ -54,7 +54,7 @@ class BatchCompiler extends Base
 			'isBlock' => true,
 			'needsBlock' => false,
 			'minArguments' => 0, 
-			'arguments' => array(),
+			'arguments' => array('name'),
 			'properties' => array(
 				'delay' 		 => 0,
 				'skipvalidation' => false,
@@ -239,6 +239,7 @@ EOT;
 
 				case 'step':
 					$step = array(
+						'arguments' => array(),
 						'properties' => array(),
 					 	'elements' => array()
 					 	);
@@ -251,6 +252,15 @@ EOT;
 						} else {
 							$step['properties'][$property] = $default;
 						}
+					}
+
+					// set arguments
+					$i = 0;
+					foreach($sourceStep['arguments'] as $arg) 
+					{
+						$argumentKey = self::$syntax['step']['arguments'][$i];
+						$step['arguments'][$argumentKey] = $this->parseValue($arg, $variables['global']);
+						$i++;
 					}
 
 					$properties['step'] = $properties['global'];
