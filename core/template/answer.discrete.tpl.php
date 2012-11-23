@@ -1,15 +1,12 @@
 <input type="hidden" name="answered-<?= $uid ?>" value="0">
 <input type="hidden" name="text-<?= $uid ?>" value="">
 
-<fieldset>
-	<legend><?= $question ?></legend>
-<?php
-	foreach($answers as $row): ?>
+<?php foreach($answers as $row): ?>
 	<input type="radio" name="value-<?= $uid ?>" id="value-<?= $row['value'] ?>-<?= $uid ?>" value="<?= $row['value'] ?>">
 	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>-<?= $uid ?>"><?= $row['text'] ?></label>
 	<br />
-	<?php endforeach; ?>
-</fieldset>
+<?php endforeach; ?>
+
 
 <script type="text/javascript">
 

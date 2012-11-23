@@ -110,6 +110,7 @@ class BatchCompiler extends Base
 			'properties'   => array(
 				'answermode'	 => 'discrete',
 				'answers'		 => '1: First answer; 2: Second answer; 3: Third answer',
+				'width'			 => -1,
 				),
 			'description' => '',
 			),

@@ -1,10 +1,7 @@
 <input type="hidden" name="answered-<?= $uid ?>" value="0">
 <input type="hidden" name="value-<?= $uid ?>" value="">
 
-<fieldset>
-	<legend><?= $question ?></legend>
-	<textarea name="text-<?= $uid ?>"></textarea>
-</fieldset>
+<textarea name="text-<?= $uid ?>"></textarea>
 
 <script type="text/javascript">
 
