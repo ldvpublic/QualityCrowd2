@@ -5,8 +5,8 @@
 	<legend><?= $question ?></legend>
 <?php
 	foreach($answers as $row): ?>
-	<input type="radio" name="value-<?= $uid ?>" id="value-<?= $row['value'] ?>" value="<?= $row['value'] ?>">
-	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>"><?= $row['text'] ?></label>
+	<input type="radio" name="value-<?= $uid ?>" id="value-<?= $row['value'] ?>-<?= $uid ?>" value="<?= $row['value'] ?>">
+	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>-<?= $uid ?>"><?= $row['text'] ?></label>
 	<br />
 	<?php endforeach; ?>
 </fieldset>
@@ -15,7 +15,7 @@
 
 	$('input[name=value-<?= $uid ?>]').change( function() {
 		var selectedValue = $('input[name=value-<?= $uid ?>]:checked').val();
-		$('input[name=text-<?= $uid ?>]').val($('#label-' + selectedValue).text());
+		$('input[name=text-<?= $uid ?>]').val($('#label-' + selectedValue + '-<?= $uid ?>').text());
 		$('input[name=answered-<?= $uid ?>]').val(1);
 	});
 
