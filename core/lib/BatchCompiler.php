@@ -185,7 +185,7 @@ EOT;
 		$myBatch = null;
 
 		if (!file_exists($this->getCacheFileName()) ||
-			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) )
+			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) ) //|| true)
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
@@ -330,6 +330,9 @@ EOT;
 		$source = $this->getSource();
 		$source = $this->normalize($source);
 		$source = $this->resolveMacros($source);
+		$source = $this->resolveForLoops($source);
+
+		$source = $this->normalize($source);
 
 		// parse source file
 		$lines = explode("\n", $source);
@@ -369,52 +372,101 @@ EOT;
 
 	private function resolveMacros($source) 
 	{
-		$macros = array();
+		// find macro definitions
+		$macros = $this->extractBlock($source, 'macro');
+	
+		// replace macro references
+		foreach($macros as $macro) {
+			$content = implode("\n", $macro['content']);
+			$source = str_replace('$' . $macro['arguments'][0], $content, $source);
+		}
+		
+		return $source;
+	}
 
-		// find macros
-		$insideMacro = false;
+	private function resolveForLoops($source)
+	{
+		// find list definitions
+		$lists = $this->extractBlock($source, 'list');
+		
+		// find for loops
+		$forloops = $this->extractBlock($source, 'for');
+		//header("Content-Type: text/plain; charset=utf8");
+
+		// expand for loops
+		$lines = explode("\n", $source);
+
+		foreach($forloops as $loop) {
+			// find matching list
+			$myList = null;
+			foreach($lists as $list) {
+				if ($list['arguments'][0] == $loop['arguments'][2]) {
+					$myList = $list['content'];
+					break;
+				}
+			}
+			if ($myList === null) {
+				throw new Exception("List with name '{$loop['arguments'][2]}' not found.");
+			}
+
+			// expanding
+			$loopContent = array();
+			foreach($myList as $listItem) {
+				$content = implode("\n", $loop['content']);	
+				$content = str_replace('$' . $loop['arguments'][0], $listItem, $content);
+				$loopContent[] = $content;
+			}
+
+			// replacing
+			$loopContent = implode("\n", $loopContent);	
+			$lines[$loop['start']] = $loopContent;
+		}
+		
+		$source = implode("\n", $lines);
+
+		return $source;
+	}
+
+	private function extractBlock(&$source, $keyword)
+	{
+		$blocks = array();
+
+		$insideBlock = false;
 		$lines = explode("\n", $source);
 		foreach($lines as $li => $line)
 		{
 			$words = explode(' ', $line);
 			$words = str_getcsv($line, ' ', '"');
 
-			if ($words[0] == 'macro') {
-				$macro = array(
+			if ($words[0] == $keyword) {
+				array_shift($words);
+				$block = array(
 					'start' => $li,
-					'name'  => $words[1],
+					'arguments'  => $words,
 					'content' => array(),
 					);
-				$insideMacro = true;
+				$insideBlock = true;
 
-			} elseif ($words[0] == 'end' && $words[1] == 'macro') {
-				$macro['length'] = $li - $macro['start'] + 1;
-				$macros[] = $macro;
-				$insideMacro = false; 
+			} elseif ($words[0] == 'end' && $words[1] == $keyword) {
+				$block['length'] = $li - $block['start'] + 1;
+				$blocks[] = $block;
+				$insideBlock = false; 
 			} else {
-				if ($insideMacro) {
-					$macro['content'][] = $line;
+				if ($insideBlock) {
+					$block['content'][] = $line;
 				}
 			}
 		}
-		//print_r($macros);
 
-		// remove macro definition
-		foreach($macros as $macro) {
-			$replacement = array_fill(0, $macro['length'], '');
-			array_splice($lines, $macro['start'], $macro['length'], $replacement);	
+		// remove block definition
+		foreach($blocks as $block) {
+			$replacement = array_fill(0, $block['length'], '');
+			array_splice($lines, $block['start'], $block['length'], $replacement);	
 		}
 
 		$source = implode("\n", $lines);
-		$source = $this->normalize($source);
-	
-		// replace macro references
-		foreach($macros as $macro) {
-			$content = implode("\n", $macro['content']);
-			$source = str_replace('$' . $macro['name'], $content, $source);
-		}
-		
-		return $source;
+
+		return $blocks;
 	}
 
 	private function normalize($source)
