@@ -23,10 +23,30 @@ class Step extends Base
 		$this->tpl = new Template('step', $this->batch->id());
 	}
 
+	public function batch()
+	{
+		return $this->batch;
+	}
+
+	public function workerId()
+	{
+		return $this->workerId;
+	}
+
 	// return true if this step should be skipped
 	public function skip()
 	{
-		return false;
+		foreach($this->elements as $ek => $element) 
+		{
+			$uid = hash("crc32b", $this->batch->id() . '-' . $this->stepId . '-' . $ek);
+
+			$class = 'Element' . ucfirst($element['command']);
+			$elementObject = new $class($element, $this, $uid);
+
+			if (! $elementObject->skip()) return false;
+		}
+
+		return true;
 	}
 
 	public function render()
@@ -42,7 +62,7 @@ class Step extends Base
 			$uid = hash("crc32b", $this->batch->id() . '-' . $this->stepId . '-' . $ek);
 
 			$class = 'Element' . ucfirst($element['command']);
-			$elementObject = new $class($element, $this->batch, $uid);
+			$elementObject = new $class($element, $this, $uid);
 
 			$elementRenderings[] = $elementObject->render();
 		}
@@ -62,11 +82,13 @@ class Step extends Base
 			$uid = hash("crc32b", $this->batch->id() . '-' . $this->stepId . '-' . $ek);
 
 			$class = 'Element' . ucfirst($element['command']);
-			$elementObject = new $class($element, $this->batch, $uid);
+			$elementObject = new $class($element, $this, $uid);
 
 			$msg = $elementObject->validate($data);
 
-			if (is_array($msg)) {
+			if ($msg === false) {
+				return false;
+			} elseif (is_array($msg)) {
 				$msgs = array_merge($msgs, $msg);
 			}
 		}

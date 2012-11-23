@@ -31,7 +31,7 @@ class ElementVideo extends StepElement
 
 		foreach ($this->arguments as $video)
 		{
-			$tpl = new Template('player', $this->batch->id());
+			$tpl = new Template('player', $this->step->batch()->id());
 			$tpl->set('file', $this->properties['mediaurl'] . $video);
 			$tpl->set('filename', $video);
 			$tpl->set('width',  $this->properties['videowidth']);

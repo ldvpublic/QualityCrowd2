@@ -48,7 +48,7 @@ class ElementQuestion extends StepElement
 			$answermode = 'continous';
 		}
 
-		$tpl = new Template('answer.' . $answermode, $this->batch->id());
+		$tpl = new Template('answer.' . $answermode, $this->step->batch()->id());
 		$tpl->set('answers', $answers);
 		$answerform = $tpl->render();
 		$this->tpl->set('answerform', $answerform);

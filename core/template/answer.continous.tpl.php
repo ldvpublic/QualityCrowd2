@@ -1,6 +1,5 @@
 <input type="hidden" name="value-<?= $uid ?>" value="">
 <input type="hidden" name="text-<?= $uid ?>" value="">
-<input type="hidden" name="answermode-<?= $uid ?>" value="continous">
 <input type="hidden" name="answered-<?= $uid ?>" value="0">
 
 <?php

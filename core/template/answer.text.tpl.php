@@ -1,18 +1,17 @@
-<input type="hidden" name="answered" value="0">
-<input type="hidden" name="value" value="">
-<input type="hidden" name="answermode" value="text">
+<input type="hidden" name="answered-<?= $uid ?>" value="0">
+<input type="hidden" name="value-<?= $uid ?>" value="">
 
 <fieldset>
 	<legend><?= $question ?></legend>
-	<textarea name="text"></textarea>
+	<textarea name="text-<?= $uid ?>"></textarea>
 </fieldset>
 
 <script type="text/javascript">
 
-	$('textarea[name=text]').keyup( function() {
-		var text = $('textarea[name=text]').val();
-		$('input[name=value]').val(text.length);
-		$('input[name=answered]').val(text.length > 0);
+	$('textarea[name=text-<?= $uid ?>]').keyup( function() {
+		var text = $('textarea[name=text-<?= $uid ?>]').val();
+		$('input[name=value-<?= $uid ?>]').val(text.length);
+		$('input[name=answered-<?= $uid ?>]').val(text.length > 0);
 	});
 
 </script>

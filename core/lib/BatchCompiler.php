@@ -75,7 +75,7 @@ class BatchCompiler extends Base
 			'minArguments' => 1, 
 			'arguments' => array('text'),
 			'properties' => array(),
-			'description' => 'Displays a simple HTML-Page which is particularly useful as a welcome page. It is recommended to use the `include()`-macro to set the page text property (e.g. `set text include(welcome.html)`)',
+			'description' => 'Displays some text. For longer texts it is recommended to use the `include()`-macro: (e.g. `text include(welcome.html)`)',
 			),
 		'video' => array(
 			'isBlock' => false,
@@ -156,9 +156,10 @@ class BatchCompiler extends Base
 meta title "New Batch"
 meta description "New batch description"
 
-set title "New Batch"
-set text "Hello World"
-page
+step
+	title "New Batch"
+	text "Hello World"
+end step
 
 EOT;
 		$path = BATCH_PATH . $this->batchId;
@@ -181,7 +182,7 @@ EOT;
 		$myBatch = null;
 
 		if (!file_exists($this->getCacheFileName()) ||
-			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) )
+			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) || true)
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
@@ -376,6 +377,8 @@ EOT;
 		// remove empty lines
 		$source = preg_replace('/^\s*$/m', '', $source);
 		$source = str_replace("\n\n", "\n", $source);
+		$source = preg_replace('/^\n/', "", $source);
+		$source = preg_replace('/\n$/', "", $source);
 
 		// remove multiple spaces
 		$source = preg_replace("/\ {2,}/", ' ', $source);

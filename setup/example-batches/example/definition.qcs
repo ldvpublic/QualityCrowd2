@@ -19,54 +19,73 @@ set videoheight 288
 # The Steps
 # 
 
-set title "Welcome"
-set text include(page.welcome.html)
-page
+step "Welcome page"
+	title "Welcome"
+	text include(page.welcome.html)
+end step
 
-set answermode text
-set title "Let's begin"
-set text "with an easy question:"
-set question "Where are you from?"
-question
+step "First question"
+	set answermode text
+	title "Let's begin"
+	text "with an easy question:"
+	question "Where are you from?"
+end step
 
-set answermode strings
-set answers "animal: What is your favorite animal?; color: What is your favorite color?"
-set title ""
-set text "Here comes another question for starters:"
-set question "What do you like most?"
-question
+step "Animal and color question"
+	set answermode strings
+	set answers "animal: What is your favorite animal?; color: What is your favorite color?"
+	title ""
+	text "Here comes another question for starters:"
+	question "What do you like most?"
+end step
 
-qualification example-qualification
+step "Qualification"
+	qualification example-qualification
+end step
 
-unset text
-
-set delay 3
 set answermode discrete
 set answers $fivepoints
-set question "Please rate the ""visual"" image quality"
-set title "Image quality"
-image lena.png
+set delay 3
+
+step "delayed video quality"
+	title "Image quality"
+	image lena.png
+	question "Please rate the ""visual"" image quality"
+end step
 
 set delay 0
-image lena-bad.png
 
-set answermode discrete
-set answers "1: A woman; 2: A man; 3: Two women; 4: An elephant"
-set question "What did you see in the last image?"
-question
+step "delayed video quality"
+	title "Image quality"
+	image lena-bad.png
+	question "Please rate the ""visual"" image quality"
+end step
+
+step "Stupid question with elephant"
+	set answers "1: A woman; 2: A man; 3: Two women; 4: An elephant"
+	question "What did you see in the last image?"
+end step
 
 set answermode continous
-set answers $fivepoints
-set question "Please rate the visual video quality"
-set title "Video quality"
-#video foreman.mp4
 
-video foreman_plr5.mp4 foreman.mp4
+step "Video quality"
+	title "Video quality"
+	video foreman_plr5.mp4 foreman.mp4
+	question "Please rate the visual video quality"
+end step
 
-set question "Please rate the acoustic quality"
-video foreman_plr10.mp4
-video foreman_plr0.4.mp4
+step 
+	video foreman_plr10.mp4
+	question "Please rate the acoustic quality"
+end step
 
-set title "Done"
-set text "You have finished the task!"
-showtoken
+step 
+	video foreman_plr0.4.mp4
+	question "Please rate the acoustic quality"
+end step
+
+step 
+	title "Done"
+	text "You have finished the task!"
+end step
+

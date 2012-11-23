@@ -3,19 +3,22 @@
 	<h3>Usage</h3>
 
 	<?php 
-	$argStr = '';
+	$cmdStr = $cmd;
 	$i = 1;
 	foreach ($cmdDef['arguments'] as $arg) {
 		if ($i > $cmdDef['minArguments']) {
-			$argStr .= ' [&lt;' . $arg .'&gt;]';
+			$cmdStr .= ' [&lt;' . $arg .'&gt;]';
 		} else {
-			$argStr .= ' &lt;' . $arg .'&gt;';
+			$cmdStr .= ' &lt;' . $arg .'&gt;';
 		}
 		$i++;
 	}
+	if ($cmdDef['isBlock']) {
+		$cmdStr .= "\n   ...\nend " . $cmd;
+	}
 	?>
 
-	<pre><?= $cmd ?><?= $argStr ?></pre>
+	<pre><?= $cmdStr ?></pre>
 
 	<?= Markdown($cmdDef['description']) ?>
 

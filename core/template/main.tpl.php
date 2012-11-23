@@ -32,7 +32,10 @@
 		</ul>
 		<?php endif; ?>
 
-		<?= $content ?>
+		<form action="<?= BASE_URL.$batchId.'/'.$workerId ?>" method="post" id="stepform">
+			<input type="hidden" name="stepId-<?= $scope ?>" value="<?= $stepId ?>">
+			<?= $content ?>
+		</form>
 
 		<div class="footer">
 			<?php if ($stepId + 1 < $stepCount && $state <> 'post' && $isLocked): ?>

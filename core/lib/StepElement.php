@@ -7,14 +7,14 @@ abstract class StepElement extends Base
 	protected $arguments;
 	protected $tpl;
 	
-	protected $batch;
+	protected $step;
 	protected $uid;
 
 	abstract protected function init();
 	abstract protected function prepareRender();
 	abstract public function validate(&$data);
 
-	public function __construct($elementArray, Batch $batch, $uid)
+	public function __construct($elementArray, Step $step, $uid)
 	{
 		parent::__construct();
 
@@ -22,10 +22,10 @@ abstract class StepElement extends Base
 		$this->properties = $elementArray['properties'];
 		$this->command = $elementArray['command'];
 
-		$this->batch = $batch;
+		$this->step = $step;
 		$this->uid = $uid;
 		
-		$this->tpl = new Template('element.' . $elementArray['command'], $this->batch->id());
+		$this->tpl = new Template('element.' . $elementArray['command'], $this->step->batch()->id());
 
 		$this->init();
 	}
