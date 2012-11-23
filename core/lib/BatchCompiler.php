@@ -49,7 +49,7 @@ class BatchCompiler extends Base
 			'description' => 'TODO',
 			),
 
-		// commands
+		// blocks
 		'step' => array(
 			'isBlock' => true,
 			'needsBlock' => false,
@@ -61,6 +61,9 @@ class BatchCompiler extends Base
 				),
 			'description' => 'TODO',
 			),
+
+
+		// commands inside blocks
 		'title' => array(
 			'isBlock' => false,
 			'needsBlock' => true,
@@ -182,7 +185,7 @@ EOT;
 		$myBatch = null;
 
 		if (!file_exists($this->getCacheFileName()) ||
-			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) || true)
+			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) )
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
@@ -326,6 +329,7 @@ EOT;
 		$data = array();
 		$source = $this->getSource();
 		$source = $this->normalize($source);
+		$source = $this->resolveMacros($source);
 
 		// parse source file
 		$lines = explode("\n", $source);
@@ -361,6 +365,56 @@ EOT;
 		}
 
 		return $data;
+	}
+
+	private function resolveMacros($source) 
+	{
+		$macros = array();
+
+		// find macros
+		$insideMacro = false;
+		$lines = explode("\n", $source);
+		foreach($lines as $li => $line)
+		{
+			$words = explode(' ', $line);
+			$words = str_getcsv($line, ' ', '"');
+
+			if ($words[0] == 'macro') {
+				$macro = array(
+					'start' => $li,
+					'name'  => $words[1],
+					'content' => array(),
+					);
+				$insideMacro = true;
+
+			} elseif ($words[0] == 'end' && $words[1] == 'macro') {
+				$macro['length'] = $li - $macro['start'] + 1;
+				$macros[] = $macro;
+				$insideMacro = false; 
+			} else {
+				if ($insideMacro) {
+					$macro['content'][] = $line;
+				}
+			}
+		}
+		//print_r($macros);
+
+		// remove macro definition
+		foreach($macros as $macro) {
+			$replacement = array_fill(0, $macro['length'], '');
+			array_splice($lines, $macro['start'], $macro['length'], $replacement);	
+		}
+
+		$source = implode("\n", $lines);
+		$source = $this->normalize($source);
+	
+		// replace macro references
+		foreach($macros as $macro) {
+			$content = implode("\n", $macro['content']);
+			$source = str_replace('$' . $macro['name'], $content, $source);
+		}
+		
+		return $source;
 	}
 
 	private function normalize($source)
