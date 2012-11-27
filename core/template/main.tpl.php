@@ -19,7 +19,7 @@
 			<span class="debugmessage">PREVIEW MODE, all data will be deleted</span>
 			<?php endif; ?>
 
-			<?php if($isLocked && $stepId < $stepCount - 1): ?>
+			<?php if($isLocked && $stepId < $stepCount - 1 && $timeout > 0): ?>
 			<span id="timeout">Remaining time to finish this step: <?= formatTime($timeout) ?></span>
 			<?php endif; ?>
 		</div>
@@ -39,7 +39,7 @@
 
 		<div class="footer">
 			<?php if ($stepId + 1 < $stepCount && $state <> 'post' && $isLocked): ?>
-				<button id="button_next">Next</button>
+				<button id="button_next"><?= ($stepId == 0 ? "Start" : "Next") ?></button>
 			<?php endif; ?>
 
 			<img src="<?= BASE_URL?>core/files/img/loading.gif" class="acitvityspinner" style="display:none;">
@@ -72,7 +72,7 @@
 			});
 			<?php endif; ?>
 
-			<?php if($isLocked && $stepId < $stepCount - 1): ?>
+			<?php if($isLocked && $stepId < $stepCount - 1 && $timeout > 0): ?>
 			var remainingTime = <?= $timeout ?>;
 			var timer = window.setInterval(function () 
 			{	

@@ -2,9 +2,10 @@
 <input type="hidden" name="text-<?= $uid ?>" value="">
 
 <?php foreach($answers as $row): ?>
-	<input type="radio" name="value-<?= $uid ?>" id="value-<?= $row['value'] ?>-<?= $uid ?>" value="<?= $row['value'] ?>">
-	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>-<?= $uid ?>"><?= $row['text'] ?></label>
-	<br />
+	<div class="radiooption">
+		<input type="radio" name="value-<?= $uid ?>" id="value-<?= $row['value'] ?>-<?= $uid ?>" value="<?= $row['value'] ?>">
+		<label for="value-<?= $row['value'] ?>-<?= $uid ?>" id="label-<?= $row['value'] ?>-<?= $uid ?>"><?= $row['text'] ?></label>
+	</div>
 <?php endforeach; ?>
 
 
