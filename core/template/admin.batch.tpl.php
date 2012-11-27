@@ -13,9 +13,6 @@
 	<li <?= ($subpage == 'results' ? 'class="active"' : '') ?>>
 		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/results">Results</a>
 	</li>
-	<li <?= ($subpage == 'browsers' ? 'class="active"' : '') ?>>
-		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/browsers">Browsers</a>
-	</li>
 </ul>
 
 <?= $content ?>

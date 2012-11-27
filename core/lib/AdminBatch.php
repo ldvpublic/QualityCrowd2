@@ -65,7 +65,7 @@ class AdminBatch extends AdminPage
 				echo $myTpl->render();
 				exit;
 				break;
-
+				
 			case 'results.xlsx':
 				$myTpl = new Template('admin.batch.results.xlsx');
 				$myTpl->set('batchId', $batchId);
@@ -73,11 +73,6 @@ class AdminBatch extends AdminPage
 				$myTpl->set('workers', $batch->workers(true));
 				echo $myTpl->render();
 				exit;
-				break;
-
-			case 'browsers':
-				$myTpl = new Template('admin.batch.browsers');
-				$myTpl->set('workers', $batch->workers());
 				break;
 
 			default:
