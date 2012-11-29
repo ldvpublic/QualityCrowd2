@@ -39,7 +39,7 @@ if (count($answers) > 2) {
 		<div class="slider-label" style="top:<?= ($fullHeight - 6) ?>px; left:45px;"><?= $answers[1]['text'] ?></div>
 	<?php endif; ?>
 	<div id="slider-box-<?= $uid ?>" class="slider-box" style="height:<?= $fullHeight ?>px;"></div>
-	<div id="slider-handle-<?= $uid ?>" class="slider-handle" style="top:<?= ($fullHeight / 2 - 5) ?>px;"></div>
+	<div id="slider-handle-<?= $uid ?>" class="slider-handle" style="top:-5px; display:none;"></div>
 	<div class="slider-scale-end" style="top:0px;"></div>
 	<?= $labels ?>
 	<div class="slider-scale-end" style="top:<?= ($fullHeight) ?>px;"></div>
@@ -48,7 +48,9 @@ if (count($answers) > 2) {
 <script type="text/javascript">
 	
 	slider_<?= $uid ?> = new Object;
-	
+
+	slider_<?= $uid ?>.firstTouch = true;
+
 	slider_<?= $uid ?>.overlap = $('#slider-handle-<?= $uid ?>').height() / 2;
 	slider_<?= $uid ?>.maxPos = <?= $fullHeight ?>;
 	slider_<?= $uid ?>.maxVal = <?= $maxVal ?>;
@@ -57,6 +59,19 @@ if (count($answers) > 2) {
 	slider_<?= $uid ?>.boxTop = 0;
 
 	refreshValue_<?= $uid ?>(0);
+
+	$('#slider-box-<?= $uid ?>').click(function(e) {
+		if (slider_<?= $uid ?>.firstTouch) {
+			$('#slider-handle-<?= $uid ?>').show();
+
+			var newPos =  e.pageY - $('#slider-box-<?= $uid ?>').offset().top - slider_<?= $uid ?>.overlap;
+			$('#slider-handle-<?= $uid ?>').css('top', newPos);
+			
+			refreshValue_<?= $uid ?>(1);
+
+			slider_<?= $uid ?>.firstTouch = false;
+		}
+	});
 
 	$('#slider-handle-<?= $uid ?>').mousedown(function (e) {
 		slider_<?= $uid ?>.moving = true;
