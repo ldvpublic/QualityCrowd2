@@ -10,6 +10,11 @@
 	<li <?= ($subpage == 'validate' ? 'class="active"' : '') ?>>
 		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/validate">Validate Worker</a>
 	</li>
+	
+	<li <?= ($subpage == 'validate_mw' ? 'class="active"' : '') ?>>
+                <a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/validate_mw">Validate Microworkers.com Tokens</a>
+        </li>
+
 	<li <?= ($subpage == 'results' ? 'class="active"' : '') ?>>
 		<a href="<?= BASE_URL ?>admin/batch/<?= $id ?>/results">Results</a>
 	</li>
