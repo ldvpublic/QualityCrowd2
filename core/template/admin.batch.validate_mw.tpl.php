@@ -1,6 +1,6 @@
 <?php
 
-require_once("../3p/parsecsv/parsecsv.lib.php");
+require_once(__DIR__ . "/../3p/parsecsv/parsecsv.lib.php");
 
 function parseMicroworkersData($data) {
 
