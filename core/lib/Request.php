@@ -50,8 +50,15 @@ class Request extends Base
 		if ($batchId == '') die('invalid URL');
 
 		// extract worker id
-		$workerId = preg_replace("/[^a-zA-Z0-9-]/", "", $path[1]);
-		if ($workerId == '' || strlen($workerId > 64)) die('invalid URL');
+		$workerId = $path[1];		
+
+		// check worker id
+		if(preg_match('/[^a-zA-Z0-9]/i', $path[1]) || 
+		   $workerId == '' || 
+		   strlen($workerId) > 64) 
+		{
+			die('invalid worker id');
+		}
 
 		// handle manual restart
 		$restart = false;
