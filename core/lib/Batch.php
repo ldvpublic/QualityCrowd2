@@ -49,15 +49,15 @@ class Batch extends Base
 	public function init($workerId)
 	{
 		// generate token
-		$token = $this->getConfig('securitySalt') . '-'; 
-		$token .= $this->batchId . '-';
-		$token .= $workerId . '-';
-		$token .= md5($_SERVER['HTTP_USER_AGENT']) . '-';
-		$token .= md5($_SERVER['REMOTE_ADDR']) . '-';
-		$token .= date('d.m.Y');
+		//$token = $this->getConfig('securitySalt') . '-'; 
+		//$token .= $this->batchId . '-';
+		//$token .= $workerId . '-';
+		//$token .= md5($_SERVER['HTTP_USER_AGENT']) . '-';
+		//$token .= md5($_SERVER['REMOTE_ADDR']) . '-';
+		//$token .= date('d.m.Y');
 
-		$token = md5($token);
-		$token = substr($token, 20);
+		$token = md5($token . $this->getConfig('securitySalt'));
+		//$token = substr($token, 20);
 
 		// collect and write meta data
 		$meta = array(
