@@ -56,8 +56,10 @@ class AdminBatch extends AdminPage
 				$myTpl = new Template('admin.batch.validate_mw');
 
 				$mw_csvexport = (isset($_POST['mw_csvexport']) ? $_POST['mw_csvexport'] : '');
+				$mw_salt      = (isset($_POST['mw_salt'])      ? $_POST['mw_salt'] : '');
 
 				$myTpl->set('mw_csvexport', $mw_csvexport);
+				$myTpl->set('mw_salt'	 , $mw_salt);
 				$myTpl->set('batch', $batch);
 
 				break;

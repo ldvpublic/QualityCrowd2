@@ -56,7 +56,7 @@ class Batch extends Base
 		//$token .= md5($_SERVER['REMOTE_ADDR']) . '-';
 		//$token .= date('d.m.Y');
 
-		$token = md5($token . $this->getConfig('securitySalt'));
+		$token = md5($workerId . $this->getConfig('securitySalt'));
 		//$token = substr($token, 20);
 
 		// collect and write meta data

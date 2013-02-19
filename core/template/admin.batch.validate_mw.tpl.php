@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . "/../3p/parsecsv/parsecsv.lib.php");
 
-function parseMicroworkersData($data) {
+function parseMicroworkersData($data, $mw_salt) {
 
         $csv_head = "ROW,ID_TASK,ID_WORKER,TASK_RATING,FINISHED,IP,COUNTRY_CODE,PROOF,EMPLOYER_COMMENT";
 
@@ -33,16 +33,15 @@ function parseMicroworkersData($data) {
                 $linedata["worker_id"] = $row["ID_WORKER"];
                 $linedata["proof_raw"] = $row["PROOF"];
 
-	
-                if (!preg_match('/xy([a-f0-9]{12})yx/', $row["PROOF"], $matches)) {
+	       // Look for a token in the submitted text
+                if (!preg_match('/xy([a-f0-9]{32})yx/', $row["PROOF"], $matches)) {
  
-			$linedata["token_valid"] = "0";
-                        $linedata["token_invalid_reason"] = "Counld not find a valid token!";
+		       $linedata["token_valid"] = "0";
+                        $linedata["token_invalid_reason"] = "Couldn't not find a valid token!";
  
                 } else {
         
                 	// token found
-
                         if (in_array($matches[1], $token_list)) {
 
                         	// Token was used before
@@ -51,10 +50,19 @@ function parseMicroworkersData($data) {
                                         
                         } else {
 
+			  // Check if token is valid with the current salt
+			  if ($matches[1] == md5($linedata["worker_id"] . $mw_salt)) {
+			  
                                 $linedata["token_valid"] = "1";
-                                $linedata["token"] = $matches[1];
-
-                                $token_list[] = $matches[1];
+                                $linedata["token"]       = $matches[1];
+                                $token_list[] 	       = $matches[1];
+			  
+			  } else {
+			  
+			    $linedata["token_valid"] = "0";
+                             $linedata["token_invalid_reason"] = "Token $matches[1] is not valid!";
+			  
+			  }
                         }
                 }
 		
@@ -71,7 +79,7 @@ function parseMicroworkersData($data) {
 
 if ($mw_csvexport <> '') {
 	
-	$return = parseMicroworkersData($mw_csvexport);
+	$return = parseMicroworkersData($mw_csvexport, $mw_salt);
 
 	foreach ($return as & $mw_worker) {
 
@@ -79,13 +87,17 @@ if ($mw_csvexport <> '') {
 
                 $result = $batch->getWorker($workerId);
 
-
+		// Apparently user did not do the test
 		if (!$result) {
 		
-			// Worker did not even open the homepage		
-
-			$mw_worker["comment"] = "User did not do the test!";
+			// Check if the token is still valid
+			if ($mw_worker["token_valid"])
+			    $mw_worker["comment"] = "WARN! Token Valid, but user unknown!";
+			else
+			    $mw_worker["comment"] = "User did not do the test! (also, invalid token)";
+			
 			$mw_worker['finished'] = 0;
+			
 			continue;
 		}
 
@@ -115,8 +127,14 @@ if ($mw_csvexport <> '') {
 <form action="?" method="post">
 	<fieldset>
 		<legend>Batch Taken Evaluation</legend>
-		<label for="mw_csvexport">Token List (one per line)</label>
-		<textarea name="mw_csvexport" rows="10" cols="10"></textarea>
+		<p>
+		 <label for="mw_csvexport">Microworkers CSV export (including header etc)</label>
+		 <textarea name="mw_csvexport" rows="20" cols="90"><? echo $mw_csvexport; ?></textarea>
+		</p>
+		<p>
+		 <label for="mw_salt">Campaign MD5 salt</label>
+		 <input name="mw_salt" size="32" value="<? echo $mw_salt; ?>"/>
+		</p>
 	</fieldset>
 	
 	<button>Search</button>
@@ -147,7 +165,7 @@ if ($mw_csvexport <> '') {
                 else
                         echo('<td style="background-color: #ff0000">');
 	
-                echo(($mw_worker['token_valid'] ? $mw_worker['token'] : 'INVALID') . "</td>");
+                echo(($mw_worker['token_valid'] ? (substr($mw_worker['token'],0,8).'...') : 'INVALID') . "</td>");
 
 		if ($mw_worker['finished'])
 			echo('<td>');
