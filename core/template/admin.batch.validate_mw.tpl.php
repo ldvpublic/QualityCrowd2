@@ -33,6 +33,9 @@ function parseMicroworkersData($data, $mw_salt) {
                 $linedata["worker_id"] = $row["ID_WORKER"];
                 $linedata["proof_raw"] = $row["PROOF"];
 
+		$linedata["token_shouldbe"] = md5($linedata["worker_id"] . $mw_salt);
+		$linedata["proof_found"] = "";
+
 	       // Look for a token in the submitted text
                 if (!preg_match('/xy([a-f0-9]{32})yx/', $row["PROOF"], $matches)) {
  
@@ -40,7 +43,9 @@ function parseMicroworkersData($data, $mw_salt) {
                         $linedata["token_invalid_reason"] = "Couldn't not find a valid token!";
  
                 } else {
-        
+       
+			$linedata["proof_found"] = $matches[1];
+ 
                 	// token found
                         if (in_array($matches[1], $token_list)) {
 
@@ -200,6 +205,41 @@ if ($mw_csvexport <> '') {
 
 	}
 ?>
+</table>
+
+<h3>Token Only Check</h3>
+
+<table class="meta">
+
+        <tr>
+                <th>MW Worker ID</th>
+                <th>Token Sbumitted</th>
+                <th>Token Calculated</th>
+		<th>Match?</th>
+        </tr>
+
+<?php
+        foreach ($return AS $mw_worker) {
+
+                echo("<tr>");
+                echo("<td>".  $mw_worker["worker_id"] . "</td>");
+
+		echo("<td>". $mw_worker["proof_raw"]  ."</td>");
+
+		echo("<td>". $mw_worker["token_shouldbe"]  ."</td>");
+
+		
+                if ($mw_worker["proof_found"] == $mw_worker["token_shouldbe"])
+                        echo('<td>OK</td>');
+                else
+                        echo('<td style="background-color: #ff0000">INVALID</td>');
+
+                echo("</tr>");
+
+        }
+?>
+
+</table>
 		
 <?php else: ?>
 	<tr>
@@ -213,3 +253,4 @@ if ($mw_csvexport <> '') {
 <?php endif; ?>
 </table>
 <?php endif; ?>
+
