@@ -6,7 +6,7 @@
 	url = git://github.com/michelf/php-markdown.git
 [submodule "core/3p/jpgraph"]
 	path = core/3p/jpgraph
-	url = git@github.com:clorch/JpGraph.git
+	url = git://github.com/clorch/JpGraph.git
 [submodule "core/3p/phpbrowscap"]
 	path = core/3p/phpbrowscap
 	url = git://github.com/GaretJax/phpbrowscap.git
