@@ -473,7 +473,7 @@ EOT;
 	private function normalize($source)
 	{
 		// remove comments
-		$source = preg_replace("/^\s*#.*$/m", '', $source);
+		$source = preg_replace("/\s*#.*$/m", '', $source);
 
 		// replace tabs with spaces
 		$source = str_replace("\t", ' ', $source);
