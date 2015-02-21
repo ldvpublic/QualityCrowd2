@@ -8,12 +8,29 @@ meta description "This Batch demonstrates all implemented features."
 meta workers 30
 meta timeout 1200
 
-var fivepoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent; 6: Wow!"
+var sixpoints "1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent; 6: Wow!"
 
 #set mediaurl "http://.../media/"
 set videowidth 352
 set videoheight 288
-#set skipvalidation
+set skipvalidation
+
+#
+# Macro and list definitions
+#
+
+macro qualityquestion
+  set answermode continous
+  set width 750
+  set answers $sixpoints
+  question "Please rate the visual video quality"
+end macro
+
+list myvideos
+	foreman_plr10.mp4
+    foreman_plr5.mp4
+    foreman_plr0.4.mp4
+end list
 
 #
 # The Steps
@@ -44,7 +61,7 @@ step "Qualification"
 end step
 
 set answermode discrete
-set answers $fivepoints
+set answers $sixpoints
 set delay 3
 
 step "delayed video quality"
@@ -55,37 +72,19 @@ end step
 
 set delay 0
 
-step "delayed video quality"
-	title "Image quality"
-	image lena-bad.png
-	question "Please rate the ""visual"" image quality"
-end step
-
 step "Stupid question with elephant"
 	set answers "1: A woman; 2: A man; 3: Two women; 4: An elephant"
 	question "What did you see in the last image?"
 end step
 
-set answermode continous
-
-step "Video quality"
-	title "Video quality"
-	video foreman_plr5.mp4 foreman.mp4
-	question "Please rate the visual video quality"
-end step
-
-step 
-	video foreman_plr10.mp4
-	question "Please rate the acoustic quality"
-end step
-
-step 
-	video foreman_plr0.4.mp4
-	question "Please rate the acoustic quality"
-end step
+for video in myvideos
+  step $video
+      video $video
+      $qualityquestion
+  end step
+end for
 
 step 
 	title "Done"
 	text "You have finished the task!"
 end step
-
