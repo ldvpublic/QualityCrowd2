@@ -9,6 +9,7 @@ require_once (ROOT_PATH .'core'.DS.'3p'.DS.'jpgraph'.DS.'src'.DS.'jpgraph_pie.ph
 require_once (ROOT_PATH .'core'.DS.'3p'.DS.'phpbrowscap'.DS.'src'.DS.'phpbrowscap'.DS.'Browscap.php');
 
 use phpbrowscap\Browscap;
+//ini_set('memory_limit', '-1'); // may be required for initial downloading
 $bc = new Browscap(TMP_PATH.'browscap');
 
 $data = array(
@@ -37,6 +38,7 @@ foreach ($data as &$d) {
 	asort($d);
 	$d['values'] = array_reverse($d);
 }
+
 
 foreach($data as $key => &$d)
 {

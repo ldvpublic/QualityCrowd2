@@ -56,8 +56,14 @@ class BatchCompiler extends Base
 			'minArguments' => 0, 
 			'arguments' => array('name'),
 			'properties' => array(
-				'delay' 		 => 0,
-				'skipvalidation' => false,
+				'delay' 		 => array(
+					'default' => 0, 
+					'values' => 'number of seconds',
+					'description' => 'Todo'),
+				'skipvalidation' => array(
+					'default' => false, 
+					'values' => 'true, false',
+					'description' => 'Disables the validation of the answer values. The main purpose of this flag is to allow quick testing of the script during development.'),
 				),
 			'description' => 'TODO',
 			),
@@ -86,9 +92,18 @@ class BatchCompiler extends Base
 			'minArguments' => 1, 
 			'arguments' => array('video1', 'video2'),
 			'properties' => array(
-				'mediaurl' 		 => MEDIA_URL,
-				'videowidth' 	 => 352,
-				'videoheight' 	 => 288,
+				'mediaurl' 		 => array(
+					'default' => MEDIA_URL,
+					'values' => 'URL', 
+					'description' => 'Todo'),
+				'videowidth' 	 => array(
+					'default' => 352, 
+					'values' => 'number of pixels',
+					'description' => 'Todo'),
+				'videoheight' 	 => array(
+					'default' => 288, 
+					'values' => 'number of pixels',
+					'description' => 'Todo'),
 				),
 			'description' => '',
 			),
@@ -98,7 +113,10 @@ class BatchCompiler extends Base
 			'minArguments' => 1,
 			'arguments' => array('image'),
 			'properties' => array(	
-				'mediaurl' 		 => MEDIA_URL,
+				'mediaurl' 		 => array(
+					'default' => MEDIA_URL,
+					'values' => 'URL',  
+					'description' => 'Todo'),
 				),
 			'description' => '',
 			),
@@ -108,9 +126,18 @@ class BatchCompiler extends Base
 			'minArguments' => 1,
 			'arguments' => array('question'),
 			'properties'   => array(
-				'answermode'	 => 'discrete',
-				'answers'		 => '1: First answer; 2: Second answer; 3: Third answer',
-				'width'			 => -1,
+				'answermode'	 => array(
+					'default' => 'discrete', 
+					'values' => 'continous, discrete, strings, text',
+					'description' => 'Todo'),
+				'answers'		 => array(
+					'default' => '1: First answer; 2: Second answer; 3: Third answer', 
+					'values' => 'key value list',
+					'description' => 'Todo'),
+				'width'			 => array(
+					'default' => -1, 
+					'values' => 'number',
+					'description' => 'Todo'),
 				),
 			'description' => '',
 			),
@@ -186,7 +213,7 @@ EOT;
 		$myBatch = null;
 
 		if (!file_exists($this->getCacheFileName()) ||
-			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) ) //|| true)
+			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) ) // || true)
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
@@ -250,12 +277,12 @@ EOT;
 					 	);
 
 					// set properties
-					foreach(self::$syntax['step']['properties'] as $property => $default)
+					foreach(self::$syntax['step']['properties'] as $propertyKey => $property)
 					{
-						if (isset($properties['global'][$property])) {
-							$step['properties'][$property] = $properties['global'][$property];
+						if (isset($properties['global'][$propertyKey])) {
+							$step['properties'][$propertyKey] = $properties['global'][$propertyKey];
 						} else {
-							$step['properties'][$property] = $default;
+							$step['properties'][$propertyKey] = $property['default'];
 						}
 					}
 
@@ -287,12 +314,12 @@ EOT;
 						);
 
 					// set properties
-					foreach(self::$syntax[$sourceStep['command']]['properties'] as $property => $default)
+					foreach(self::$syntax[$sourceStep['command']]['properties'] as $propertyKey => $property)
 					{
-						if (isset($properties['step'][$property])) {
-							$element['properties'][$property] = $properties['step'][$property];
+						if (isset($properties['step'][$propertyKey])) {
+							$element['properties'][$propertyKey] = $properties['step'][$propertyKey];
 						} else {
-							$element['properties'][$property] = $default;
+							$element['properties'][$propertyKey] = $property['default'];
 						}
 					}
 
