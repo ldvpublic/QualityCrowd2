@@ -278,6 +278,8 @@ EOT;
 		$lines = explode("\n", $source);
 		foreach($lines as $line)
 		{
+			if (strlen($line) < 2) continue;
+
 			$words = explode(' ', $line);
 			$words = str_getcsv($line, ' ', '"');
 			
