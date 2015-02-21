@@ -50,13 +50,7 @@ pre {
 
 .CodeMirror {
 	border: 1px solid #ccc;
-}
-
-.CodeMirror-scroll {
-	height: auto;
-	overflow-y: hidden;
-	overflow-x: auto;
-	width: 100%;
+	height:auto;
 }
 
 /* ==================================== Form */
