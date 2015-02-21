@@ -35,7 +35,6 @@ class AdminMaintenance extends AdminPage
 		$cachePaths = array(
 			ROOT_PATH.'core'.DS.'tmp'.DS.'img-cache'.DS,
 			ROOT_PATH.'core'.DS.'tmp'.DS.'batch-cache'.DS,
-			ROOT_PATH.'core'.DS.'tmp'.DS.'browscap'.DS,
 		);
 
 		foreach($cachePaths as $path)

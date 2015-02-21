@@ -1,22 +1,22 @@
 <?php
 
-class StepQualification extends Step
+class ElementQualification extends StepElement
 {
 	private $qualiMain;
 
 	protected function init() 
 	{
-		$qualiBatch = $this->arguments[0];
+		$qualiBatch = $this->arguments['qualification-batch'];
 
 		if (!$this->skip()) {
-			$this->qualiMain = new Main($qualiBatch, $this->workerId, 'qualification-main');
+			$this->qualiMain = new Main($qualiBatch, $this->step->workerId(), 'qualification-main');
 		}
 	}
 
 	public function skip()
 	{
-		$qualiBatch = $this->arguments[0];
-		$done = $this->store->readWorker('done', false, $qualiBatch, $this->workerId);
+		$qualiBatch = $this->arguments['qualification-batch'];
+		$done = $this->store->readWorker('done', false, $qualiBatch, $this->step->workerId());
 		return $done;
 	}
 

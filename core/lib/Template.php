@@ -41,7 +41,7 @@ class Template
 			throw new Exception("Parameter has to be an array");
 		}
 
-		self::$fields[$this->scope] = self::$fields[$this->scope] + $array;
+		self::$fields[$this->scope] = array_merge(self::$fields[$this->scope], $array);
 	}
 
 	public function render()

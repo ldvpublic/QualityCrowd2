@@ -1,13 +1,16 @@
 meta title "QualityCrowd Example Qualification Batch"
 
-set title "Qualification test"
-set text "Welcome to the qualification test"
-page
+step "Welcome page"
+	title "Qualification test"
+	text "Welcome to the qualification test"
+end step
 
 set answermode discrete
 set answers "1: A woman; 2: A man; 3: An elephant"
-set question "What are you?"
-question
+step
+	question "What are you?"
+end step
 
-set text "You passed the qualification test"
-page
+step
+	text "You passed the qualification test"
+end step

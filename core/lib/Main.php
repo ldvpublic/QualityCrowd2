@@ -42,7 +42,12 @@ class Main extends Base
 	{
 		// read last step id
 		$this->lastStepId = $this->store->readWorker('stepId', -1, $this->batchId, $this->workerId);
-		if ($this->lastStepId == -1) $this->batch->init($this->workerId);
+
+		// fresh start
+		if ($this->lastStepId == -1) {
+			$this->batch->init($this->workerId);
+			$this->lastStepId = 0;
+		}
 
 		// process submitted post data
 		$errorMessages = $this->handlePostData();
@@ -56,18 +61,18 @@ class Main extends Base
 		$stepId = $this->lastStepId;
 		if (!$this->refreshStep) $stepId++;
 
-		while(true) {
-			$step = $this->batch->getStepObject($stepId, $this->workerId, $stepId);
+		while($stepId < $this->batch->countSteps()) {
+			$step = $this->batch->getStepObject($stepId, $this->workerId);
 			if ($step->skip()) {
 				$stepId++;
 			} else {
 				break;
 			}
 		}
-
+	
 		if ($stepId < 0) $stepId = 0;
 		if ($stepId >= $this->batch->countSteps()) $stepId = $this->batch->countSteps() - 1;
-	
+
 		$this->store->writeWorker('stepId', $stepId, $this->batchId, $this->workerId);
 
 		// handle last step
@@ -85,7 +90,6 @@ class Main extends Base
 		$this->tpl->set('timeout', $meta['timeout']);
 
 		// render step
-		
 		$this->tpl->set('content', $step->render());
 
 		return $this->tpl->render();
@@ -112,7 +116,6 @@ class Main extends Base
 			settype($stepId, 'int');
 
 			$data = $_POST;
-			unset($data['batchId']);
 			unset($data['stepId-' . $this->scope]);
 
 			if ($stepId <> $this->lastStepId) {
@@ -120,7 +123,7 @@ class Main extends Base
 				$this->refreshStep = true;
 			} else {
 				// validate answer data
-				$step = $this->batch->getStepObject($stepId, $this->workerId, $stepId);
+				$step = $this->batch->getStepObject($stepId, $this->workerId);
 				$msg = $step->validate($data);
 
 				// save answer data if valid

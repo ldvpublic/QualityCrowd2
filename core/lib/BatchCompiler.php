@@ -7,7 +7,9 @@ class BatchCompiler extends Base
 
 	public static $syntax = array(
 		// special commands
-		'meta'          => array(
+		'meta' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 1,
 			'arguments' => array('key', 'value'),
 			'description' => '',
@@ -18,89 +20,130 @@ class BatchCompiler extends Base
 				'timeout'		=> 600,
 				),
 			),
-		'var'           => array(
+		'var' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 2,
 			'arguments' => array('variable', 'value'),
 			'description' => 'Sets an internal variable to `<value>`. To use this variable for example in a `set` command, use the following syntax: `set title $titlevar`',
 			),
-		'set'           => array(
+		'set' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 1,
 			'arguments' => array('property', 'value'),
 			'description' => 'The `set` command sets a property defined by the `<property>`-argument to the value specified by `<value>`. This property can be used by all further commands and its value will be set until a matching `unset`-command is processed.',
 			),
-		'unset'         => array(
+		'unset' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
 			'minArguments' => 1,
 			'arguments' => array('property'),
 			'description' => 'Unsets the property with the passed `<property>`. If `all` is passed all properties will be unset.',
 			),
+		'end' => array(
+			'isBlock' => false,
+			'needsBlock' => false,
+			'minArguments' => 1,
+			'arguments' => array('block'),
+			'description' => 'TODO',
+			),
 
-		// step commands
-		'page'          => array(
+		// blocks
+		'step' => array(
+			'isBlock' => true,
+			'needsBlock' => false,
 			'minArguments' => 0, 
-			'arguments' => array(),
-			'properties'   => array(
-				'title' 		 => '',
-				'text' 			 => '',
-				'delay' 		 => 0,
+			'arguments' => array('name'),
+			'properties' => array(
+				'delay' 		 => array(
+					'default' => 0, 
+					'values' => 'number of seconds',
+					'description' => 'Todo'),
+				'skipvalidation' => array(
+					'default' => false, 
+					'values' => 'true, false',
+					'description' => 'Disables the validation of the answer values. The main purpose of this flag is to allow quick testing of the script during development.'),
 				),
-			'description' => 'Displays a simple HTML-Page which is particularly useful as a welcome page. It is recommended to use the `include()`-macro to set the page text property (e.g. `set text include(welcome.html)`)',
+			'description' => 'TODO',
+			),
+
+
+		// commands inside blocks
+		'title' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
+			'minArguments' => 1, 
+			'arguments' => array('title'),
+			'properties' => array(),
+			'description' => 'Todo',
+			),
+		'text' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
+			'minArguments' => 1, 
+			'arguments' => array('text'),
+			'properties' => array(),
+			'description' => 'Displays some text. For longer texts it is recommended to use the `include()`-macro: (e.g. `text include(welcome.html)`)',
 			),
 		'video' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
 			'minArguments' => 1, 
 			'arguments' => array('video1', 'video2'),
-			'properties'   => array(
-				'skipvalidation' => false,
-				'title' 		 => '',
-				'text' 			 => '',
-				'question' 		 => '',
-				'answermode'	 => 'discrete',
-				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
-				'mediaurl' 		 => MEDIA_URL,
-				'videowidth' 	 => 352,
-				'videoheight' 	 => 288,
-				'delay' 		 => 0,
+			'properties' => array(
+				'mediaurl' 		 => array(
+					'default' => MEDIA_URL,
+					'values' => 'URL', 
+					'description' => 'Todo'),
+				'videowidth' 	 => array(
+					'default' => 352, 
+					'values' => 'number of pixels',
+					'description' => 'Todo'),
+				'videoheight' 	 => array(
+					'default' => 288, 
+					'values' => 'number of pixels',
+					'description' => 'Todo'),
 				),
 			'description' => '',
 			),
 		'image' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
 			'minArguments' => 1,
 			'arguments' => array('image'),
-			'properties'   => array(
-				'skipvalidation' => false,
-				'title' 		 => '',
-				'text' 			 => '',
-				'question' 		 => '',
-				'answermode'	 => 'discrete',
-				'answers'		 => '1: Bad; 2: Poor; 3: Fair; 4: Good; 5: Excellent',
-				'mediaurl' 		 => MEDIA_URL,
-				'delay' 		 => 0,
+			'properties' => array(	
+				'mediaurl' 		 => array(
+					'default' => MEDIA_URL,
+					'values' => 'URL',  
+					'description' => 'Todo'),
 				),
 			'description' => '',
 			),
 		'question' => array(
-			'minArguments' => 0,
-			'arguments' => array(),
+			'isBlock' => false,
+			'needsBlock' => true,
+			'minArguments' => 1,
+			'arguments' => array('question'),
 			'properties'   => array(
-				'skipvalidation' => false,
-				'title' 		 => '',
-				'text' 			 => '',
-				'question' 		 => '',
-				'answermode'	 => 'discrete',
-				'answers'		 => '1: First answer; 2: Second answer; 3: Third answer',
-				'delay' 		 => 0,
-				),
-			'description' => '',
-			),
-		'showtoken' => array(
-			'minArguments' => 0,
-			'arguments' => array(),
-			'properties'   => array(
-				'title' 		 => '',
-				'text' 			 => '',
+				'answermode'	 => array(
+					'default' => 'discrete', 
+					'values' => 'continous, discrete, strings, text',
+					'description' => 'Todo'),
+				'answers'		 => array(
+					'default' => '1: First answer; 2: Second answer; 3: Third answer', 
+					'values' => 'key value list',
+					'description' => 'Todo'),
+				'width'			 => array(
+					'default' => -1, 
+					'values' => 'number',
+					'description' => 'Todo'),
 				),
 			'description' => '',
 			),
 		'qualification' => array(
+			'isBlock' => false,
+			'needsBlock' => true,
 			'minArguments' => 1,
 			'arguments' => array('qualification-batch'),
 			'properties'   => array(),
@@ -144,9 +187,10 @@ class BatchCompiler extends Base
 meta title "New Batch"
 meta description "New batch description"
 
-set title "New Batch"
-set text "Hello World"
-page
+step
+	title "New Batch"
+	text "Hello World"
+end step
 
 EOT;
 		$path = BATCH_PATH . $this->batchId;
@@ -169,7 +213,7 @@ EOT;
 		$myBatch = null;
 
 		if (!file_exists($this->getCacheFileName()) ||
-			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()))
+			filemtime($this->getSourceFileName()) > filemtime($this->getCacheFileName()) ) // || true)
 		{
 			$myBatch = $this->compile();
 			$myBatch2 = clone $myBatch;
@@ -187,70 +231,110 @@ EOT;
 
 	private function compile() 
 	{
-		$batchSteps = array();
+		$steps = array();
 		$sourceData = $this->parse();
 
 		$meta = array();
-		$stepProperties = array();
-		$variables = array();
+		$properties = array('global' => array(), 'step' => array());
+		$variables = array('global' => array(), 'step' => array());
+
+		$currentScope = 'global';
 
 		foreach($sourceData as $sourceStep) 
 		{
-			$batchStep = array(
-				'command', 
-				'arguments' => array(), 
-				'properties' => array()
-				);
-			
 			switch($sourceStep['command']) 
 			{
 				case 'meta':
 					$meta[$sourceStep['arguments'][0]] = 
-						$this->parseValue($sourceStep['arguments'][1], $variables);
+						$this->parseValue($sourceStep['arguments'][1], $variables[$currentScope]);
 					break;
 
 				case 'set':
 					$value = (isset($sourceStep['arguments'][1]) ? $sourceStep['arguments'][1] : true);
-					$stepProperties[$sourceStep['arguments'][0]] = 
-						$this->parseValue($value, $variables);
+					$properties[$currentScope][$sourceStep['arguments'][0]] = 
+						$this->parseValue($value, $variables[$currentScope]);
 					break;
 
 				case 'var':
-					$variables[$sourceStep['arguments'][0]] = 
-						$this->parseValue($sourceStep['arguments'][1], $variables);
+					$variables[$currentScope][$sourceStep['arguments'][0]] = 
+						$this->parseValue($sourceStep['arguments'][1], $variables[$currentScope]);
 					break;
 
 				case 'unset':
-					if ($sourceStep['arguments'][0] == 'all')
-					{
-						$stepProperties = array();
+					if ($sourceStep['arguments'][0] == 'all') {
+						$properties[$currentScope] = array();
 					} else
 					{
-						unset($stepProperties[$sourceStep['arguments'][0]]);	
+						unset($properties[$currentScope][$sourceStep['arguments'][0]]);	
 					}
 					break;
 
-				default:
-					$batchStep['command'] = $sourceStep['command'];
+				case 'step':
+					$step = array(
+						'arguments' => array(),
+						'properties' => array(),
+					 	'elements' => array()
+					 	);
 
 					// set properties
-					foreach(self::$syntax[$sourceStep['command']]['properties'] as $property => $default)
+					foreach(self::$syntax['step']['properties'] as $propertyKey => $property)
 					{
-						if (isset($stepProperties[$property])) {
-							$batchStep['properties'][$property] = $stepProperties[$property];
+						if (isset($properties['global'][$propertyKey])) {
+							$step['properties'][$propertyKey] = $properties['global'][$propertyKey];
 						} else {
-							$batchStep['properties'][$property] = $default;
+							$step['properties'][$propertyKey] = $property['default'];
 						}
 					}
 
 					// set arguments
-					$batchStep['arguments'] = array();
+					$i = 0;
 					foreach($sourceStep['arguments'] as $arg) 
 					{
-						$batchStep['arguments'][] = $this->parseValue($arg, $variables);
+						$argumentKey = self::$syntax['step']['arguments'][$i];
+						$step['arguments'][$argumentKey] = $this->parseValue($arg, $variables['global']);
+						$i++;
 					}
 
-					$batchSteps[] = $batchStep;
+					$properties['step'] = $properties['global'];
+					$variables['step'] = $variables['global'];
+					$currentScope = 'step';
+					break;
+
+				case 'end':
+					$steps[] = $step;
+					$currentScope = 'global';
+					break;
+
+				default:
+				
+					$element = array(
+						'command' => $sourceStep['command'],
+						'arguments' => array(),
+						'properties' => array(),
+						);
+
+					// set properties
+					foreach(self::$syntax[$sourceStep['command']]['properties'] as $propertyKey => $property)
+					{
+						if (isset($properties['step'][$propertyKey])) {
+							$element['properties'][$propertyKey] = $properties['step'][$propertyKey];
+						} else {
+							$element['properties'][$propertyKey] = $property['default'];
+						}
+					}
+
+					// set arguments
+					$element['arguments'] = array();
+					$i = 0;
+					foreach($sourceStep['arguments'] as $arg) 
+					{
+						$argumentKey = self::$syntax[$sourceStep['command']]['arguments'][$i];
+						$element['arguments'][$argumentKey] = $this->parseValue($arg, $variables['step']);
+						$i++;
+					}
+
+					$step['elements'][] = $element;
+					
 					break;
 			}
 		}
@@ -263,7 +347,7 @@ EOT;
 			}
 		}
 		
-		$myBatch = new Batch($this->batchId, $meta, $batchSteps);
+		$myBatch = new Batch($this->batchId, $meta, $steps);
 
 		return $myBatch;
 	}
@@ -272,6 +356,10 @@ EOT;
 	{
 		$data = array();
 		$source = $this->getSource();
+		$source = $this->normalize($source);
+		$source = $this->resolveMacros($source);
+		$source = $this->resolveForLoops($source);
+
 		$source = $this->normalize($source);
 
 		// parse source file
@@ -310,25 +398,130 @@ EOT;
 		return $data;
 	}
 
+	private function resolveMacros($source) 
+	{
+		// find macro definitions
+		$macros = $this->extractBlock($source, 'macro');
+	
+		// replace macro references
+		foreach($macros as $macro) {
+			$content = implode("\n", $macro['content']);
+			$source = str_replace('$' . $macro['arguments'][0], $content, $source);
+		}
+		
+		return $source;
+	}
+
+	private function resolveForLoops($source)
+	{
+		// find list definitions
+		$lists = $this->extractBlock($source, 'list');
+		
+		// find for loops
+		$forloops = $this->extractBlock($source, 'for');
+		//header("Content-Type: text/plain; charset=utf8");
+
+		// expand for loops
+		$lines = explode("\n", $source);
+
+		foreach($forloops as $loop) {
+			// find matching list
+			$myList = null;
+			foreach($lists as $list) {
+				if ($list['arguments'][0] == $loop['arguments'][2]) {
+					$myList = $list['content'];
+					break;
+				}
+			}
+			if ($myList === null) {
+				throw new Exception("List with name '{$loop['arguments'][2]}' not found.");
+			}
+
+			// expanding
+			$loopContent = array();
+			foreach($myList as $listItem) {
+				$content = implode("\n", $loop['content']);	
+				$content = str_replace('$' . $loop['arguments'][0], $listItem, $content);
+				$loopContent[] = $content;
+			}
+
+			// replacing
+			$loopContent = implode("\n", $loopContent);	
+			$lines[$loop['start']] = $loopContent;
+		}
+		
+		$source = implode("\n", $lines);
+
+		return $source;
+	}
+
+	private function extractBlock(&$source, $keyword)
+	{
+		$blocks = array();
+
+		$insideBlock = false;
+		$lines = explode("\n", $source);
+		foreach($lines as $li => $line)
+		{
+			$words = explode(' ', $line);
+			$words = str_getcsv($line, ' ', '"');
+
+			if ($words[0] == $keyword) {
+				array_shift($words);
+				$block = array(
+					'start' => $li,
+					'arguments'  => $words,
+					'content' => array(),
+					);
+				$insideBlock = true;
+
+			} elseif ($words[0] == 'end' && $words[1] == $keyword) {
+				$block['length'] = $li - $block['start'] + 1;
+				$blocks[] = $block;
+				$insideBlock = false; 
+			} else {
+				if ($insideBlock) {
+					$block['content'][] = $line;
+				}
+			}
+		}
+
+		// remove block definition
+		foreach($blocks as $block) {
+			$replacement = array_fill(0, $block['length'], '');
+			array_splice($lines, $block['start'], $block['length'], $replacement);	
+		}
+
+		$source = implode("\n", $lines);
+
+		return $blocks;
+	}
+
 	private function normalize($source)
 	{
 		// remove comments
-		$source = preg_replace("/^\s*#.*$/m", '', $source);
-
-		// clean up line endings
-		$source = str_replace("\r\n", "\n", $source);
-		$source = preg_replace("/\n{2,}/", "\n", $source);
-		$source = preg_replace("/\n$/", '', $source);
-		$source = preg_replace("/^\n/", '', $source);
+		$source = preg_replace("/\s*#.*$/m", '', $source);
 
 		// replace tabs with spaces
 		$source = str_replace("\t", ' ', $source);
 
+		// clean up line endings
+		$source = str_replace("\r\n", "\n", $source);
+
+		// remove empty lines
+		$source = preg_replace('/^\s*$/m', '', $source);
+		$source = str_replace("\n\n", "\n", $source);
+		$source = preg_replace('/^\n/', "", $source);
+		$source = preg_replace('/\n$/', "", $source);
+
 		// remove multiple spaces
 		$source = preg_replace("/\ {2,}/", ' ', $source);
 
+		// remove spaces at line beginnings
+		$source = preg_replace("/^\ /m", "", $source);
+
 		// remove spaces at line endings
-		$source = preg_replace("/\ *\n/", "\n", $source);
+		$source = preg_replace('/\ *\n/', "\n", $source);
 
 		return $source;
 	}

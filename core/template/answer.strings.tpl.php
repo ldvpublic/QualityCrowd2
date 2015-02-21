@@ -1,22 +1,17 @@
-<input type="hidden" name="answered" value="0">
-<input type="hidden" name="answermode" value="strings">
+<input type="hidden" name="answered-<?= $uid ?>" value="0">
 
-<fieldset>
-	<legend><?= $question ?></legend>
-
-	<table>
-	<?php foreach($answers as $row): ?>
-		<tr>
-			<td>
-				<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>"><?= $row['text'] ?></label>
-			</td>
-			<td>
-				<input type="text" name="value-<?= $row['value'] ?>" id="value-<?= $row['value'] ?>" value="">
-			</td>
-		</tr>
-	<?php endforeach; ?>
-	</table>
-</fieldset>
+<table>
+<?php foreach($answers as $row): ?>
+	<tr>
+		<td>
+			<label for="value-<?= $row['value'] ?>-<?= $uid ?>" id="label-<?= $row['value'] ?>-<?= $uid ?>"><?= $row['text'] ?></label>
+		</td>
+		<td>
+			<input type="text" name="value-<?= $row['value'] ?>-<?= $uid ?>" id="value-<?= $row['value'] ?>-<?= $uid ?>" value="">
+		</td>
+	</tr>
+<?php endforeach; ?>
+</table>
 
 <script type="text/javascript">
 
@@ -28,7 +23,7 @@
 			}
 		});
 		
-		$('input[name=answered]').val(answered);
+		$('input[name=answered-<?= $uid ?>]').val(answered);
 	});
 
 </script>

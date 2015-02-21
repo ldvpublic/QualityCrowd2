@@ -1,10 +1,9 @@
 <?php
-$uid = uniqid();
-
 $swf = BASE_URL . 'core/files/flash/qcplayer.swf';
 $buttons = BASE_URL . 'core/files/img/playerbuttons.png';
 
-$html5 = preg_match('/\.mp4$/i', $file) && preg_match('/Chrome/', $_SERVER['HTTP_USER_AGENT']);
+//$html5 = preg_match('/\.mp4$/i', $file) && preg_match('/Chrome/', $_SERVER['HTTP_USER_AGENT']);
+$html5 = false;
 
 ?>
 

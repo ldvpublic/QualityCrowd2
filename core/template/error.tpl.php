@@ -17,6 +17,7 @@
 		<p>The following error occured:<p>
 		<code><?= $message ?></code>
 		<?php if(isset($trace)): ?>
+		<br/><br/>
 		<code><?= $trace ?></code>
 		<?php endif; ?>
 		<p>Restart the test to try again or contact the test supervisor.<p>

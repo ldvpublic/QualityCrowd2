@@ -1,23 +1,20 @@
-<input type="hidden" name="answered" value="0">
-<input type="hidden" name="text" value="">
-<input type="hidden" name="answermode" value="discrete">
+<input type="hidden" name="answered-<?= $uid ?>" value="0">
+<input type="hidden" name="text-<?= $uid ?>" value="">
 
-<fieldset>
-	<legend><?= $question ?></legend>
-<?php
-	foreach($answers as $row): ?>
-	<input type="radio" name="value" id="value-<?= $row['value'] ?>" value="<?= $row['value'] ?>">
-	<label for="value-<?= $row['value'] ?>" id="label-<?= $row['value'] ?>"><?= $row['text'] ?></label>
-	<br />
-	<?php endforeach; ?>
-</fieldset>
+<?php foreach($answers as $row): ?>
+	<div class="radiooption">
+		<input type="radio" name="value-<?= $uid ?>" id="value-<?= $row['value'] ?>-<?= $uid ?>" value="<?= $row['value'] ?>">
+		<label for="value-<?= $row['value'] ?>-<?= $uid ?>" id="label-<?= $row['value'] ?>-<?= $uid ?>"><?= $row['text'] ?></label>
+	</div>
+<?php endforeach; ?>
+
 
 <script type="text/javascript">
 
-	$('input[name=value]').change( function() {
-		var selectedValue = $('input[name=value]:checked').val();
-		$('input[name=text]').val($('#label-' + selectedValue).text());
-		$('input[name=answered]').val(1);
+	$('input[name=value-<?= $uid ?>]').change( function() {
+		var selectedValue = $('input[name=value-<?= $uid ?>]:checked').val();
+		$('input[name=text-<?= $uid ?>]').val($('#label-' + selectedValue + '-<?= $uid ?>').text());
+		$('input[name=answered-<?= $uid ?>]').val(1);
 	});
 
 </script>

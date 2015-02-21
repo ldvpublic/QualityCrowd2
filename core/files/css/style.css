@@ -102,13 +102,15 @@ input[type="text"] {
     
 }
 
+.radiooption {
+	display: inline-block;
+    padding-right:20px;
+}
 
 /* ========================================= PLAYER */
 
 div.video-box {
-	margin-top:10px;
-	margin-bottom:10px;
-	display:inline-block;
+	margin:10px auto;
 }
 
 .video-box * {

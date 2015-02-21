@@ -117,7 +117,7 @@ class Request extends Base
 	{
 		$errorTpl = new Template('error');
 		$errorTpl->set('message', $e->getMessage());
-		//$errorTpl->set('trace', $e->getTraceAsString());
+		$errorTpl->set('trace', $e->getTraceAsString());
 
 		echo $errorTpl->render();
 	}

@@ -19,6 +19,20 @@ Each statement begins with a command and may be followed by one or more argument
 	# I am a comment
 Lines starting with a number sign (#) are comments and removed before parsing.
 
+### Lists and Loops
+
+#### list
+	list <list name>
+		<item 1>
+		<item 2>
+		<...>
+	end list
+
+### for loop
+	for <val> in <list name>
+		<commands using $<val>>
+	end for
+
 ### Macros
 
 #### include()
@@ -28,36 +42,9 @@ Can be used instead of a commmand argument to pass the contents of `<file>` as t
 #### variables
 	<command> $<var>
 
-## Properties
-
-### answermode
-	set answermode <continous|discrete|text|strings>
-
-### answers
-	set answers "1: first answer; 2: second answer [;...]"
-
-### mediaurl
-	set mediaurl "http://example.com/path/"
-
-### question
-	set question <text>
-Defines a question text that is displayed in all steps containing a question (`image`, `video`, ...) right above the answer form.
-
-### skipvalidation
-	set skipvalidation
-Disables the validation of the answer values. The main purpose of this flag is to allow quick testing of the script during development.
-
-### text
-	set text <text>
-
-### title
-	set title <text>
-Sets the title of a step page to `<text>`; will be displayed as page heading on all pages.
-
-### videowidth
-	set videowidth <number>
-
-### videoheight
-	set videoheight <number>
+#### macro block
+	macro <macro name>
+		<commands>
+	end macro
 
 

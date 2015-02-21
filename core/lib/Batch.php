@@ -48,21 +48,9 @@ class Batch extends Base
 
 	public function init($workerId)
 	{
-		// generate token
-		$token = $this->getConfig('securitySalt') . '-'; 
-		$token .= $this->batchId . '-';
-		$token .= $workerId . '-';
-		$token .= md5($_SERVER['HTTP_USER_AGENT']) . '-';
-		$token .= md5($_SERVER['REMOTE_ADDR']) . '-';
-		$token .= date('d.m.Y');
-
-		$token = md5($token);
-		$token = substr($token, 20);
-
 		// collect and write meta data
 		$meta = array(
 			'workerId' 		=> $workerId,
-			'token' 		=> $token,
 			'timestamp' 	=> time(),
 			'remoteaddr' 	=> md5($_SERVER['REMOTE_ADDR']),
 			'useragent' 	=> $_SERVER['HTTP_USER_AGENT'],
@@ -172,8 +160,10 @@ class Batch extends Base
 	{
 		$store = new DataStore();
 		$workers = array();
+
 		$path = DATA_PATH . $this->batchId . DS . 'workers' . DS;
 		$files = glob($path . '*', GLOB_MARK);
+
 	    foreach ($files as $file) 
 	    {
 	    	$file = preg_replace('#^' . preg_quote($path) . '#', '', $file);
@@ -194,8 +184,8 @@ class Batch extends Base
 	    			$lastTimestamp = $meta['timestamp'];
 					foreach($results as $stepId => &$stepResults)
 					{
-						$durations[$stepId] = $stepResults[2] - $lastTimestamp;
-						$lastTimestamp = $stepResults[2];
+						$durations[$stepId] = $stepResults[1] - $lastTimestamp;
+						$lastTimestamp = $stepResults[1];
 					}
 				}
 
@@ -220,7 +210,6 @@ class Batch extends Base
 			{
 				$steps[$stepId]['command'] = $stepResults[1];
 				
-				array_shift($stepResults);
 				array_shift($stepResults);
 				array_shift($stepResults);
 				$steps[$stepId]['results'][$wid] = $stepResults;
@@ -312,25 +301,7 @@ class Batch extends Base
 	public function getStepObject($stepId, $workerId)
 	{
 		$step = $this->steps[$stepId];
-
-		if (!isset($step['command']))
-		{
-			throw new Exception('internal error');
-		}
-
-		switch($step['command'])
-		{
-			case 'video':
-			case 'image':
-			case 'question':
-			$stepObject = new StepQuestion($step, $this->batchId, $workerId, $stepId);
-			break;
-
-			default:
-			$class = 'Step' . ucfirst($step['command']);
-			$stepObject = new $class($step, $this->batchId, $workerId, $stepId);
-		}
-
+		$stepObject = new Step($step, $this, $workerId, $stepId);
 		return $stepObject;
 	}
 }

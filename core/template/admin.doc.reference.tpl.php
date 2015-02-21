@@ -1,21 +1,23 @@
 <?php foreach($syntax as $cmd => $cmdDef): ?>
 	<h2><?= $cmd ?></h2>
-	<h3>Usage</h3>
 
 	<?php 
-	$argStr = '';
+	$cmdStr = $cmd;
 	$i = 1;
 	foreach ($cmdDef['arguments'] as $arg) {
 		if ($i > $cmdDef['minArguments']) {
-			$argStr .= ' [&lt;' . $arg .'&gt;]';
+			$cmdStr .= ' [&lt;' . $arg .'&gt;]';
 		} else {
-			$argStr .= ' &lt;' . $arg .'&gt;';
+			$cmdStr .= ' &lt;' . $arg .'&gt;';
 		}
 		$i++;
 	}
+	if ($cmdDef['isBlock']) {
+		$cmdStr .= "\n   ...\nend " . $cmd;
+	}
 	?>
 
-	<pre><?= $cmd ?><?= $argStr ?></pre>
+	<pre><?= $cmdStr ?></pre>
 
 	<?= Markdown($cmdDef['description']) ?>
 
@@ -25,11 +27,15 @@
 		<tr>
 			<th>Property</th>
 			<th>Default value</th>
+			<th>Allowed values</th>
+			<th>Description</th>
 		</tr>
-		<?php foreach($cmdDef['properties'] as $property => $default): ?>
+		<?php foreach($cmdDef['properties'] as $propertyKey => $property): ?>
 		<tr>
-			<td><?= $property ?></td>
-			<td><?= formatPropertyValue($default) ?></td>
+			<td><?= $propertyKey ?></td>
+			<td><?= formatPropertyValue($property['default']) ?></td>
+			<td><?= formatPropertyValue($property['values']) ?></td>
+			<td><?= $property['description'] ?></td>
 		</tr>
 		<?php endforeach; ?>
 	<table>

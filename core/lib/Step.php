@@ -1,61 +1,107 @@
 <?php
 
-abstract class Step extends Base
+class Step extends Base
 {
-	protected $command;
-	protected $properties;
-	protected $arguments;
-	protected $tpl;
+	private $tpl;
 	
-	protected $batchId;
-	protected $workerId;
-	protected $stepId;
+	private $batch;
+	private $workerId;
+	private $stepId;
+	private $elements;
+	private $properties;
 
-	abstract protected function init();
-	abstract protected function prepareRender();
-	abstract public function validate(&$data);
-
-	public function __construct($stepArray, $batchId, $workerId, $stepId)
+	public function __construct($stepArray, Batch $batch, $workerId, $stepId)
 	{
 		parent::__construct();
 
-		$this->arguments = $stepArray['arguments'];
-		$this->properties = $stepArray['properties'];
-		$this->command = $stepArray['command'];
-
-		$this->batchId = $batchId;
+		$this->batch = $batch;
 		$this->workerId = $workerId;
 		$this->stepId = $stepId;
+		$this->elements = $stepArray['elements'];
+		$this->properties = $stepArray['properties'];
 		
-		$this->tpl = new Template($stepArray['command'], $this->batchId);
+		$this->tpl = new Template('step', $this->batch->id());
+	}
 
-		$this->init();
+	public function batch()
+	{
+		return $this->batch;
+	}
+
+	public function workerId()
+	{
+		return $this->workerId;
 	}
 
 	// return true if this step should be skipped
 	public function skip()
 	{
-		return false;
+		foreach($this->elements as $ek => $element) 
+		{
+			$uid = hash("crc32b", $this->batch->id() . '-' . $this->stepId . '-' . $ek);
+
+			$class = 'Element' . ucfirst($element['command']);
+			$elementObject = new $class($element, $this, $uid);
+
+			if (! $elementObject->skip()) return false;
+		}
+
+		return true;
 	}
 
 	public function render()
 	{
-		if (is_array($this->properties))
-		{
+		if (is_array($this->properties)) {
 			$this->tpl->setArray($this->properties);
 		}
-		
-		$this->prepareRender();
 
+		$elementRenderings = array();
+		
+		foreach($this->elements as $ek => $element) 
+		{
+			$uid = hash("crc32b", $this->batch->id() . '-' . $this->stepId . '-' . $ek);
+
+			$class = 'Element' . ucfirst($element['command']);
+			$elementObject = new $class($element, $this, $uid);
+
+			$elementRenderings[] = $elementObject->render();
+		}
+
+		$this->tpl->set('elements', $elementRenderings);
 		return $this->tpl->render();
 	}
+
+	public function validate(&$data) 
+	{
+		if ($this->properties['skipvalidation']) return true;
+
+		$msgs = array();
+
+		foreach($this->elements as $ek => $element) 
+		{
+			$uid = hash("crc32b", $this->batch->id() . '-' . $this->stepId . '-' . $ek);
+
+			$class = 'Element' . ucfirst($element['command']);
+			$elementObject = new $class($element, $this, $uid);
+
+			$msg = $elementObject->validate($data);
+
+			if ($msg === false) {
+				return false;
+			} elseif (is_array($msg)) {
+				$msgs = array_merge($msgs, $msg);
+			}
+		}
+
+		if (count($msgs) > 0) return $msgs;
+		return true;
+	} 
 
 	public function save($data)
 	{
 		$data = array('timestamp' => time()) + $data;
-		$data = array('command' => $this->command) + $data;
 		$data = array('stepId' => $this->stepId) + $data;
 
-		$this->store->writeWorkerCSV('results', array($data), $this->batchId, $this->workerId);
+		$this->store->writeWorkerCSV('results', array($data), $this->batch->id(), $this->workerId);
 	}
 }
